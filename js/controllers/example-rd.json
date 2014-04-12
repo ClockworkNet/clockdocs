@@ -1,0 +1,77 @@
+{
+	"title": "Project Requirement Document",
+	"client": "Client Name",
+	"project": "Project Name",
+	"revisions": [
+		{
+			"version": 0.1,
+			"date": "2014-01-01",
+			"notes": "Initial version",
+			"author": "AGB"
+		}
+	],
+	"sections": [
+		{
+			"title": "Definitions and Conventions",
+			"guid": "definitions_and_conventions",
+			"definitions": [
+				{
+					"title": "Active Media Manager",
+					"guid": "AMM",
+					"content": "The **AMM** is Clockwork's content management system, which will be used for ongoing management of the client's web site."
+				}
+			]
+		},
+		{
+			"title": "Introduction",
+			"guid": "introduction",
+			"content": "Introductory content"
+		},
+		{
+			"title": "Features",
+			"guid": "features",
+			"features": [
+				{
+					"title": "Feature Name",
+					"guid": "feature_name",
+					"content": "Feature Description",
+					"flags": [
+						{
+							"title": "Open Question",
+							"type": "open_question",
+							"guid": "open_question_guid",
+							"content": "...."
+						}
+					],
+					"features": [
+						{
+							"title": "Subfeature Name",
+							"guid": "subfeature_name",
+							"content": "Feature Definition",
+							"features": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"title": "Production",
+			"guid": "production",
+			"features": [
+				{
+					"title": "Production Feature Name",
+					"guid": "production_feature_name",
+					"content": "Production Feature Description",
+					"features": [
+						{
+							"title": "Production Subfeature Name",
+							"guid": "production_subfeature_name",
+							"content": "Production Feature Definition",
+							"features": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

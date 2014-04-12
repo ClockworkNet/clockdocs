@@ -1,0 +1,23 @@
+{
+	"name": "Clockdocs",
+	"version": "0.0.1",
+	"authors": [
+		"Barrett Alexander <barrett@clockwork.net>"
+	],
+	"description": "Write all sorts of Clockwork Client documents",
+	"main": "app.html",
+	"license": "MIT",
+	"homepage": "clockwork.net",
+	"private": true,
+	"ignore": [
+		"**/.*",
+		"bowery",
+		"test"
+	],
+	"dependencies": {
+		"jquery": "*",
+		"angular": "*",
+		"angular-route": "*",
+		"bootstrap": "*"
+	}
+}

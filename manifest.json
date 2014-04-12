@@ -1,0 +1,22 @@
+{
+	"manifest_version": 2,
+	"name": "Clockdocs",
+	"description": "Write all sorts of Clockwork client documents",
+	"version": "0.1",
+	"app": {
+		"background": {
+			"scripts": ["js/background.js"]
+		}
+	},
+	"offline_enabled": true,
+	"permissions": [
+		"clipboardRead",
+		"clipboardWrite",
+		"fileBrowserHandler",
+		{"fileSystem": ["write"]},
+		"identity",
+		"storage",
+		"syncFileSystem",
+		"unlimitedStorage"
+	]
+}
