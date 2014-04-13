@@ -1,8 +1,25 @@
 <div ng-controller="RdCtrl">
-	<ul>
-		<li><a ng-click="create()">Create</a></li>
-		<li><a ng-click="open()">Open</a></li>
-	</ul>
-	<h1 ng-show="rd.title">{{rd.title}}</h1>
-	<h1 ng-hide="rd.title">Untitled</h1>
+	<div class="row">
+		<div class="col-md-12">
+			<ul>
+				<li><a ng-click="create()">Create</a></li>
+				<li><a ng-click="open()">Open</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-3">
+			<h2>Table of Contents</h2>
+		</div>
+		<div class="col-md-9">
+			<h1 ng-show="rd.title">{{rd.title}}</h1>
+			<section ng-repeat="section in rd.sections">
+				<div class="section-title" id="{{section.guid}}">{{section.title}}</div>
+				<div class="section-content">{{section.content}}</div>
+				<div class="features">
+					<div class="row" ng-repeat="feature in section.features" ng-include="'partials/feature.html'"></div>
+				</div>
+			</section>
+		</div>
+	</div>
 </div>

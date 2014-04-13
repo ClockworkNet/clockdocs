@@ -1,0 +1,5 @@
+<div class="feature" id="{{feature.guid}}">
+	<div class="header">{{feature.title}}</div>
+	<div class="content">{{feature.content}}</div>
+	<div class="sub-features" ng-repeat="feature in feature.features" ng-include="'partials/feature.html'" />
+</div>

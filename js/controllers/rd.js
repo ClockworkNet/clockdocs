@@ -6,7 +6,7 @@ function($scope, $location, FileSystem) {
 		console.error('File system error', e);
 	});
 
-	$scope.rd = {};
+	$scope.rd = null;
 
 	$scope.create = function() {
 		$scope.rd = {
@@ -18,9 +18,16 @@ function($scope, $location, FileSystem) {
 
 	$scope.open = function() {
 		FileSystem.open(['json'], function(contents, entry, progress) {
-			$scope.rd = angular.fromJson(contents);
-			console.info($scope.rd);
+			$scope.$apply(function() {
+				$scope.rd = angular.fromJson(contents);
+				console.log("Set rd", $scope.rd);
+			});
 		});
+	};
+
+	$scope.save = function() {
+		var rd = $scope.rd;
+		FileSystem.save(rd.title, '.json', angular.toJson(rd), 'txt');
 	};
 
 }]);
