@@ -2,7 +2,7 @@
 	"title": "Project Requirement Document",
 	"client": "Client Name",
 	"project": "Project Name",
-	"guid": project_requriement_doc_guid",
+	"guid": "project_requriement_doc_guid",
 	"revisions": [
 		{
 			"version": 0.1,

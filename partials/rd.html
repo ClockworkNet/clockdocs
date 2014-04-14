@@ -13,8 +13,8 @@
 				<li><h2>Table of Contents</h2></li>
 				<li ng-repeat="section in rd.sections">
 					<a class="toc-section" scroller="section.guid">{{section.title}}</a>
-					<ul class="nav" ng-show="section.features">
-						<li ng-repeat="feature in section.features" ng-include="'partials/feature-toc.html'"></li>
+					<ul class="nav">
+						<li ng-repeat="feature in section.features" ng-include="'partials/toc.html'"></li>
 					</ul>
 				</li>
 			</ul>

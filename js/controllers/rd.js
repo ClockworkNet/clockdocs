@@ -54,14 +54,17 @@ function($scope, $location, FileSystem, Random) {
 
 	$scope.insertFeature = function(features, featureIndex) {
 		if (!features) {
-			console.trace("Invalid features collection");
+			console.trace("Invalid features collection", arguments);
 			return;
 		}
+		featureIndex = featureIndex || features.length + 1;
 		features.splice(featureIndex, 0, createFeature());
+		console.log($scope.rd);
 	};
 
 	$scope.insertSection = function(sectionIndex) {
 		$scope.rd.sections.splice(sectionIndex, 0, createFeature('Untitled Section'));
+		console.log($scope.rd);
 	};
 
 }]);
