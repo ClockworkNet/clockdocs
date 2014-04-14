@@ -7,19 +7,32 @@
 			</ul>
 		</div>
 	</div>
-	<div class="row">
+	<div class="row" ng-show="rd">
 		<div class="col-md-3">
-			<h2>Table of Contents</h2>
+			<div class="fixed-nav" data-spy="affix">
+				<ul class="nav toc">
+					<li><h2>Table of Contents</h2></li>
+					<li ng-repeat="section in rd.sections">
+						<a class="toc-section" href="#{{section.guid}}">{{section.title}}</a>
+						<ul class="nav" ng-show="section.features">
+							<li ng-repeat="feature in section.features" ng-include="'partials/feature-toc.html'"></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
 		</div>
-		<div class="col-md-9">
+		<div class="col-md-7">
 			<h1 ng-model="rd.title" contenteditable></h1>
+			<a ng-click="insertSection(0)">New Section</a>
 			<section ng-repeat="section in rd.sections">
 				<div class="section-title" contenteditable id="{{section.guid}}" ng-model="section.title"></div>
 				<div class="section-content" contenteditable ng-model="section.content"></div>
 				<div class="features">
 					<div class="row" ng-repeat="feature in section.features" ng-include="'partials/feature.html'" ng-init="$level = 0"></div>
 				</div>
+				<a ng-click="inserSection($index + 1)">New Section</a>
 			</section>
 		</div>
+		<div class="col-md-2"></div>
 	</div>
 </div>

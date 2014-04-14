@@ -1,14 +1,50 @@
+html {
+	overflow: scroll;
+}
+
+div[contenteditable] {
+	margin: 5px;
+	padding: 10px;
+	border: 1px transparent;
+}
+div[contenteditable]:hover {
+	border: dashed 1px #ccc;
+}
+div[contenteditable]:focus {
+	border: solid 1px #00c;
+}
+
+
+/* Table of Contents */
+.toc ul {
+	margin: 0;
+	padding: 0;
+}
+.toc li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.toc-section {
+	font-weight: 600;
+	font-size: 1.2em;
+}
+.toc-feature {
+	font-size: 1em;
+}
+
+
+/* Sections and Features */
 section {
-	border-top: 1px solid #333;
 	padding-top: 2em;
 }
 .section-title {
 	font-size: 3em;
 }
 .features {
+
 }
 .feature {
-	border-left: 1px solid #ccc;
 	padding-top: 1em;
 	padding-left: 1em;
 }

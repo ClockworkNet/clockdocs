@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "Clockdocs",
-	"description": "Write all sorts of Clockwork client documents",
+	"description": "Write client documents like Clockwork.",
 	"version": "0.1",
 	"app": {
 		"background": {

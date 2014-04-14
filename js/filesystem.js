@@ -1,4 +1,4 @@
-angular.module('Clockdoc.Utils', [])
+angular.module('Clockdoc.Utils')
 .factory('FileSystem', function() {
 
 var listeners = {
@@ -34,8 +34,6 @@ return {
 			}
 			self.fire('open', entry);
 			var reader = new FileReader();
-
-			reader.onprogress = console.log;
 
 			reader.onerror = function(e) {
 				self.fire('error', e);
