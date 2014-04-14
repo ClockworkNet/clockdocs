@@ -17,6 +17,9 @@ div[contenteditable]:focus {
 
 
 /* Table of Contents */
+.toc {
+	position: fixed;
+}
 .toc ul {
 	margin: 0;
 	padding: 0;

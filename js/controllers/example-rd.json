@@ -35,7 +35,7 @@
 				{
 					"title": "Feature Name",
 					"guid": "feature_name",
-					"content": "Feature Description",
+					"content": "Feature description",
 					"flags": [
 						{
 							"title": "Open Question",
@@ -49,15 +49,39 @@
 							"title": "Subfeature Name",
 							"guid": "subfeature_name",
 							"content": "Feature Definition",
+							"flags": [],
 							"features": [
 								{
-									"title": "Sub Subfeature Name",
-									"guid": "sub_subfeature_name",
-									"content": "Sub Subfeature name"
-								}
+									"title": "First Sub Subfeature Name",
+									"guid": "first_sub_subfeature_name",
+									"content": "First Sub Subfeature content",
+									"flags": [],
+									"features": []
+								}, 
+								{
+									"title": "Second Sub Subfeature Name",
+									"guid": "second_sub_subfeature_name",
+									"content": "Second Sub Subfeature content",
+									"flags": [],
+									"features": []
+								} 
 							]
 						}
 					]
+				},
+				{
+					"title": "Another Feature Name",
+					"guid": "another_feature_name",
+					"content": "Another feature description",
+					"flags": [
+						{
+							"title": "Assumption",
+							"type": "assumption",
+							"guid": "assumption_1",
+							"content": "I'm assuming you get this right"
+						}
+					],
+					"features": []
 				}
 			]
 		},

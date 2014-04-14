@@ -1,8 +1,13 @@
-<div class="feature level_{{$level}}" id="{{feature.guid}}">
-	<div class="title" contenteditable ng-model="feature.title"></div>
-	<ul class="menu">
-		<li><a ng-click="insertFeature(feature.features)">New Item in "{{feature.title}}"</a></li>
-	</ul>
-	<div class="content" contenteditable ng-model="feature.content"></div>
+<div class="row">
+	<div class="dropdown pull-left">
+		<a class="btn dropdown-toggle" data-toggle="dropdown"><icon type="list" /></a>
+		<ul class="dropdown-menu">
+			<li><a ng-click="insertFeature(feature.features)"><icon type="plus" /> New Child Item</a></li>
+			<li><a exec="strikeThrough" exec-target="#{{feature.guid}}"><icon type="remove" /> Strike Item</a></li>
+			<li><a ng-click="deleteFeature(section, feature)" confirm="Are you sure you want to delete '{{feature.title}}'?"><icon type="trash" /> Delete Item</a></li>
+		</ul>
+	</div>
+	<div class="title" contenteditable ng-model="feature.title" id="{{feature.guid}}"></div>
 </div>
-<div class="sub-features level_{{$level}}" ng-repeat="feature in feature.features" ng-include="'partials/feature.html'" ng-init="$level = $level + 1"></div>
+<div class="row content" contenteditable ng-model="feature.content"></div>
+<div class="row feature level_{{$level}}" ng-repeat="feature in feature.features" ng-include="'partials/feature.html'" ng-init="$level = $level + 1"></div>

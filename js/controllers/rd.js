@@ -17,6 +17,18 @@ function($scope, $location, FileSystem, Random) {
 		};
 	};
 
+	// Recursively access each feature in a section;
+	// Until the callback returns false
+	function eachFeature(section, callback) {
+		section.features.some(function(f, i) {
+			var go = callback(f, i, section.features);
+			if (go === false) {
+				return true;
+			}
+			eachFeature(f, callback);
+		});
+	}
+
 	$scope.rd = null;
 
 	$scope.create = function() {
@@ -50,6 +62,16 @@ function($scope, $location, FileSystem, Random) {
 	$scope.save = function() {
 		var rd = $scope.rd;
 		FileSystem.save(rd.title, '.json', angular.toJson(rd), 'txt');
+	};
+
+	$scope.deleteFeature = function(section, feature) {
+		eachFeature(section, function(f, i, a) {
+			if (f.guid != feature.guid) {
+				return true;
+			}
+			a.splice(i, 1);
+			return false;
+		});
 	};
 
 	$scope.insertFeature = function(features, featureIndex) {
