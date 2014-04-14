@@ -1,4 +1,4 @@
-<a class="toc-feature" href="./#{{feature.guid}}">{{feature.title}}</a>
+<a class="toc-feature" scroller="feature.guid">{{feature.title | truncate}}</a>
 <ul class="nav" ng-show="feature.features">
 	<li ng-repeat="feature in feature.features" ng-include="'partials/feature-toc.html'"></li>
 </ul>

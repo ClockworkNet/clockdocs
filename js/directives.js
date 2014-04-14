@@ -17,4 +17,28 @@ return {
 		};
 		el.on('blur keyup change', update);
 	}
+}})
+.directive('scroller', function() {
+return {
+	restrict: 'A',
+	link: function(scope, el, attrs) {
+		var targetId = null;
+		var speed = attrs.scrollerSpeed || 1;
+		scope.$watch(attrs.scroller, function(value) {
+			targetId = value;
+		});
+		var scroll = function() {
+			var targetEl = $('#' + targetId);
+			var offset = targetEl && targetEl.offset();
+			if (!offset) {
+				console.error("Invalid scroller target id", targetId);
+				return false;
+			}
+			var distance = Math.abs(el.offset().top - offset.top);
+			var time = distance / speed;
+			$('body').animate({scrollTop: offset.top}, time);
+			return false;
+		};
+		el.on('click', scroll);
+	}
 }});

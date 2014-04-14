@@ -8,18 +8,16 @@
 		</div>
 	</div>
 	<div class="row" ng-show="rd">
-		<div class="col-md-3">
-			<div class="fixed-nav" data-spy="affix">
-				<ul class="nav toc">
-					<li><h2>Table of Contents</h2></li>
-					<li ng-repeat="section in rd.sections">
-						<a class="toc-section" href="#{{section.guid}}">{{section.title}}</a>
-						<ul class="nav" ng-show="section.features">
-							<li ng-repeat="feature in section.features" ng-include="'partials/feature-toc.html'"></li>
-						</ul>
-					</li>
-				</ul>
-			</div>
+		<div class="col-md-3 fixed-nav">
+			<ul class="nav toc" data-spy="affix" data-offset-top="0" data-offset-bottom="200">
+				<li><h2>Table of Contents</h2></li>
+				<li ng-repeat="section in rd.sections">
+					<a class="toc-section" scroller="section.guid">{{section.title}}</a>
+					<ul class="nav" ng-show="section.features">
+						<li ng-repeat="feature in section.features" ng-include="'partials/feature-toc.html'"></li>
+					</ul>
+				</li>
+			</ul>
 		</div>
 		<div class="col-md-7">
 			<h1 ng-model="rd.title" contenteditable></h1>
@@ -27,10 +25,11 @@
 			<section ng-repeat="section in rd.sections">
 				<div class="section-title" contenteditable id="{{section.guid}}" ng-model="section.title"></div>
 				<div class="section-content" contenteditable ng-model="section.content"></div>
+				<a ng-click="insertFeature(section.features, 0)">New Item in "{{section.title}}"</a>
 				<div class="features">
 					<div class="row" ng-repeat="feature in section.features" ng-include="'partials/feature.html'" ng-init="$level = 0"></div>
 				</div>
-				<a ng-click="inserSection($index + 1)">New Section</a>
+				<a ng-click="insertSection($index + 1)">New Section</a>
 			</section>
 		</div>
 		<div class="col-md-2"></div>
