@@ -1,5 +1,5 @@
-<div class="feature" id="{{feature.guid}}">
-	<div class="header">{{feature.title}}</div>
-	<div class="content">{{feature.content}}</div>
-	<div class="sub-features" ng-repeat="feature in feature.features" ng-include="'partials/feature.html'" />
+<div class="feature level_{{$level}}" id="{{feature.guid}}">
+	<div class="title" contenteditable ng-model="feature.title"></div>
+	<div class="content" contenteditable ng-model="feature.content"></div>
+	<div class="sub-features" ng-repeat="feature in feature.features" ng-include="'partials/feature.html'" ng-init="$level = $level + 1" />
 </div>

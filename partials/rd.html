@@ -12,12 +12,12 @@
 			<h2>Table of Contents</h2>
 		</div>
 		<div class="col-md-9">
-			<h1 ng-show="rd.title">{{rd.title}}</h1>
+			<h1 ng-model="rd.title" contenteditable></h1>
 			<section ng-repeat="section in rd.sections">
-				<div class="section-title" id="{{section.guid}}">{{section.title}}</div>
-				<div class="section-content">{{section.content}}</div>
+				<div class="section-title" contenteditable id="{{section.guid}}" ng-model="section.title"></div>
+				<div class="section-content" contenteditable ng-model="section.content"></div>
 				<div class="features">
-					<div class="row" ng-repeat="feature in section.features" ng-include="'partials/feature.html'"></div>
+					<div class="row" ng-repeat="feature in section.features" ng-include="'partials/feature.html'" ng-init="$level = 0"></div>
 				</div>
 			</section>
 		</div>

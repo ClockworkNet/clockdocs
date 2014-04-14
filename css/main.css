@@ -1,0 +1,36 @@
+section {
+	border-top: 1px solid #333;
+	padding-top: 2em;
+}
+.section-title {
+	font-size: 3em;
+}
+.features {
+}
+.feature {
+	border-left: 1px solid #ccc;
+	padding-top: 1em;
+	padding-left: 1em;
+}
+.feature.level_0 .title {
+	font-size: 2em;
+	font-weight: 600;
+}
+.feature.level_1 .title {
+	font-size: 1.8em;
+	font-style: italic;
+}
+.feature.level_2 .title {
+	font-size: 1.5em;
+	font-weight: 500;
+}
+.feature.level_3 .title {
+	font-size: 1.3em;
+	font-weight: 400;
+}
+.feature .content {
+	
+}
+.sub-features {
+
+}
