@@ -17,6 +17,27 @@ function($scope, $location, FileSystem, Random) {
 		};
 	};
 
+	// Finds an item by the specified GUID in an array.
+	// If childKey is specified, this will recursive check
+	// child arrays
+	function findById(a, id, childKey) {
+		if (!a || !a.some) {
+			return null;
+		}
+		var item = null;
+		a.some(function(o) {
+			if (o.guid == id) {
+				item = o;
+				return true;
+			}
+			if (childKey && o[childKey]) {
+				item = findById(o[childKey], id, childKey);
+				return !!item;
+			}
+		});
+		return item;
+	}
+
 	// Recursively access each feature in a section;
 	// Until the callback returns false
 	function eachFeature(section, callback) {
@@ -64,12 +85,20 @@ function($scope, $location, FileSystem, Random) {
 		FileSystem.save(rd.title, '.json', angular.toJson(rd), 'txt');
 	};
 
-	$scope.deleteFeature = function(section, feature) {
+	$scope.deleteFeature = function(sectionId, featureId) {
+		var section = findById($scope.rd.sections, sectionId);
+		if (!section) {
+			console.error("Could not find section", sectionId);
+			return;
+		}
 		eachFeature(section, function(f, i, a) {
-			if (f.guid != feature.guid) {
+			if (f.guid != featureId) {
 				return true;
 			}
-			a.splice(i, 1);
+			$scope.$apply(function() {
+				a.splice(i, 1);
+				console.log("Deleting feature", f, "from section", section);
+			});
 			return false;
 		});
 	};

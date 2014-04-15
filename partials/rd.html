@@ -9,7 +9,7 @@
 	</div>
 	<div class="row" ng-show="rd">
 		<div class="col-md-3 fixed-nav">
-			<ul class="nav toc">
+			<ul class="nav toc" data-spy="affix">
 				<li><h2>Table of Contents</h2></li>
 				<li ng-repeat="section in rd.sections">
 					<a class="toc-section" scroller="section.guid">{{section.title}}</a>
@@ -29,7 +29,9 @@
 				<div class="features">
 					<div class="row feature level_0" ng-repeat="feature in section.features" ng-include="'partials/feature.html'" ng-init="$level = 0"></div>
 				</div>
-				<a ng-click="insertSection($index + 1)">New Section</a>
+				<div class="well slideout">
+					<a ng-click="insertSection($index + 1)"><icon type="plus" /> New Section</a>
+				</div>
 			</section>
 		</div>
 		<div class="col-md-2"></div>

@@ -79,4 +79,23 @@ return {
 			.addClass(attrs.class);
 		el.html(icon);
 	}
-}});
+}})
+
+.directive('modal', function() {
+return {
+	restrict: 'A',
+	scope: {
+		title: '@modalTitle',
+		body: '@modalBody',
+		action: '@modalAction',
+		click: '&modalClick'
+	},
+	transclude: true,
+	templateUrl: '/partials/modal.html',
+	link: function(scope, el, attrs) {
+		var popup = el.find('.modal');
+		$('body').append(popup.remove());
+		popup.on('click', '.btn-action', scope.click);
+	}
+}})
+;
