@@ -14,8 +14,23 @@ div[contenteditable]:focus {
 	border: solid 1px #00c;
 }
 
+.doc-container {
+	margin-top: 4em; /* Make room for the nav */
+}
+
 
 /* Table of Contents */
+.nav-fixed {
+	position: fixed;
+	overflow-y: scroll;
+	height: 100%;
+}
+.doc-toc {
+	margin-left: 0.5em;
+}
+.doc-toc .nav > li > a {
+	padding: 5px 10px;
+}
 .toc ul {
 	margin: 0;
 	padding: 0;
@@ -25,16 +40,27 @@ div[contenteditable]:focus {
 	margin: 0;
 	padding: 0;
 }
+ul.sortable li a .draggable {
+	opacity: 0.2;
+}
+ul.sortable li a:hover .draggable,
+ul.sortable li a:active .draggable {
+	opacity: 1.0;
+}
 .toc-section {
 	font-weight: 600;
 	font-size: 1.2em;
 }
 .toc-feature {
 	font-size: 1em;
+	margin-left: 0.5em;
 }
 
 
 /* Sections and Features */
+.doc-body {
+
+}
 section {
 	padding-top: 2em;
 }
@@ -69,4 +95,22 @@ section {
 }
 .sub-features {
 
+}
+
+
+.slideout {
+	opacity: 0.2;
+	cursor: hand;
+}
+.slideout a {
+	width: 100%;
+	height: 20px;
+	display: block;
+	color: #999;
+}
+.slideout:hover {
+	opacity: 1.0;
+}
+.slideout:hover a {
+	color: #333;
 }

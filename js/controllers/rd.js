@@ -85,19 +85,14 @@ function($scope, $location, FileSystem, Random) {
 		FileSystem.save(rd.title, '.json', angular.toJson(rd), 'txt');
 	};
 
-	$scope.deleteFeature = function(sectionId, featureId) {
-		var section = findById($scope.rd.sections, sectionId);
-		if (!section) {
-			console.error("Could not find section", sectionId);
-			return;
-		}
+	$scope.deleteFeature = function(section, feature) {
 		eachFeature(section, function(f, i, a) {
-			if (f.guid != featureId) {
+			if (f.guid != feature.guid) {
 				return true;
 			}
 			$scope.$apply(function() {
 				a.splice(i, 1);
-				console.log("Deleting feature", f, "from section", section);
+				console.log("Deleted feature", f, "from section", section);
 			});
 			return false;
 		});

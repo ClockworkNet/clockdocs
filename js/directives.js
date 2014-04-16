@@ -26,6 +26,7 @@ return {
 	restrict: 'A',
 	link: function(scope, el, attrs) {
 		var targetId = null;
+		var padding = attrs.padding || 100;
 		var speed = attrs.scrollerSpeed || 1;
 		scope.$watch(attrs.scroller, function(value) {
 			targetId = value;
@@ -37,9 +38,10 @@ return {
 				console.error("Invalid scroller target id", targetId);
 				return false;
 			}
-			var distance = Math.abs(el.offset().top - offset.top);
+			var destination = offset.top - padding;
+			var distance = Math.abs(el.offset().top - destination);
 			var time = distance / speed;
-			$('body').animate({scrollTop: offset.top}, time, function() {
+			$('body').animate({scrollTop: destination}, time, function() {
 				targetEl.focus();
 				document.execCommand('selectAll', false, null);
 			});
@@ -96,6 +98,38 @@ return {
 		var popup = el.find('.modal');
 		$('body').append(popup.remove());
 		popup.on('click', '.btn-action', scope.click);
+	}
+}})
+
+.directive('sortable', function() {
+return {
+	restrict: 'C',
+	link: function(scope, el, attrs) {
+		var onStart = function(e, ui) {
+			console.log(e, ui);
+		};
+
+		var onUpdate = function(e, ui) {
+			console.log(e, ui);
+		};
+
+		var onStop = function(e, ui) {
+			console.log(e, ui);
+		};
+
+		$(el).sortable({
+			axis: attrs.sortAxis || 'y'
+			, cursorAt: { left: 5 }
+			, distance: 5
+			, forcePlaceholderSize: true
+			, placeholder: attrs.sortPlaceholder || 'placeholder'
+			, items: attrs.sortItems || '> *'
+			, scroll: true
+			, start: onStart
+			, sort: onSort
+			, update: onUpdate
+			, stop: onStop
+		});
 	}
 }})
 ;
