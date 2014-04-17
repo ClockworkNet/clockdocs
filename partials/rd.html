@@ -29,14 +29,14 @@
 		</div> <!-- /.doc-toc -->
 		<div class="col-md-8 doc-content">
 			<h1 ng-model="rd.title" contenteditable></h1>
-			<div class="well slideout">
+			<div class="well slideout animated">
 				<a ng-click="insertSection(0)"><icon type="th-large" /> New Section</a>
 			</div>
 			<section ng-repeat="section in rd.sections">
 				<div class="dropdown pull-left">
-					<a class="btn dropdown-toggle" data-toggle="dropdown"><icon type="list" /></a>
+					<a class="btn dropdown-toggle" data-toggle="dropdown"><icon type="chevron-right" /></a>
 					<ul class="dropdown-menu">
-						<li><a ng-click="insertFeature(section.features)"><icon type="plus" /> New Item</a></li>
+						<li><a ng-click="insertFeature(section.features)"><icon type="plus" /> New Feature</a></li>
 						<li class="divider"></li>
 						<li ng-repeat="ft in flagTypes"><a ng-click="insertFlag(section.flags, ft.type)"><icon type="flag" /> New {{ft.name}}</a></li>
 						<li class="divider"></li>

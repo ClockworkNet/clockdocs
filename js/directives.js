@@ -1,4 +1,4 @@
-angular.module('Clockdoc.Directives', [])
+angular.module('Clockdoc.Directives')
 
 // Adds angular binding to contenteditable elements
 .directive('contenteditable', function() {
@@ -76,13 +76,11 @@ return {
 .directive('icon', function() {
 return {
 	restrict: 'E',
-	link: function(scope, el, attrs) {
-		var type = attrs.type;
-		var icon = $('<span/>')
-			.addClass('glyphicon glyphicon-' + type)
-			.addClass(attrs.class);
-		el.html(icon);
-	}
+	scope: {
+		type: '@'
+		, css: '@class'
+	},
+	templateUrl: 'partials/icon.html'
 }})
 
 // Create a modal using a "modal" attribute on an element

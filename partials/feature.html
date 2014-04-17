@@ -1,14 +1,14 @@
 <div class="row">
 	<div class="feature-label">{{$label}}</div>
 	<div class="dropdown pull-left">
-		<a class="btn dropdown-toggle" data-toggle="dropdown"><icon type="list" /></a>
+		<a class="btn dropdown-toggle" data-toggle="dropdown"><icon type="chevron-right" /></a>
 		<ul class="dropdown-menu">
-			<li><a ng-click="insertFeature(feature.features)"><icon type="plus" /> New Child Item</a></li>
+			<li><a ng-click="insertFeature(feature.features)"><icon type="plus" /> New Child Feature</a></li>
 			<li class="divider"></li>
 			<li ng-repeat="ft in flagTypes"><a ng-click="insertFlag(feature.flags, ft.type)"><icon type="flag" /> New {{ft.name}}</a></li>
 			<li class="divider"></li>
-			<li><a exec="strikeThrough" exec-target="#{{feature.guid}}"><icon type="remove" /> Strike Item</a></li>
-			<li modal modal-click="deleteFeature(section, feature)" modal-title="Delete '{{feature.title}}'?" modal-body="Are you sure you want to delete '{{feature.title}}'?"><icon type="trash" /> Delete Item</li>
+			<li><a exec="strikeThrough" exec-target="#{{feature.guid}}"><icon type="remove" /> Strike Feature</a></li>
+			<li modal modal-click="deleteFeature(section, feature)" modal-title="Delete '{{feature.title}}'?" modal-body="Are you sure you want to delete '{{feature.title}}'?"><icon type="trash" /> Delete Feature</li>
 		</ul>
 	</div>
 	<div class="feature-title" contenteditable ng-model="feature.title" id="{{feature.guid}}"></div>

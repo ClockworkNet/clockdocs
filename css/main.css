@@ -1,16 +1,22 @@
 html {
 	overflow-y: auto;
 }
+body {
+	padding-bottom: 400px;
+}
+.animated {
+	-webkit-transition: all 0.2s ease-in;
+}
 
-div[contenteditable] {
+[contenteditable] {
 	margin: 1px;
 	padding: 0;
-	border: 1px transparent;
+	border: solid 1px #fff;
 }
-div[contenteditable]:hover {
+[contenteditable]:hover {
 	border: dashed 1px #ccc;
 }
-div[contenteditable]:focus {
+[contenteditable]:focus {
 	border: solid 1px #00c;
 }
 
@@ -45,6 +51,7 @@ ul.sortable li a .draggable {
 }
 ul.sortable li a:hover .draggable,
 ul.sortable li a:active .draggable {
+	-webkit-transition: all 0.2s ease-in;
 	opacity: 1.0;
 }
 .toc-section {
@@ -141,4 +148,18 @@ section {
 }
 .slideout:hover a {
 	color: #333;
+}
+
+/* Dropdown animations */
+.open > .dropdown-toggle .glyphicon {
+	-webkit-transform: rotate(90deg);
+}
+.dropdown-menu {
+	display: block;
+	-webkit-transform-origin: top;
+	-webkit-transition: all 0.2s ease-out;
+	-webkit-transform: scaleY(0);
+}
+.open > .dropdown-menu {
+	-webkit-transform: scaleY(1);
 }
