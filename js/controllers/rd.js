@@ -51,10 +51,13 @@ function($scope, $location, FileSystem, Random) {
 		};
 	};
 
+	var cache = {};
+
 	// Finds an item by the specified GUID in an array.
 	// If childKey is specified, this will recursive check
 	// child arrays
 	function findById(a, id, childKey) {
+		if (cache[id]) return cache[id];
 		if (!a || !a.some) {
 			return null;
 		}
@@ -69,6 +72,7 @@ function($scope, $location, FileSystem, Random) {
 				return !!item;
 			}
 		});
+		cache[id] = item;
 		return item;
 	};
 
@@ -128,6 +132,18 @@ function($scope, $location, FileSystem, Random) {
 		FileSystem.save(rd.title, 'json', angular.toJson(rd), 'txt');
 	};
 
+	$scope.deleteFlag = function(flags, index) {
+		$scope.$apply(function() {
+			flags.splice(index, 1);
+		});
+	};
+
+	$scope.deleteSection = function(index) {
+		$scope.$apply(function() {
+			$scope.rd.sections.splice(index, 1);
+		});
+	};
+
 	$scope.deleteFeature = function(section, feature) {
 		eachItem(section, 'features', function(f, i, a) {
 			if (f.guid != feature.guid) {
@@ -145,8 +161,12 @@ function($scope, $location, FileSystem, Random) {
 			console.trace("Invalid features collection", arguments);
 			return;
 		}
+		var feature = createFeature();
 		featureIndex = featureIndex || features.length + 1;
-		features.splice(featureIndex, 0, createFeature());
+		features.splice(featureIndex, 0, feature);
+
+		$('#' + feature.guid).focus();
+		document.execCommand('selectAll', false, null);
 	};
 
 	$scope.insertFlag = function(flags, type) {
@@ -161,5 +181,9 @@ function($scope, $location, FileSystem, Random) {
 		$scope.$apply(function() {
 			sortById(collection, guids);
 		});
+	};
+
+	$scope.print = function() {
+		window.print();
 	};
 }]);
