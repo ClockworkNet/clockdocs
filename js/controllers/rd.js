@@ -74,6 +74,7 @@ function($scope, $location, FileSystem, Random) {
 
 	// Sorts a collection by GUID
 	function sortById(a, ids) {
+		if (!ids) return;
 		a.sort(function(x, y) {
 			var xix = ids.indexOf(x.guid);
 			var yix = ids.indexOf(y.guid);
@@ -112,21 +113,19 @@ function($scope, $location, FileSystem, Random) {
 			],
 			flags: []
 		};
-		console.log("Created rd", $scope.rd);
 	};
 
 	$scope.open = function() {
 		FileSystem.open(['json'], function(contents, entry, progress) {
 			$scope.$apply(function() {
 				$scope.rd = angular.fromJson(contents);
-				console.log("Set rd", $scope.rd);
 			});
 		});
 	};
 
 	$scope.save = function() {
 		var rd = $scope.rd;
-		FileSystem.save(rd.title, '.json', angular.toJson(rd), 'txt');
+		FileSystem.save(rd.title, 'json', angular.toJson(rd), 'txt');
 	};
 
 	$scope.deleteFeature = function(section, feature) {
@@ -136,7 +135,6 @@ function($scope, $location, FileSystem, Random) {
 			}
 			$scope.$apply(function() {
 				a.splice(i, 1);
-				console.log("Deleted feature", f, "from section", section);
 			});
 			return false;
 		});
@@ -149,7 +147,6 @@ function($scope, $location, FileSystem, Random) {
 		}
 		featureIndex = featureIndex || features.length + 1;
 		features.splice(featureIndex, 0, createFeature());
-		console.log($scope.rd);
 	};
 
 	$scope.insertFlag = function(flags, type) {
@@ -158,7 +155,6 @@ function($scope, $location, FileSystem, Random) {
 
 	$scope.insertSection = function(sectionIndex) {
 		$scope.rd.sections.splice(sectionIndex, 0, createFeature('Untitled Section'));
-		console.log($scope.rd);
 	};
 
 	$scope.sortItems = function(collection, guids) {

@@ -1,4 +1,4 @@
-<div class="flags sortable" sort-on-update="sortItems(flags)" sort-key="guid" sort-handle=".handle">
+<div class="flags sortable" sort-on-update="sortItems(flags)" sort-items="div.flag" sort-handle=".handle">
 	<div ng-repeat="flag in flags" class="flag flag-{{flag.type}}" id="{{flag.guid}}" data-guid="{{flag.guid}}">
 		<div class="row">
 			<div class="col-md-3">

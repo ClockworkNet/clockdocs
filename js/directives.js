@@ -1,4 +1,5 @@
 angular.module('Clockdoc.Directives', [])
+
 // Adds angular binding to contenteditable elements
 .directive('contenteditable', function() {
 return {
@@ -19,6 +20,7 @@ return {
 		el.on('blur keyup change', update);
 	}
 }})
+
 // Adds a click event to an element that will scroll the window
 // to the specified target (and select all text)
 .directive('scroller', function() {
@@ -83,6 +85,7 @@ return {
 	}
 }})
 
+// Create a modal using a "modal" attribute on an element
 .directive('modal', function() {
 return {
 	restrict: 'A',
@@ -102,6 +105,7 @@ return {
 	}
 }})
 
+// Makes an element sortable
 .directive('sortable', function() {
 return {
 	restrict: 'C',
@@ -122,7 +126,9 @@ return {
 		var wrap = function(msg, func) {
 			return function(e, ui) {
 				var els = el.find(itemSelector);
-				var ids = els.map(function(i, o) {return $(o).data(itemKey)}).get();
+				var ids = els.map(function(i, o) {
+					return $(o).data(itemKey)
+				}).get();
 				func({guids: ids});
 			}
 		};

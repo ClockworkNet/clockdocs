@@ -74,26 +74,36 @@ section {
 	padding-top: 1em;
 	padding-left: 1em;
 }
+.feature .feature-label {
+	font-weight: 600;
+	font-size: 2em;
+	float: left;
+	margin-right: 16px;
+	color: #ccc;
+	background: #fafafa;
+	padding: 10px;
+	border-radius: 30px;
+}
 .feature.level_0 {
 	margin-top: 2em;
 }
-.feature.level_0 .title {
+.feature.level_0 .feature-title {
 	font-size: 2em;
 	font-weight: 600;
 }
-.feature.level_1 .title {
+.feature.level_1 .feature-title {
 	font-size: 1.8em;
 	font-style: italic;
 }
-.feature.level_2 .title {
+.feature.level_2 .feature-title {
 	font-size: 1.5em;
 	font-weight: 500;
 }
-.feature.level_3 .title {
+.feature.level_3 .feature-title {
 	font-size: 1.3em;
 	font-weight: 400;
 }
-.feature .content {
+.feature-content {
 	
 }
 .sub-features {
