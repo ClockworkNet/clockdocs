@@ -13,7 +13,7 @@
 		"clipboardRead",
 		"clipboardWrite",
 		"fileBrowserHandler",
-		{"fileSystem": ["write"]},
+		{"fileSystem": ["write", "retainEntries", "directory"]},
 		"identity",
 		"storage",
 		"syncFileSystem",

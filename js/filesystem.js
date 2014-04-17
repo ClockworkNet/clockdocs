@@ -49,7 +49,7 @@ return {
 				self.fire('error', e);
 			});
 		};
-		var args = {type: 'openFile'};
+		var args = {type: 'openWritableFile'};
 		if (extensions) args.accepts = [{extensions: extensions}];
 		chrome.fileSystem.chooseEntry(args, onOpen);
 	},

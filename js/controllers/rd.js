@@ -129,7 +129,7 @@ function($scope, $location, FileSystem, Random) {
 
 	$scope.save = function() {
 		var rd = $scope.rd;
-		FileSystem.save(rd.title, 'json', angular.toJson(rd), 'txt');
+		FileSystem.save(rd.title, 'json', angular.toJson(rd, true), 'txt');
 	};
 
 	$scope.deleteFlag = function(flags, index) {
