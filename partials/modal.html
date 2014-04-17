@@ -11,7 +11,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary btn-action" data-dismiss="modal">{{action || 'Confirm'}}</button>
+				<button type="button" class="btn btn-{{actionType || 'danger'}} btn-action" data-dismiss="modal">{{action || 'Confirm'}}</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->

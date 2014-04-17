@@ -74,6 +74,9 @@ section {
 	padding-top: 1em;
 	padding-left: 1em;
 }
+.feature.level_0 {
+	margin-top: 2em;
+}
 .feature.level_0 .title {
 	font-size: 2em;
 	font-weight: 600;
@@ -95,6 +98,21 @@ section {
 }
 .sub-features {
 
+}
+
+
+/* Flags */
+.flag-title {
+	font-weight: 600;
+	display: block;
+	text-align: right;
+}
+.flag-title:after {
+	content: ':';
+}
+.flag-content {
+	display: block;
+	margin-left: 1em;
 }
 
 

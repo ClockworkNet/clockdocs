@@ -1,4 +1,4 @@
 <a class="toc-feature" scroller="feature.guid"><icon type="move" class="draggable" /> {{feature.title | truncate:30}}</a>
-<ul class="nav nav-stacked sortable" ng-show="feature.features">
-	<li ng-repeat="feature in feature.features" ng-include="'partials/toc.html'"></li>
+<ul class="nav nav-stacked sortable" sort-on-update="sortItems(feature.features, guids)">
+	<li ng-repeat="feature in feature.features" ng-include="'partials/toc.html'" data-guid="{{feature.guid}}"></li>
 </ul>

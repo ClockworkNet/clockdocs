@@ -15,13 +15,15 @@
 		{
 			"title": "Definitions and Conventions",
 			"guid": "definitions_and_conventions",
-			"features": [
+			"flags": [
 				{
 					"title": "Active Media Manager",
+					"type": "definition",
 					"guid": "AMM",
 					"content": "The **AMM** is Clockwork's content management system, which will be used for ongoing management of the client's web site."
 				}
-			]
+			],
+			"features": []
 		},
 		{
 			"title": "Introduction",

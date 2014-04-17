@@ -17,11 +17,11 @@
 		<div class="col-md-3 doc-toc">
 			<div class="nav-fixed">
 				<h2>Table of Contents</h2>
-				<ul class="nav toc sortable">
-					<li ng-repeat="section in rd.sections">
+				<ul class="nav toc sortable" sort-on-update="sortItems(rd.sections, guids)">
+					<li ng-repeat="section in rd.sections" data-guid="{{section.guid}}">
 						<a class="toc-section" scroller="section.guid"><icon type="move" class="draggable" /> {{section.title}}</a>
-						<ul class="nav nav-stacked sortable">
-							<li ng-repeat="feature in section.features" ng-include="'partials/toc.html'"></li>
+						<ul class="nav nav-stacked sortable" sort-on-update="sortItems(section.features, guids)">
+							<li ng-repeat="feature in section.features" ng-include="'partials/toc.html'" data-guid="{{feature.guid}}"></li>
 						</ul>
 					</li>
 				</ul>
@@ -33,17 +33,25 @@
 				<a ng-click="insertSection(0)"><icon type="th-large" /> New Section</a>
 			</div>
 			<section ng-repeat="section in rd.sections">
+				<div class="dropdown pull-left">
+					<a class="btn dropdown-toggle" data-toggle="dropdown"><icon type="list" /></a>
+					<ul class="dropdown-menu">
+						<li><a ng-click="insertFeature(section.features)"><icon type="plus" /> New Item</a></li>
+						<li class="divider"></li>
+						<li ng-repeat="ft in flagTypes"><a ng-click="insertFlag(section.flags, ft.type)"><icon type="flag" /> New {{ft.name}}</a></li>
+						<li class="divider"></li>
+						<li><a ng-click="insertSection($index + 1)"><icon type="th-large" /> New Section</a></li>
+						<li class="divider"></li>
+						<li modal modal-click="deleteSection($index)" modal-title="Delete '{{section.title}}'?" modal-body="Are you sure you want to delete '{{section.title}}'?"><icon type="trash" /> Delete Section</li>
+					</ul>
+				</div>
 				<div class="section-title" contenteditable id="{{section.guid}}" ng-model="section.title"></div>
 				<div class="section-content" contenteditable ng-model="section.content"></div>
-				<div class="well slideout">
-					<a ng-click="insertFeature(section.features, 0)"><icon type="th" /> New Item in "{{section.title}}"</a>
-				</div>
+				<div class="flags" ng-include="'partials/flags.html'" ng-init="flags = section.flags" />
 				<div class="features">
 					<div class="row feature level_0" ng-repeat="feature in section.features" ng-include="'partials/feature.html'" ng-init="$level = 0"></div>
 				</div>
-				<div class="well slideout">
-					<a ng-click="insertSection($index + 1)"><icon type="th-large" /> New Section after "{{section.title}}"</a>
-				</div>
+				<hr />
 			</section>
 		</div> <!-- /.doc-content -->
 		<div class="col-md-1 doc-gutter"></div>

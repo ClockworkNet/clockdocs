@@ -90,6 +90,7 @@ return {
 		title: '@modalTitle',
 		body: '@modalBody',
 		action: '@modalAction',
+		actionType: '@modalActionType',
 		click: '&modalClick'
 	},
 	transclude: true,
@@ -104,31 +105,42 @@ return {
 .directive('sortable', function() {
 return {
 	restrict: 'C',
+	scope: {
+		key: '@sortKey'
+		, axis: '@sortAxis'
+		, handle: '@sortHandle'
+		, items: '@sortItems'
+		, onStart: '&sortOnStart'
+		, onUpdate: '&sortOnUpdate'
+		, onStop: '&sortOnStop'
+	},
 	link: function(scope, el, attrs) {
-		var onStart = function(e, ui) {
-			console.log(e, ui);
-		};
+		var itemSelector = scope.items || '> *';
+		var itemKey      = scope.key   || 'guid';
+		var axis         = scope.axis  || 'y';
 
-		var onUpdate = function(e, ui) {
-			console.log(e, ui);
-		};
-
-		var onStop = function(e, ui) {
-			console.log(e, ui);
+		var wrap = function(msg, func) {
+			return function(e, ui) {
+				var els = el.find(itemSelector);
+				var ids = els.map(function(i, o) {return $(o).data(itemKey)}).get();
+				func({guids: ids});
+			}
 		};
 
 		$(el).sortable({
-			axis: attrs.sortAxis || 'y'
-			, cursorAt: { left: 5 }
-			, distance: 5
-			, forcePlaceholderSize: true
-			, placeholder: attrs.sortPlaceholder || 'placeholder'
-			, items: attrs.sortItems || '> *'
-			, scroll: true
-			, start: onStart
-			, sort: onSort
-			, update: onUpdate
-			, stop: onStop
+			axis       : axis 
+			, distance : 5
+
+			, forcePlaceholderSize : true
+			, placeholder          : attrs.sortPlaceholder || 'placeholder'
+
+			, items  : itemSelector
+			, scroll : true
+			, handle : scope.handle
+
+			, start  : wrap('drag start', scope.onStart)
+			, update : wrap('drag update', scope.onUpdate)
+			, stop   : wrap('drag stop', scope.onStop)
 		});
 	}
 }})

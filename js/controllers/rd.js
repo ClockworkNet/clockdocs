@@ -2,6 +2,24 @@ angular.module('Clockdoc.Controllers')
 .controller('RdCtrl', ['$scope', '$location', 'FileSystem', 'Random',
 function($scope, $location, FileSystem, Random) {
 
+	var flagTypes = $scope.flagTypes = [
+		{
+			type: 'definition',
+			name: 'Definition',
+			title: ''
+		},
+		{
+			type: 'open_question',
+			name: 'Open Question',
+			title: 'Open Question'
+		},
+		{
+			type: 'assumption',
+			name: 'Assumption',
+			title: 'Assumption'
+		}
+	];
+
 	FileSystem.on('error', function(e) {
 		console.error('File system error', e);
 	});
@@ -14,6 +32,22 @@ function($scope, $location, FileSystem, Random) {
 			'content': '',
 			'features': [],
 			'flags': []
+		};
+	};
+
+	function createFlag(type) {
+		var flag = {};
+		flagTypes.some(function(f) {
+			if (f.type == type) {
+				flag = f;
+				return true;
+			}
+		});
+		return {
+			'title': flag.title,
+			'guid': Random.id(),
+			'type': flag.type,
+			'content': ''
 		};
 	};
 
@@ -36,17 +70,27 @@ function($scope, $location, FileSystem, Random) {
 			}
 		});
 		return item;
-	}
+	};
+
+	// Sorts a collection by GUID
+	function sortById(a, ids) {
+		a.sort(function(x, y) {
+			var xix = ids.indexOf(x.guid);
+			var yix = ids.indexOf(y.guid);
+			return xix - yix;
+		});
+	};
 
 	// Recursively access each feature in a section;
 	// Until the callback returns false
-	function eachFeature(section, callback) {
-		section.features.some(function(f, i) {
-			var go = callback(f, i, section.features);
+	function eachItem(section, key, callback) {
+		if (!section[key] || !section[key].some) return;
+		section[key].some(function(f, i) {
+			var go = callback(f, i, section[key]);
 			if (go === false) {
 				return true;
 			}
-			eachFeature(f, callback);
+			eachItem(f, key, callback);
 		});
 	}
 
@@ -86,7 +130,7 @@ function($scope, $location, FileSystem, Random) {
 	};
 
 	$scope.deleteFeature = function(section, feature) {
-		eachFeature(section, function(f, i, a) {
+		eachItem(section, 'features', function(f, i, a) {
 			if (f.guid != feature.guid) {
 				return true;
 			}
@@ -108,9 +152,18 @@ function($scope, $location, FileSystem, Random) {
 		console.log($scope.rd);
 	};
 
+	$scope.insertFlag = function(flags, type) {
+		flags.push(createFlag(type));
+	};
+
 	$scope.insertSection = function(sectionIndex) {
 		$scope.rd.sections.splice(sectionIndex, 0, createFeature('Untitled Section'));
 		console.log($scope.rd);
 	};
 
+	$scope.sortItems = function(collection, guids) {
+		$scope.$apply(function() {
+			sortById(collection, guids);
+		});
+	};
 }]);

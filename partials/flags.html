@@ -1,0 +1,19 @@
+<div class="flags sortable" sort-on-update="sortItems(flags)" sort-key="guid" sort-handle=".handle">
+	<div ng-repeat="flag in flags" class="flag flag-{{flag.type}}" id="{{flag.guid}}" data-guid="{{flag.guid}}">
+		<div class="row">
+			<div class="col-md-3">
+				<div class="dropdown pull-left">
+					<a class="btn dropdown-toggle" data-toggle="dropdown"><icon type="list" /></a>
+					<ul class="dropdown-menu">
+						<li><a class="handle pull-left"><icon type="move draggable" /> Move Item</a></li>
+						<li modal modal-title="Confirm Delete of '{{flag.title}}'?" modal-body="Are you sure you want to delete '{{flag.title}}'?" modal-action="Delete" modal-click="deleteFlag(flags, $index)"><icon type="trash" /> Delete Item</li>
+					</ul>
+				</div>
+				<div class="flag-title" contenteditable ng-model="flag.title"></div>
+			</div>
+			<div class="col-md-9">
+				<div class="flag-content" contenteditable ng-model="flag.content"></div>
+			</div>
+		</div>
+	</div>
+</div>
