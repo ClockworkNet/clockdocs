@@ -1,3 +1,6 @@
+/* =============================================================================
+   Base
+   ========================================================================== */
 html {
 	overflow-y: auto;
 }
@@ -17,16 +20,33 @@ body {
 	margin: 0;
 }
 
+.box-emp {
+  background: rgb(248, 248, 248);
+  min-height: 100px;
+  padding: 15px 0;
+  margin: 0 0 15px 0;
+  box-shadow: 0px 1px 5px -2px rgba(0, 0, 0, 0.32);
+  min-width: 275px;
+}
+
+.doc-content {
+	margin-top: 20px;
+}
+
 /* =============================================================================
    Typography
    ========================================================================== */
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, .navbar-brand {
     font-family: 'BrandonGrotesqueBlack', Helvetica, sans-serif;
     text-transform: uppercase;
     color: #1E1E1E;
     line-height: 1em;
     font-weight: normal;
+}
+
+.navbar-default .navbar-brand {
+	color: #D6D6D6;
 }
 
 .header-inverse h1, 
@@ -53,7 +73,6 @@ h1, h2, h3, h4, h5, h6 {
 h1 {
     font-size: 3.5em; /* 40px */
     line-height: 1.1em;
-   /* margin: .5em 0 .25em 0;*/
 }
 
 h2 {
@@ -64,7 +83,8 @@ h2 {
 
 .box-emp h2 {
 	font-size: 20px;
-	color: #707070
+	color: #707070;
+	padding: 0 0 0 20px;
 }
 
 h4 {
@@ -79,23 +99,25 @@ h3 {
     margin: 1.2em 0 .6em 0;
 }
 
-
-
-
-
 .animated {
 	-webkit-transition: all 0.2s ease-in;
 }
 
-/* Editors */
+/* =============================================================================
+   Editors
+   ========================================================================== */
+
 [cw-editable], .ta-editor {
 	margin: 1px;
-	padding: 0;
-	border: solid 1px #fff;
+	border: solid 1px #FFF;
+	padding-left: 0;
+	padding-right: 0;
 }
+
 [cw-editable]:hover, .ta-editor:hover {
 	border: dashed 1px #ccc;
 }
+
 [cw-editable]:focus, .ta-editor:focus {
 	border: solid 1px #00c;
 }
@@ -116,11 +138,9 @@ h3 {
 	height: 30px;
 }
 
-
 .doc-container {
 	margin-top: 110px; /* Make room for the nav */
 }
-
 .counted {
 	counter-reset: item;
 }
@@ -134,7 +154,10 @@ h3 {
 }
 
 
-/* Table of Contents */
+/* =============================================================================
+   TOC
+   ========================================================================== */
+
 .nav-fixed {
 	position: fixed;
 	overflow-y: scroll;
@@ -145,7 +168,11 @@ h3 {
 	margin-left: 0.5em;
 }
 .doc-toc .nav > li > a {
-	padding: 5px 10px;
+	padding: 5px 30px 5px 20px;
+	display: inline-block;
+	width: 100%;
+	box-sizing: border-box;
+	cursor: pointer;
 }
 .toc ul {
 	margin: 0;
@@ -157,7 +184,13 @@ h3 {
 	padding: 0;
 }
 ul.sortable li a .draggable {
-	opacity: 0.2;
+	opacity: 0;
+	position: absolute;
+	right: 2px;
+	left: auto;
+	font-size: 16px;
+	top: 5px;
+	color: #DBDBDB;
 }
 ul.sortable li a:hover .draggable,
 ul.sortable li a:active .draggable {
@@ -170,11 +203,13 @@ ul.sortable li a:active .draggable {
 }
 .toc-feature {
 	font-size: 1em;
-	margin-left: 0.5em;
 }
 
 
-/* Tags */
+/* =============================================================================
+   Tags
+   ========================================================================== */
+
 .feature-tags li {
 	display: inline-block;
 	padding-right: 1em;
@@ -196,24 +231,22 @@ ul.sortable li a:active .draggable {
 }
 
 
-/* Sections and Features */
-.doc-body {
+/* =============================================================================
+   Sections and Features
+   ========================================================================== */
 
-}
 section {
 	padding-top: 2em;
 }
+
 .section-title {
 	font-family: 'BrandonGrotesqueRegular', Helvetica, sans-serif;
 	font-size: 3em;
 	margin-bottom: .25em;
 }
-.features {
 
-}
 .feature {
 	padding-top: 1em;
-	
 }
 .feature .feature-label {
 	font-weight: 600;
@@ -253,7 +286,10 @@ section {
 }
 
 
-/* Flags */
+/* =============================================================================
+   Flags
+   ========================================================================== */
+
 .flag-title {
 	font-family: "ProximaNovaCondSemiBold",Helvetica,Arial,sans-serif;
 	display: block;
@@ -285,7 +321,10 @@ section {
 	color: #333;
 }
 
-/* Dropdown animations */
+/* =============================================================================
+   Dropdown animations
+   ========================================================================== */
+
 .open > .dropdown-toggle .glyphicon {
 	-webkit-transform: rotate(90deg);
 }
@@ -304,7 +343,10 @@ section {
 }
 
 
-/* Header */
+/* =============================================================================
+   Header
+   ========================================================================== */
+
 .doc-header {
 	background: #333;
 	margin-top: 50px;
@@ -325,21 +367,22 @@ color: #707070;
     font-size: 35px; 
     margin: 3px 10px 10px 10px; color: #707070; position: absolute; top: 8px; 
     left: 20px;
-
 }
 
-.box-emp {
-  background: rgb(248, 248, 248);
-  min-height: 100px;
-  padding: 15px;
-  margin: 0 0 15px 0;
-  box-shadow: 0px 1px 5px -2px rgba(0, 0, 0, 0.32);
+
+
+/* =============================================================================
+   Bootstratp overrides
+   ========================================================================== */
+.form-control {
+	height: auto;
+	min-height: 34px;
 }
 
-.doc-content {
-	margin-top: 20px;
-	margin-left: 25px;
-}
+
+/* =============================================================================
+   Print styles
+   ========================================================================== */
 
 
 @media print {
@@ -358,6 +401,7 @@ color: #707070;
   	position: relative;
   	float: none;
   	width: 100%;
+  	height: auto;
   }
 
   .doc-container {
@@ -369,10 +413,11 @@ color: #707070;
 	line-height: 1em;
   }
 
+  .toc-feature {
+  	color: #9E9E9E !important
+  }
+
   .doc-toc .nav > li > a {
   	padding-left: 0;
   }
 }
-
-
-
