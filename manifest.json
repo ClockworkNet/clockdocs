@@ -10,6 +10,7 @@
 	},
 	"offline_enabled": true,
 	"permissions": [
+		"nativeMessaging",
 		"clipboardRead",
 		"clipboardWrite",
 		"fileBrowserHandler",

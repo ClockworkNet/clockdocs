@@ -8,6 +8,14 @@
 				<ul class="nav navbar-nav">
 					<li><a ng-click="create()"><icon type="plus-sign" /> Create</a></li>
 					<li><a ng-click="open()"><icon type="open" /> Open</a></li>
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown"><icon type="cloud" /> SVN<span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#svn-form"><icon type="cloud-download" /> Checkout</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="#"><icon type="refresh" /> Update</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="#"><icon type="cloud-upload" /> Commit</a></li>
+						</ul>
+					</li>
 					<li ng-show="rd"><a ng-click="save()"><icon type="save" /> Save</a></li>
 					<li ng-show="rd"><a ng-click="print()"><icon type="print" /> Print</a></li>
 				</ul>
@@ -58,3 +66,4 @@
 		<div class="col-md-1 doc-gutter"></div>
 	</div>
 </div>
+<div id="svn" class="svn" ng-include="'partials/svn.html'"></div>

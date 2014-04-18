@@ -1,6 +1,6 @@
 angular.module('Clockdoc.Controllers')
-.controller('RdCtrl', ['$scope', '$location', 'FileSystem', 'Random',
-function($scope, $location, FileSystem, Random) {
+.controller('RdCtrl', ['$scope', '$location', 'FileSystem', 'Random', 'Svn',
+function($scope, $location, FileSystem, Random, Svn) {
 
 	var flagTypes = $scope.flagTypes = [
 		{
@@ -107,6 +107,7 @@ function($scope, $location, FileSystem, Random) {
 			author: 'Anonymous',
 			created: new Date(),
 			guid: Random.id(),
+			svn: null,
 			revisions: [],
 			sections: [
 				createFeature('Definitions and Conventions'),
@@ -124,6 +125,16 @@ function($scope, $location, FileSystem, Random) {
 			$scope.$apply(function() {
 				$scope.rd = angular.fromJson(contents);
 			});
+		});
+	};
+
+	$scope.checkout = function() {
+		var svn_path = $scope.rd.svn;
+		Svn.checkout(svn_path, function(contents) {
+			$scope.$apply(function() {
+				$scope.rd = angular.fromJson(contents);
+			});
+			console.log($scopt.rd);
 		});
 	};
 
