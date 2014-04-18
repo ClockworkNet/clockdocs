@@ -40,7 +40,7 @@
 			</div> <!-- /.fixed-nav -->
 		</div> <!-- /.doc-toc -->
 		<div class="col-md-8 doc-content">
-			<h1 ng-model="rd.title" contenteditable></h1>
+			<h1 ng-model="rd.title" cw-editable></h1>
 			<div class="well slideout animated">
 				<a ng-click="insertSection(0)"><icon type="th-large" /> New Section</a>
 			</div>
@@ -57,7 +57,7 @@
 						<li modal modal-click="deleteSection($index)" modal-title="Delete '{{section.title}}'?" modal-body="Are you sure you want to delete '{{section.title}}'?"><icon type="trash" /> Delete Section</li>
 					</ul>
 				</div>
-				<div class="section-title" contenteditable id="{{section.guid}}" ng-model="section.title"></div>
+				<div class="section-title" cw-editable id="{{section.guid}}" ng-model="section.title"></div>
 				<div class="section-content" text-angular ng-model="section.content"></div>
 				<div class="flags" ng-include="'partials/flags.html'" ng-init="flags = section.flags" />
 				<div class="features counted">

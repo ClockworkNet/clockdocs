@@ -17,7 +17,7 @@
 			<li modal modal-click="deleteFeature(section, feature)" modal-title="Delete '{{feature.title}}'?" modal-body="Are you sure you want to delete '{{feature.title}}'?"><icon type="trash" /> Delete Feature</li>
 		</ul>
 	</div>
-	<div class="feature-title counted-item" contenteditable ng-model="feature.title" id="{{feature.guid}}"></div>
+	<div class="feature-title counted-item" cw-editable ng-model="feature.title" id="{{feature.guid}}"></div>
 	<div class="feature-tags">
 		<ul>
 			<li ng-repeat="tag in feature.tags">

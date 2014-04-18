@@ -83,22 +83,29 @@ h3 {
 }
 
 /* Editors */
-[contenteditable] {
+[cw-editable], .ta-editor {
 	margin: 1px;
 	padding: 0;
 	border: solid 1px #fff;
 }
-[contenteditable]:hover {
+[cw-editable]:hover, .ta-editor:hover {
 	border: dashed 1px #ccc;
 }
-[contenteditable]:focus {
+[cw-editable]:focus, .ta-editor:focus {
 	border: solid 1px #00c;
 }
-.ta-toolbar {
+
+.ta-root .ta-toolbar {
 	display: none;
 }
-.ta-toolbar.focussed {
+.ta-root.focussed .ta-toolbar {
 	display: block;
+}
+.ta-root.focussed .ta-editor {
+	height: 80%;
+}
+.ta-toolbar button {
+	height: 30px;
 }
 
 

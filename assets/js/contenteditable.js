@@ -1,9 +1,6 @@
 angular.module('Clockdoc.Directives')
 // Adds angular binding to contenteditable elements
-.directive('contenteditable', function() {
-	var formatHtml = function(html, e) {
-		return html;
-	};
+.directive('cwEditable', function() {
 	return {
 		restrict: 'A',
 		require: '?ngModel',
@@ -13,11 +10,8 @@ angular.module('Clockdoc.Directives')
 				el.html(ngModel.$viewValue || '');
 			};
 			var update = function(e) {
-				var html = formatHtml(el.html(), e);
-				el.html(html);
-
 				$scope.$apply(function() {
-					ngModel.$setViewValue(html);
+					ngModel.$setViewValue(el.html());
 				});
 			};
 			el.on('blur keyup change', update);
@@ -28,19 +22,27 @@ angular.module('Clockdoc.Directives')
 // Configure the text-angular directive
 angular.module('textAngular')
 .config(function($provide){
+	// Create some new options
 	$provide.decorator('taOptions', ['taRegisterTool', '$delegate', function(taRegisterTool, taOptions) {
+		var wrap = function(cmd) {
+			return function() {
+				this.$editor().wrapSelection(cmd);
+			}
+		}
+
 		taRegisterTool('subscript', {
 			iconclass: 'fa fa-subscript',
-			actions: function() {
-				this.$editor().wrapSelection('subscript');
-			}
+			action: wrap('subscript')
 		});
 
 		taRegisterTool('superscript', {
 			iconclass: 'fa fa-superscript',
-			actions: function() {
-				this.$editor().wrapSelection('superscript');
-			}
+			action: wrap('superscript')
+		});
+
+		taRegisterTool('strikethrough', {
+			iconclass: 'fa fa-strikethrough',
+			action: wrap('strikethrough')
 		});
 
 		taOptions.toolbar = [
@@ -53,6 +55,15 @@ angular.module('textAngular')
 		];
 
 		return taOptions;
+	}]);
+
+	// Updates some of the classes used for the buttons
+	$provide.decorator('taTools', ['$delegate', function(taTools) {
+
+		taTools.html.iconclass = 'fa fa-code';
+		delete taTools.html.buttontext;
+
+		return taTools;
 	}]);
 });
 
