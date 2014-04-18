@@ -1,4 +1,4 @@
-<a class="toc-feature counted-item" scroller="feature.guid"><icon type="move" class="draggable" />{{feature.title | truncate:30}}</a>
+<a class="toc-feature counted-item" cw-scroller="feature.guid"><cw-icon type="move" class="draggable"></cw-icon> {{feature.title | truncate:30}}</a>
 <ol class="nav nav-stacked sortable counted" sort-on-update="sortItems(feature.features, guids)">
 	<li ng-repeat="feature in feature.features" ng-include="'partials/toc.html'" data-guid="{{feature.guid}}"></li>
 </ol>

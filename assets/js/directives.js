@@ -2,14 +2,14 @@ angular.module('Clockdoc.Directives')
 
 // Adds a click event to an element that will scroll the window
 // to the specified target (and select all text)
-.directive('scroller', function() {
+.directive('cwScroller', function() {
 return {
 	restrict: 'A',
 	link: function(scope, el, attrs) {
 		var targetId = null;
 		var padding = attrs.padding || 100;
-		var speed = attrs.scrollerSpeed || 1;
-		scope.$watch(attrs.scroller, function(value) {
+		var speed = attrs.cwScrollerSpeed || 1;
+		scope.$watch(attrs.cwScroller, function(value) {
 			targetId = value;
 		});
 		var scroll = function() {
@@ -52,7 +52,7 @@ return {
 
 }})
 // Wrapper for injecting icons into the interface
-.directive('icon', function() {
+.directive('cwIcon', function() {
 return {
 	restrict: 'E',
 	scope: {

@@ -96,7 +96,7 @@
             {
               "title": "Text Formatting",
               "guid": "rot4ujmzib3o22jx",
-              "content": "The tool will support marking portions of text as bold, italic, and strikethrough.",
+              "content": "<p>The tool will support marking portions of text as <b>bold</b>, <i>italic</i>, and <strike>strikethrough</strike>.</p><p>Additionally, the tool will allow the following.</p><p></p><ul><li>Unordered lists.</li></ul><div><ol><li>Ordered lists.</li></ol></div><p></p>",
               "features": [],
               "flags": []
             },

@@ -1,20 +1,20 @@
 <div class="row">
 	<div class="dropdown pull-left">
-		<a class="btn dropdown-toggle" data-toggle="dropdown"><icon type="chevron-right" /></a>
+		<a class="btn dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></a>
 		<ul class="dropdown-menu">
-			<li><a ng-click="insertFeature(feature.features)"><icon type="plus" /> New Child Feature</a></li>
+			<li><a ng-click="insertFeature(feature.features)"><cw-icon type="plus"></cw-icon> New Child Feature</a></li>
 
 			<li class="divider"></li>
-			<li ng-repeat="ft in flagTypes"><a ng-click="insertFlag(feature.flags, ft.type)"><icon type="flag" /> New {{ft.name}}</a></li>
+			<li ng-repeat="ft in flagTypes"><a ng-click="insertFlag(feature.flags, ft.type)"><cw-icon type="flag"></cw-icon> New {{ft.name}}</a></li>
 
 			<li class="divider"></li>
 			<li ng-repeat="tag in availableTags" ng-hide="featureHasTag(feature, tag)">
-				<a ng-click="addTag(feature, tag)"><icon type="tag" /> Mark <strong>{{tag}}</strong></a>
+				<a ng-click="addTag(feature, tag)"><cw-icon type="tag"></cw-icon> Mark <strong>{{tag}}</strong></a>
 			</li>
 
 			<li class="divider"></li>
-			<li><a exec="strikeThrough" exec-target="#{{feature.guid}}"><icon type="remove" /> Strike Feature</a></li>
-			<li modal modal-click="deleteFeature(section, feature)" modal-title="Delete '{{feature.title}}'?" modal-body="Are you sure you want to delete '{{feature.title}}'?"><icon type="trash" /> Delete Feature</li>
+			<li><a exec="strikeThrough" exec-target="#{{feature.guid}}"><cw-icon type="remove"></cw-icon> Strike Feature</a></li>
+			<li modal modal-click="deleteFeature(section, feature)" modal-title="Delete '{{feature.title}}'?" modal-body="Are you sure you want to delete '{{feature.title}}'?"><cw-icon type="trash"></cw-icon> Delete Feature</li>
 		</ul>
 	</div>
 	<div class="feature-title counted-item" cw-editable ng-model="feature.title" id="{{feature.guid}}"></div>

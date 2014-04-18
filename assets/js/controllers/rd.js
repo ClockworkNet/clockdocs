@@ -2,6 +2,8 @@ angular.module('Clockdoc.Controllers')
 .controller('RdCtrl', ['$scope', '$location', 'FileSystem', 'Random',
 function($scope, $location, FileSystem, Random) {
 
+	$scope.version = '1.1';
+
 	var flagTypes = $scope.flagTypes = [
 		{
 			type: 'definition',
