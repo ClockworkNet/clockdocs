@@ -76,6 +76,28 @@ ul.sortable li a:active .draggable {
 }
 
 
+/* Tags */
+.feature-tags li {
+	display: inline-block;
+	padding-right: 1em;
+	margin-right: 2em;
+	font-weight: 600;
+}
+.feature-tags .close {
+	float: left;
+	padding-right: 5px;
+}
+.feature-tag  {
+	white-space: nowrap;
+}
+.feature-tag.future-phase {
+	color: green;
+}
+.feature-tag.out-of-scope {
+	color: red;
+}
+
+
 /* Sections and Features */
 .doc-body {
 

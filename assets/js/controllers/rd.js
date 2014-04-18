@@ -20,9 +20,24 @@ function($scope, $location, FileSystem, Random) {
 		}
 	];
 
+	$scope.availableTags = [
+		"Out of Scope", 
+		"Future Phase"
+	];
+
 	FileSystem.on('error', function(e) {
-		console.error('File system error', e);
+		return warn("Filesystem Error", "There was an error accessing the file system.", e);
 	});
+
+	function warn(title, msg, type) {
+		type = type || 'danger';
+		$scope.alert = {
+			type: type,
+			title: title,
+			content: msg
+		};
+		$('.alert').alert();
+	}
 
 	function createFeature(title) {
 		title = title || 'Untitled';
@@ -31,7 +46,8 @@ function($scope, $location, FileSystem, Random) {
 			'guid': Random.id(),
 			'content': '',
 			'features': [],
-			'flags': []
+			'flags': [],
+			'tags': []
 		};
 	};
 
@@ -102,6 +118,7 @@ function($scope, $location, FileSystem, Random) {
 
 	$scope.rd = null;
 
+	/// Filesystem Methods ///
 	$scope.create = function() {
 		$scope.rd = {
 			title: 'Untitled Requirements Document',
@@ -122,6 +139,7 @@ function($scope, $location, FileSystem, Random) {
 
 	$scope.open = function() {
 		FileSystem.open(['json'], function(contents, entry, progress) {
+			if (!contents) return;
 			$scope.$apply(function() {
 				$scope.rd = angular.fromJson(contents);
 			});
@@ -133,10 +151,9 @@ function($scope, $location, FileSystem, Random) {
 		FileSystem.save(rd.title, 'json', angular.toJson(rd, true), 'txt');
 	};
 
-	$scope.deleteFlag = function(flags, index) {
-		$scope.$apply(function() {
-			flags.splice(index, 1);
-		});
+	/// Section methods ///
+	$scope.insertSection = function(sectionIndex) {
+		$scope.rd.sections.splice(sectionIndex, 0, createFeature('Untitled Section'));
 	};
 
 	$scope.deleteSection = function(index) {
@@ -145,6 +162,7 @@ function($scope, $location, FileSystem, Random) {
 		});
 	};
 
+	/// Feature methods ///
 	$scope.deleteFeature = function(section, feature) {
 		eachItem(section, 'features', function(f, i, a) {
 			if (f.guid != feature.guid) {
@@ -160,7 +178,7 @@ function($scope, $location, FileSystem, Random) {
 	$scope.insertFeature = function(features, featureIndex) {
 		if (!features) {
 			console.trace("Invalid features collection", arguments);
-			return;
+			return warn("Error adding feature", "The 'features' collection was empty. You may have an invalid file.");
 		}
 		var feature = createFeature();
 		featureIndex = featureIndex || features.length + 1;
@@ -170,12 +188,45 @@ function($scope, $location, FileSystem, Random) {
 		document.execCommand('selectAll', false, null);
 	};
 
+	/// Tag methods ///
+	var featureHasTag = $scope.featureHasTag = function(feature, tag) {
+		return feature.tags && feature.tags.indexOf(tag) >= 0;
+	};
+
+	$scope.toggleTag = function(feature, tag) {
+		if (featureHasTag(feature, tag)) {
+			removeTag(feature, tag);
+		}
+		else {
+			addTag(feature, tag);
+		}
+	}
+
+	var addTag = $scope.addTag = function(feature, tag) {
+		if (!feature.tags) { 
+			feature.tags = [];
+		}
+		feature.tags.push(tag);
+	};
+
+	var removeTag = $scope.removeTag = function(feature, tag) {
+		feature.tags = feature.tags.filter(function(t) {
+			return tag != t;
+		});
+	};
+
+	/// Flag methods ///
 	$scope.insertFlag = function(flags, type) {
+		if (!flags) {
+			return warn("Error adding flag", "The 'flags' colleciton was empty.");
+		}
 		flags.push(createFlag(type));
 	};
 
-	$scope.insertSection = function(sectionIndex) {
-		$scope.rd.sections.splice(sectionIndex, 0, createFeature('Untitled Section'));
+	$scope.deleteFlag = function(flags, index) {
+		$scope.$apply(function() {
+			flags.splice(index, 1);
+		});
 	};
 
 	$scope.sortItems = function(collection, guids) {

@@ -12,6 +12,10 @@
 					<li ng-show="rd"><a ng-click="print()"><icon type="print" /> Print</a></li>
 				</ul>
 			</div> <!-- /.navbar-collapse -->
+			<div class="alert alert-{{alert.type}} alert-dismissable" ng-if="alert.content">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>	
+				<strong>{{alert.title}}</strong> {{alert.content}}
+			</div>
 		</div> <!-- /.container-fluid -->
 	</nav>
 	<div class="row doc-container" ng-show="rd">
