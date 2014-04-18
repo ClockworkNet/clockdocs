@@ -1,0 +1,110 @@
+{
+  "title": "Sample Client Requirements",
+  "client": "Client Name",
+  "project": "Project Name",
+  "guid": "project_requriement_doc_guid",
+  "revisions": [
+    {
+      "version": 0.1,
+      "date": "2014-01-01",
+      "notes": "Initial version",
+      "author": "AGB"
+    }
+  ],
+  "sections": [
+    {
+      "title": "Definitions and Conventions",
+      "guid": "definitions_and_conventions",
+      "flags": [
+        {
+          "title": "Active Media Manager",
+          "type": "definition",
+          "guid": "AMM",
+          "content": "The **AMM** is Clockwork's content management system, which will be used for ongoing management of the client's web site."
+        }
+      ],
+      "features": []
+    },
+    {
+      "title": "Introduction",
+      "guid": "introduction",
+      "content": "Introductory content"
+    },
+    {
+      "title": "Features",
+      "guid": "features",
+      "features": [
+        {
+          "title": "Feature Name",
+          "guid": "feature_name",
+          "content": "Feature description",
+          "flags": [
+            {
+              "title": "Open Question",
+              "type": "open_question",
+              "guid": "open_question_guid",
+              "content": "...."
+            }
+          ],
+          "features": [
+            {
+              "title": "Subfeature Name",
+              "guid": "subfeature_name",
+              "content": "Feature Definition",
+              "flags": [],
+              "features": [
+                {
+                  "title": "First Sub Subfeature Name",
+                  "guid": "first_sub_subfeature_name",
+                  "content": "First Sub Subfeature content",
+                  "flags": [],
+                  "features": []
+                },
+                {
+                  "title": "Second Sub Subfeature Name",
+                  "guid": "second_sub_subfeature_name",
+                  "content": "Second Sub Subfeature content",
+                  "flags": [],
+                  "features": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Another Feature Name",
+          "guid": "another_feature_name",
+          "content": "Another feature description",
+          "flags": [
+            {
+              "title": "Assumption",
+              "type": "assumption",
+              "guid": "assumption_1",
+              "content": "I'm assuming you get this right"
+            }
+          ],
+          "features": []
+        }
+      ]
+    },
+    {
+      "title": "Production",
+      "guid": "production",
+      "features": [
+        {
+          "title": "Production Feature Name",
+          "guid": "production_feature_name",
+          "content": "Production Feature Description",
+          "features": [
+            {
+              "title": "Production Subfeature Name",
+              "guid": "production_subfeature_name",
+              "content": "Production Feature Definition",
+              "features": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
