@@ -10,7 +10,14 @@
       "guid": "j10feq8myrju1gfsn",
       "content": "",
       "features": [],
-      "flags": []
+      "flags": [
+        {
+          "title": "Chrome Packaged App",
+          "guid": "qyw10gf8bh8229xko",
+          "type": "definition",
+          "content": "From <b>Google</b>: \"<span style=\"color: rgb(119, 119, 119); font-family: 'Open Sans', Arial, 'Lucida Grande', sans-serif; font-size: 13px; line-height: 24px;\">Chrome Apps deliver an experience as capable as a native app, but as safe as a web page. Just like web apps, Chrome Apps are written in HTML5, JavaScript, and CSS. But Chrome Apps look and behave like native apps, and they have native-like capabilities that are much more powerful than those available to web apps.\"</span>"
+        }
+      ]
     },
     {
       "title": "Features",
@@ -65,6 +72,13 @@
           "guid": "z1v9sj6ywdhslact",
           "content": "",
           "features": [
+            {
+              "title": "Automatic Numbering",
+              "guid": "rvmjbm210uovfr1ur",
+              "content": "Features will be numbered automatically and update dynamically as they are moved within the document.",
+              "features": [],
+              "flags": []
+            },
             {
               "title": "Tables",
               "guid": "ogmavmp728jwlefp",

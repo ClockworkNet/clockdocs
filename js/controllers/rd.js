@@ -88,14 +88,15 @@ function($scope, $location, FileSystem, Random) {
 
 	// Recursively access each feature in a section;
 	// Until the callback returns false
-	function eachItem(section, key, callback) {
+	function eachItem(section, key, callback, level) {
 		if (!section[key] || !section[key].some) return;
+		level = level || 0;
 		section[key].some(function(f, i) {
-			var go = callback(f, i, section[key]);
+			var go = callback(f, i, section[key], level);
 			if (go === false) {
 				return true;
 			}
-			eachItem(f, key, callback);
+			eachItem(f, key, callback, level + 1);
 		});
 	}
 

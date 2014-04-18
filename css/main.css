@@ -24,6 +24,18 @@ body {
 	margin-top: 4em; /* Make room for the nav */
 }
 
+.counted {
+	counter-reset: item;
+}
+.counted-item:before {
+	content: counters(item, '.'); 
+	counter-increment: item;
+	color: rgb(201, 197, 197);
+	padding: 5px;
+	margin-right: 1em;
+	font-size: 0.8em;
+}
+
 
 /* Table of Contents */
 .nav-fixed {

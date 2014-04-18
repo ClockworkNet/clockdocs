@@ -21,9 +21,9 @@
 				<ul class="nav toc sortable" sort-on-update="sortItems(rd.sections, guids)">
 					<li ng-repeat="section in rd.sections" data-guid="{{section.guid}}">
 						<a class="toc-section" scroller="section.guid"><icon type="move" class="draggable" /> {{section.title}}</a>
-						<ul class="nav nav-stacked sortable" sort-on-update="sortItems(section.features, guids)">
+						<ol class="nav nav-stacked sortable counted" sort-on-update="sortItems(section.features, guids)">
 							<li ng-repeat="feature in section.features" ng-include="'partials/toc.html'" data-guid="{{feature.guid}}" ng-init="$label = ($index + 1) + '.'"></li>
-						</ul>
+						</ol>
 					</li>
 				</ul>
 			</div> <!-- /.fixed-nav -->
@@ -49,8 +49,8 @@
 				<div class="section-title" contenteditable id="{{section.guid}}" ng-model="section.title"></div>
 				<div class="section-content" contenteditable ng-model="section.content"></div>
 				<div class="flags" ng-include="'partials/flags.html'" ng-init="flags = section.flags" />
-				<div class="features">
-					<div class="row feature level_0" ng-repeat="feature in section.features" ng-include="'partials/feature.html'" ng-init="$level = 0; $label = ($index + 1) + '.'"></div>
+				<div class="features counted">
+					<div class="row feature level_0" ng-repeat="feature in section.features" ng-include="'partials/feature.html'" ng-init="$level = 0"></div>
 				</div>
 				<hr />
 			</section>
