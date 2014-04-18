@@ -47,7 +47,7 @@ function($scope, $location, FileSystem, Random) {
 			'flags': [],
 			'tags': []
 		};
-	};
+	}
 
 	function createFlag(type) {
 		var flag = {};
@@ -63,7 +63,7 @@ function($scope, $location, FileSystem, Random) {
 			'type': flag.type,
 			'content': ''
 		};
-	};
+	}
 
 	var cache = {};
 
@@ -88,7 +88,7 @@ function($scope, $location, FileSystem, Random) {
 		});
 		cache[id] = item;
 		return item;
-	};
+	}
 
 	// Sorts a collection by GUID
 	function sortById(a, ids) {
@@ -98,7 +98,7 @@ function($scope, $location, FileSystem, Random) {
 			var yix = ids.indexOf(y.guid);
 			return xix - yix;
 		});
-	};
+	}
 
 	// Recursively access each feature in a section;
 	// Until the callback returns false
@@ -239,10 +239,10 @@ function($scope, $location, FileSystem, Random) {
 		else {
 			addTag(feature, tag);
 		}
-	}
+	};
 
 	var addTag = $scope.addTag = function(feature, tag) {
-		if (!feature.tags) { 
+		if (!feature.tags) {
 			feature.tags = [];
 		}
 		feature.tags.push(tag);
