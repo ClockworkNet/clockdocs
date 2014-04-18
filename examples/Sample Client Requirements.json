@@ -1,112 +1,142 @@
 {
-  "title": "Project Requirements",
-  "client": "Client Name",
-  "project": "Project Name",
-  "guid": "project_requriement_doc_guid",
-  "revisions": [
-    {
-      "version": 0.1,
-      "date": "2014-01-01",
-      "notes": "Initial version",
-      "author": "AGB"
-    }
-  ],
+  "title": "Clockdoc Requirements Definition Requirements Definition",
+  "author": "Anonymous",
+  "created": "2014-04-17T21:29:43.607Z",
+  "guid": "10i65era8nu3tuzwp",
+  "revisions": [],
   "sections": [
     {
       "title": "Definitions and Conventions",
-      "guid": "definitions_and_conventions",
+      "guid": "j10feq8myrju1gfsn",
+      "content": "",
+      "features": [],
       "flags": [
         {
-          "title": "Active Media Manager",
+          "title": "Chrome Packaged App",
+          "guid": "qyw10gf8bh8229xko",
           "type": "definition",
-          "guid": "AMM",
-          "content": "The **AMM** is Clockwork's content management system, which will be used for ongoing management of the client's web site."
+          "content": "From <b>Google</b>: \"<span style=\"color: rgb(119, 119, 119); font-family: 'Open Sans', Arial, 'Lucida Grande', sans-serif; font-size: 13px; line-height: 24px;\">Chrome Apps deliver an experience as capable as a native app, but as safe as a web page. Just like web apps, Chrome Apps are written in HTML5, JavaScript, and CSS. But Chrome Apps look and behave like native apps, and they have native-like capabilities that are much more powerful than those available to web apps.\"</span>"
         }
-      ],
-      "features": []
-    },
-    {
-      "title": "Introduction",
-      "guid": "introduction",
-      "content": "Introductory content"
+      ]
     },
     {
       "title": "Features",
-      "guid": "features",
+      "guid": "ebris2cb9cp8hogj",
+      "content": "",
       "features": [
         {
-          "title": "Feature Name",
-          "guid": "feature_name",
-          "content": "Feature description",
-          "flags": [
-            {
-              "title": "Open Question",
-              "type": "open_question",
-              "guid": "open_question_guid",
-              "content": "knsdlfkn nlkndsflkn ofkonklnsdflknsfkn lfkn sdlfk ldskfm lskdfj?"
-            }
-          ],
+          "title": "File Structure",
+          "guid": "xzhwjlt10nkpeqbp5",
+          "content": "",
           "features": [
             {
-              "title": "Subfeature Name",
-              "guid": "subfeature_name",
-              "content": "Feature Definition",
-              "flags": [],
-              "features": [
-                {
-                  "title": "First Sub Subfeature Name",
-                  "guid": "first_sub_subfeature_name",
-                  "content": "First Sub Subfeature content",
-                  "flags": [],
-                  "features": []
-                },
-                {
-                  "title": "Second Sub Subfeature Name",
-                  "guid": "second_sub_subfeature_name",
-                  "content": "Second Sub Subfeature content",
-                  "flags": [],
-                  "features": []
-                }
-              ]
+              "title": "Sections",
+              "guid": "i8sr1qip57p5wmyy",
+              "content": "",
+              "features": [],
+              "flags": []
+            },
+            {
+              "title": "Features",
+              "guid": "gbypnv3s3jmmlyfh",
+              "content": "",
+              "features": [],
+              "flags": []
+            },
+            {
+              "title": "Flags",
+              "guid": "zq1p3jnh1xu4vldq",
+              "content": "",
+              "features": [],
+              "flags": []
+            },
+            {
+              "title": "Organization",
+              "guid": "wmd76k3zdd10jflzk",
+              "content": "",
+              "features": [],
+              "flags": []
             }
-          ]
+          ],
+          "flags": []
         },
         {
-          "title": "Another Feature Name",
-          "guid": "another_feature_name",
-          "content": "Another feature description",
-          "flags": [
-            {
-              "title": "Assumption",
-              "type": "assumption",
-              "guid": "assumption_1",
-              "content": "I'm assuming you get this right"
-            }
-          ],
-          "features": []
-        }
-      ]
-    },
-    {
-      "title": "Production",
-      "guid": "production",
-      "features": [
+          "title": "File Interaction",
+          "guid": "bxjgxz8buso4du38",
+          "content": "",
+          "features": [],
+          "flags": []
+        },
         {
-          "title": "Production Feature Name",
-          "guid": "production_feature_name",
-          "content": "Production Feature Description",
+          "title": "Formatting Options",
+          "guid": "z1v9sj6ywdhslact",
+          "content": "",
           "features": [
             {
-              "title": "Production Subfeature Name",
-              "guid": "production_subfeature_name",
-              "content": "Production Feature Definition",
-              "features": []
+              "title": "Automatic Numbering",
+              "guid": "rvmjbm210uovfr1ur",
+              "content": "Features will be numbered automatically and update dynamically as they are moved within the document.",
+              "features": [],
+              "flags": []
+            },
+            {
+              "title": "Tables",
+              "guid": "ogmavmp728jwlefp",
+              "content": "",
+              "features": [],
+              "flags": []
+            },
+            {
+              "title": "Images",
+              "guid": "h14bf5xiukfu9rpf",
+              "content": "",
+              "features": [],
+              "flags": []
+            },
+            {
+              "title": "Text Formatting",
+              "guid": "rot4ujmzib3o22jx",
+              "content": "<p>The tool will support marking portions of text as <b>bold</b>, <i>italic</i>, and <strike>strikethrough</strike>.</p><p>Additionally, the tool will allow the following.</p><p></p><ul><li>Unordered lists.</li></ul><div><ol><li>Ordered lists.</li></ol></div><p></p>",
+              "features": [],
+              "flags": []
+            },
+            {
+              "title": "Lists",
+              "guid": "qfbhbarwaehzt12r",
+              "content": "The tool will support both ordered and unordered lists.",
+              "features": [],
+              "flags": []
             }
+          ],
+          "flags": []
+        },
+        {
+          "title": "Tagging",
+          "guid": "jbdm6undgsuiykp8",
+          "content": "",
+          "features": [],
+          "flags": []
+        },
+        {
+          "title": "Push and Pull to Website",
+          "guid": "xqu4jahwd64pl2q2",
+          "content": "",
+          "features": [],
+          "flags": [],
+          "tags": [
+            "Future Phase"
           ]
         }
-      ]
+      ],
+      "flags": []
+    },
+    {
+      "title": "Technology",
+      "guid": "10jtap326iwrwjuts",
+      "content": "",
+      "features": [],
+      "flags": []
     }
-  ]
-}
-  ]
+  ],
+  "flags": []
 }
