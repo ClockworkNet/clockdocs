@@ -5,6 +5,7 @@ angular.module('Clockdoc.Directives')
 		restrict: 'A',
 		require: '?ngModel',
 		link: function($scope, el, attrs, ngModel) {
+			el.attr('contenteditable', true);
 			if (!ngModel) return;
 			ngModel.$render = function() {
 				el.html(ngModel.$viewValue || '');

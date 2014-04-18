@@ -22,14 +22,10 @@ function($scope, $location, FileSystem, Random) {
 		}
 	];
 
-	$scope.availableTags = [
+	var availableTags = $scope.availableTags = [
 		"Out of Scope", 
 		"Future Phase"
 	];
-
-	FileSystem.on('error', function(e) {
-		return warn("Filesystem Error", "There was an error accessing the file system.");
-	});
 
 	function warn(title, msg, type) {
 		type = type || 'danger';
@@ -118,9 +114,44 @@ function($scope, $location, FileSystem, Random) {
 		});
 	}
 
+	// The rd being edited
 	$scope.rd = null;
 
+	// Used to retain the opened file entry for saving.
+	$scope.fileEntry = null;
+	$scope.fileEntryId = null;
+
 	/// Filesystem Methods ///
+	FileSystem.on('error', function(e) {
+		return warn("Filesystem Error", "There was an error accessing the file system.");
+	});
+
+	FileSystem.on('read', function(result) {
+		console.info('read file', result);
+		if (!result.content) {
+			return;
+		}
+		$scope.$apply(function() {
+			try {
+				$scope.rd = angular.fromJson(result.content);
+				$scope.fileEntry = result.entry;
+				$scope.fileEntryId = result.entryId;
+			}
+			catch (e) {
+				console.error('file open error', e);
+				warn("Error opening file", "There is a problem with your file. " + e);
+			}
+		});
+	});
+
+	FileSystem.on('write', function(result) {
+		console.info('write file', result);
+		$scope.$apply(function() {
+			$scope.fileEntry = result.entry;
+			$scope.fileEntryId = result.entryId;
+		});
+	});
+
 	$scope.create = function() {
 		$scope.rd = {
 			title: 'Untitled Requirements Document',
@@ -137,25 +168,26 @@ function($scope, $location, FileSystem, Random) {
 			],
 			flags: []
 		};
+		$scope.fileEntry = null;
+		$scope.fileEntryId = null;
 	};
 
 	$scope.open = function() {
-		FileSystem.open(['json'], function(contents, entry, progress) {
-			if (!contents) return;
-			$scope.$apply(function() {
-				try {
-					$scope.rd = angular.fromJson(contents);
-				}
-				catch (e) {
-					warn("Error opening file", "There is a problem with your file. " + e);
-				}
-			});
-		});
+		FileSystem.open(['json']);
 	};
 
 	$scope.save = function() {
+		if (!$scope.fileEntryId) {
+			$scope.saveAs();
+			return;
+		}
+		var content = angular.toJson($scope.rd, true);
+		FileSystem.save($scope.fileEntryId, content);
+	};
+
+	$scope.saveAs = function() {
 		var rd = $scope.rd;
-		FileSystem.save(rd.title, 'json', angular.toJson(rd, true), 'txt');
+		FileSystem.saveAs(rd.title, 'json', angular.toJson(rd, true), 'txt');
 	};
 
 	/// Section methods ///

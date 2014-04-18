@@ -7,7 +7,7 @@ return {
 	restrict: 'A',
 	link: function(scope, el, attrs) {
 		var targetId = null;
-		var padding = attrs.padding || 100;
+		var padding = attrs.padding || 120;
 		var speed = attrs.cwScrollerSpeed || 1;
 		scope.$watch(attrs.cwScroller, function(value) {
 			targetId = value;
