@@ -45,14 +45,27 @@ angular.module('textAngular')
 			action: wrap('strikethrough')
 		});
 
+		taRegisterTool('indent', {
+			iconclass: 'fa fa-indent',
+			action: wrap('indent')
+		});
+
+		taRegisterTool('outdent', {
+			iconclass: 'fa fa-outdent',
+			action: wrap('outdent')
+		});
+
 		taOptions.toolbar = [
 			['redo', 'undo', 'clear'],
 			['p', 'pre', 'quote', 'subscript', 'superscript'],
 			['bold', 'italics', 'underline', 'strikethrough'],
 			['ul', 'ol'],
-			['justifyLeft','justifyCenter','justifyRight'],
+			['justifyLeft','justifyCenter','justifyRight', 'indent', 'outdent'],
 			['html', 'insertImage', 'insertLink', 'unlink']
 		];
+
+		taOptions.classes.htmlEditor = 'form-content';
+		taOptions.classes.textEditor = 'form-content';
 
 		return taOptions;
 	}]);

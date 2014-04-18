@@ -28,7 +28,7 @@ function($scope, $location, FileSystem, Random) {
 	];
 
 	FileSystem.on('error', function(e) {
-		return warn("Filesystem Error", "There was an error accessing the file system.", e);
+		return warn("Filesystem Error", "There was an error accessing the file system.");
 	});
 
 	function warn(title, msg, type) {
@@ -143,7 +143,12 @@ function($scope, $location, FileSystem, Random) {
 		FileSystem.open(['json'], function(contents, entry, progress) {
 			if (!contents) return;
 			$scope.$apply(function() {
-				$scope.rd = angular.fromJson(contents);
+				try {
+					$scope.rd = angular.fromJson(contents);
+				}
+				catch (e) {
+					warn("Error opening file", "There is a problem with your file. " + e);
+				}
 			});
 		});
 	};

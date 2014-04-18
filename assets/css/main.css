@@ -100,6 +100,9 @@ h3 {
 	border: solid 1px #00c;
 }
 
+.ta-editor {
+	overflow-y: scroll;
+}
 .ta-root .ta-toolbar {
 	display: none;
 }
@@ -107,7 +110,7 @@ h3 {
 	display: block;
 }
 .ta-root.focussed .ta-editor {
-	height: 80%;
+	height: 200%;
 }
 .ta-toolbar button {
 	height: 30px;
