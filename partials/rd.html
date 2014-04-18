@@ -18,9 +18,16 @@
 			</div>
 		</div> <!-- /.container-fluid -->
 	</nav>
+
+	<header class="row doc-header header-alt">
+		<div aria-hidden="true" class="cw_icon-cw_big logo"></div>
+		<h1>Project Requirements Definition <span class="version-num">v.1.1</span></h1>
+	</header>
+
+
 	<div class="row doc-container" ng-show="rd">
 		<div class="col-md-3 doc-toc">
-			<div class="nav-fixed">
+			<div class="nav-fixed box-emp">
 				<h2>Table of Contents</h2>
 				<ul class="nav toc sortable" sort-on-update="sortItems(rd.sections, guids)">
 					<li ng-repeat="section in rd.sections" data-guid="{{section.guid}}">
