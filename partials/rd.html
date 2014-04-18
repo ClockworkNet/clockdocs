@@ -51,7 +51,7 @@
 					</ul>
 				</div>
 				<div class="section-title" contenteditable id="{{section.guid}}" ng-model="section.title"></div>
-				<div class="section-content" contenteditable ng-model="section.content"></div>
+				<div class="section-content" text-angular ng-model="section.content"></div>
 				<div class="flags" ng-include="'partials/flags.html'" ng-init="flags = section.flags" />
 				<div class="features counted">
 					<div class="row feature level_0" ng-repeat="feature in section.features" ng-include="'partials/feature.html'" ng-init="$level = 0"></div>

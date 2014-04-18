@@ -8,9 +8,8 @@
 			<li ng-repeat="ft in flagTypes"><a ng-click="insertFlag(feature.flags, ft.type)"><icon type="flag" /> New {{ft.name}}</a></li>
 
 			<li class="divider"></li>
-			<li ng-repeat="tag in availableTags">
-				<a ng-click="addTag(feature, tag)" ng-hide="featureHasTag(feature, tag)"><icon type="tag" /> Mark <strong>{{tag}}</strong></a>
-				<a ng-click="removeTag(feature, tag)" ng-show="featureHasTag(feature, tag)"><icon type="tag" /> Unmark <strong>{{tag}}</strong></a>
+			<li ng-repeat="tag in availableTags" ng-hide="featureHasTag(feature, tag)">
+				<a ng-click="addTag(feature, tag)"><icon type="tag" /> Mark <strong>{{tag}}</strong></a>
 			</li>
 
 			<li class="divider"></li>
@@ -27,7 +26,7 @@
 			</li>
 		</ul>
 	</div>
-	<div class="feature-content" contenteditable ng-model="feature.content"></div>
+	<div class="feature-content" text-angular ng-model="feature.content"></div>
 	<div class="flags" ng-include="'partials/flags.html'" ng-init="flags = feature.flags" />
 </div>
 <div class="feature level_{{$level}} counted" ng-repeat="feature in feature.features" ng-include="'partials/feature.html'" ng-init="$level = $level + 1;"></div>

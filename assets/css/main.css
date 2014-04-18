@@ -8,6 +8,7 @@ body {
 	-webkit-transition: all 0.2s ease-in;
 }
 
+/* Editors */
 [contenteditable] {
 	margin: 1px;
 	padding: 0;
@@ -19,6 +20,13 @@ body {
 [contenteditable]:focus {
 	border: solid 1px #00c;
 }
+.ta-toolbar {
+	display: none;
+}
+.ta-toolbar.focussed {
+	display: block;
+}
+
 
 .doc-container {
 	margin-top: 4em; /* Make room for the nav */
