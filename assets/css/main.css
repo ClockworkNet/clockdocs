@@ -7,9 +7,14 @@ body {
 	font-family: "ProximaNovaCondRegular",Helvetica,Arial,sans-serif;
 	font-size: 16px;
 	line-height: 22px;
-	color: #1E1E1E;
+	color: #525252;
 	background: #fff;
 	padding-bottom: 400px;
+}
+
+.container {
+	width: 1200px !important;
+	margin: 0;
 }
 
 /* =============================================================================
@@ -120,8 +125,8 @@ h3 {
 	content: counters(item, '.'); 
 	counter-increment: item;
 	color: rgb(201, 197, 197);
-	padding: 5px;
-	margin-right: 1em;
+
+	margin-right: .5em;
 	font-size: 0.8em;
 }
 
@@ -131,6 +136,7 @@ h3 {
 	position: fixed;
 	overflow-y: scroll;
 	height: 100%;
+	left: 0;
 }
 .doc-toc {
 	margin-left: 0.5em;
@@ -195,14 +201,16 @@ section {
 	padding-top: 2em;
 }
 .section-title {
+	font-family: 'BrandonGrotesqueRegular', Helvetica, sans-serif;
 	font-size: 3em;
+	margin-bottom: .25em;
 }
 .features {
 
 }
 .feature {
 	padding-top: 1em;
-	padding-left: 1em;
+	
 }
 .feature .feature-label {
 	font-weight: 600;
@@ -215,15 +223,16 @@ section {
 	border-radius: 30px;
 }
 .feature.level_0 {
-	margin-top: 2em;
+	margin-top: 1em;
 }
 .feature.level_0 .feature-title {
-	font-size: 2em;
-	font-weight: 600;
+	font-size: 1.8em;
+	font-family: "ProximaNovaCondSemiBold",Helvetica,Arial,sans-serif;
+
 }
 .feature.level_1 .feature-title {
-	font-size: 1.8em;
-	font-style: italic;
+	font-size: 1.5em;
+	font-family: "ProximaNovaCondRegular",Helvetica,Arial,sans-serif;
 }
 .feature.level_2 .feature-title {
 	font-size: 1.5em;
@@ -243,7 +252,7 @@ section {
 
 /* Flags */
 .flag-title {
-	font-weight: 600;
+	font-family: "ProximaNovaCondSemiBold",Helvetica,Arial,sans-serif;
 	display: block;
 	text-align: right;
 }
@@ -287,6 +296,10 @@ section {
 	-webkit-transform: scaleY(1);
 }
 
+.dropdown {
+	margin-left: -40px;
+}
+
 
 /* Header */
 .doc-header {
@@ -300,7 +313,9 @@ section {
 }
 
 .doc-header .version-num {
-
+font-family: 'BrandonGrotesqueRegular', Helvetica, sans-serif;
+font-size: .75em;
+color: #707070;
 }
 
 .doc-header .logo {
@@ -320,6 +335,40 @@ section {
 
 .doc-content {
 	margin-top: 20px;
+	margin-left: 25px;
+}
+
+
+@media print {
+  .dropdown,
+  .well,
+  .glyphicon-move,
+  .navbar-fixed-top  {
+  	display: none;
+
+  }
+
+  .doc-toc,
+  .doc-content,
+  .doc-header,
+  .nav-fixed {
+  	position: relative;
+  	float: none;
+  	width: 100%;
+  }
+
+  .doc-container {
+  	margin-top: 0;
+  }
+
+  .toc-section {
+  	margin-top: .25em;
+	line-height: 1em;
+  }
+
+  .doc-toc .nav > li > a {
+  	padding-left: 0;
+  }
 }
 
 

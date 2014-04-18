@@ -1,5 +1,5 @@
 {
-  "title": "Sample Client Requirements",
+  "title": "Project Requirements",
   "client": "Client Name",
   "project": "Project Name",
   "guid": "project_requriement_doc_guid",
@@ -43,7 +43,7 @@
               "title": "Open Question",
               "type": "open_question",
               "guid": "open_question_guid",
-              "content": "...."
+              "content": "knsdlfkn nlkndsflkn ofkonklnsdflknsfkn lfkn sdlfk ldskfm lskdfj?"
             }
           ],
           "features": [
@@ -106,5 +106,7 @@
         }
       ]
     }
+  ]
+}
   ]
 }
