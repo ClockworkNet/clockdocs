@@ -144,9 +144,15 @@ function($scope, $location, FileSystem, Random) {
 		});
 	});
 
+	FileSystem.on('writing', function(result) {
+		console.info('saving...', result);
+		$scope.working = true;
+	});
+
 	FileSystem.on('write', function(result) {
 		console.info('write file', result);
 		$scope.$apply(function() {
+			$scope.working = false;
 			$scope.fileEntry = result.entry;
 			$scope.fileEntryId = result.entryId;
 		});

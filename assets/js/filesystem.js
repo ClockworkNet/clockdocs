@@ -6,6 +6,7 @@ var listeners = {
 	'cancel' : [],
 	'open'   : [],
 	'read'   : [],
+	'writing': [],
 	'write'  : []
 };
 
@@ -68,14 +69,19 @@ return {
 	},
 
 	write: function(entry, data, type) {
+		var self = this;
+
 		if (!entry) {
 			self.fire('cancel');
 			return;
 		}
 
-		type = type || 'text';
+		self.fire('writing', {
+			content: data,
+			entry: entry
+		});
 
-		var self = this;
+		type = type || 'text';
 
 		var onError = function(e) {
 			self.fire('error', e);
