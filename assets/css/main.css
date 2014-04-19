@@ -338,10 +338,6 @@ section {
 	-webkit-transform: scaleY(1);
 }
 
-.dropdown {
-	margin-left: -40px;
-}
-
 
 /* =============================================================================
    Header
@@ -354,7 +350,6 @@ section {
 	position: fixed;
 	top: 0px;
 	width: 100%;
-	z-index: 1030;
 }
 
 .doc-header .version-num {
