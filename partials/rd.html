@@ -2,10 +2,14 @@
 	<nav class="navbar navbar-default navbar-fixed-top">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<span class="navbar-brand">Clockdocs</span>
+				<span class="navbar-brand">Clockdocs
+					<i ng-show="working" class="fa fa-spinner fa-spin"></i>
+					<i ng-hide="working" class="fa fa-book"></i>
+				</span>
 			</div> <!-- /.navbar-header -->
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
+<<<<<<< HEAD
 					<li><a ng-click="create()"><icon type="plus-sign" /> Create</a></li>
 					<li><a ng-click="open()"><icon type="open" /> Open</a></li>
 					<li class="dropdown">
@@ -18,47 +22,67 @@
 					</li>
 					<li ng-show="rd"><a ng-click="save()"><icon type="save" /> Save</a></li>
 					<li ng-show="rd"><a ng-click="print()"><icon type="print" /> Print</a></li>
+=======
+					<li><a ng-click="create()"><cw-icon type="plus-sign"></cw-icon> Create</a></li>
+					<li><a ng-click="open()"><cw-icon type="open"></cw-icon> Open</a></li>
+					<li ng-show="fileEntryId"><a ng-click="save()"><cw-icon type="save"></cw-icon> Save to <em>{{fileEntry.name}}</em></a></li>
+					<li ng-show="rd"><a ng-click="saveAs()"><cw-icon type="export"></cw-icon> Save As</a></li>
+					<li ng-show="rd"><a ng-click="print()"><cw-icon type="print"></cw-icon> Print</a></li>
+					<li ng-if="alert.content">
+						<div class="alert alert-{{alert.type}} alert-dismissable">
+							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>	
+							<strong>{{alert.title}}</strong> {{alert.content}}
+						</div>
+					</li>
+>>>>>>> master
 				</ul>
 			</div> <!-- /.navbar-collapse -->
 		</div> <!-- /.container-fluid -->
 	</nav>
+
+	<header class="row doc-header header-alt">
+		<div aria-hidden="true" class="cw_icon-cw_big logo"></div>
+		<h1>Project Requirements Definition <span class="version-num">v.{{version}}</span></h1>
+	</header>
+
+
 	<div class="row doc-container" ng-show="rd">
 		<div class="col-md-3 doc-toc">
-			<div class="nav-fixed">
+			<div class="nav-fixed box-emp">
 				<h2>Table of Contents</h2>
 				<ul class="nav toc sortable" sort-on-update="sortItems(rd.sections, guids)">
 					<li ng-repeat="section in rd.sections" data-guid="{{section.guid}}">
-						<a class="toc-section" scroller="section.guid"><icon type="move" class="draggable" /> {{section.title}}</a>
-						<ul class="nav nav-stacked sortable" sort-on-update="sortItems(section.features, guids)">
+						<a class="toc-section" cw-scroller="section.guid"><cw-icon type="move" class="draggable"></cw-icon> {{section.title}}</a>
+						<ol class="nav nav-stacked sortable counted" sort-on-update="sortItems(section.features, guids)">
 							<li ng-repeat="feature in section.features" ng-include="'partials/toc.html'" data-guid="{{feature.guid}}" ng-init="$label = ($index + 1) + '.'"></li>
-						</ul>
+						</ol>
 					</li>
 				</ul>
 			</div> <!-- /.fixed-nav -->
 		</div> <!-- /.doc-toc -->
 		<div class="col-md-8 doc-content">
-			<h1 ng-model="rd.title" contenteditable></h1>
+			<h1 ng-model="rd.title" cw-editable></h1>
 			<div class="well slideout animated">
-				<a ng-click="insertSection(0)"><icon type="th-large" /> New Section</a>
+				<a ng-click="insertSection(0)"><cw-icon type="th-large"></cw-icon> New Section</a>
 			</div>
 			<section ng-repeat="section in rd.sections">
 				<div class="dropdown pull-left">
-					<a class="btn dropdown-toggle" data-toggle="dropdown"><icon type="chevron-right" /></a>
+					<a class="btn dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></a>
 					<ul class="dropdown-menu">
-						<li><a ng-click="insertFeature(section.features)"><icon type="plus" /> New Feature</a></li>
+						<li><a ng-click="insertFeature(section.features)"><cw-icon type="plus"></cw-icon> New Feature</a></li>
 						<li class="divider"></li>
-						<li ng-repeat="ft in flagTypes"><a ng-click="insertFlag(section.flags, ft.type)"><icon type="flag" /> New {{ft.name}}</a></li>
+						<li ng-repeat="ft in flagTypes"><a ng-click="insertFlag(section.flags, ft.type)"><cw-icon type="flag"></cw-icon> New {{ft.name}}</a></li>
 						<li class="divider"></li>
-						<li><a ng-click="insertSection($index + 1)"><icon type="th-large" /> New Section</a></li>
+						<li><a ng-click="insertSection($index + 1)"><cw-icon type="th-large"></cw-icon> New Section</a></li>
 						<li class="divider"></li>
-						<li modal modal-click="deleteSection($index)" modal-title="Delete '{{section.title}}'?" modal-body="Are you sure you want to delete '{{section.title}}'?"><icon type="trash" /> Delete Section</li>
+						<li modal modal-click="deleteSection($index)" modal-title="Delete '{{section.title}}'?" modal-body="Are you sure you want to delete '{{section.title}}'?"><cw-icon type="trash"></cw-icon> Delete Section</li>
 					</ul>
 				</div>
-				<div class="section-title" contenteditable id="{{section.guid}}" ng-model="section.title"></div>
-				<div class="section-content" contenteditable ng-model="section.content"></div>
+				<div class="section-title" cw-editable id="{{section.guid}}" ng-model="section.title"></div>
+				<div class="section-content" text-angular ng-model="section.content"></div>
 				<div class="flags" ng-include="'partials/flags.html'" ng-init="flags = section.flags" />
-				<div class="features">
-					<div class="row feature level_0" ng-repeat="feature in section.features" ng-include="'partials/feature.html'" ng-init="$level = 0; $label = ($index + 1) + '.'"></div>
+				<div class="features counted">
+					<div class="feature level_0" ng-repeat="feature in section.features" ng-include="'partials/feature.html'" ng-init="$level = 0"></div>
 				</div>
 				<hr />
 			</section>

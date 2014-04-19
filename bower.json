@@ -19,6 +19,8 @@
 		"jquery-ui": "*",
 		"angular": "*",
 		"angular-route": "*",
-		"bootstrap": "*"
+		"bootstrap": "*",
+		"fontawesome": "*",
+		"textAngular": "*"
 	}
 }

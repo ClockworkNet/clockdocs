@@ -3,16 +3,16 @@
 		<div class="row">
 			<div class="col-md-3">
 				<div class="dropdown pull-left">
-					<a class="btn dropdown-toggle" data-toggle="dropdown"><icon type="chevron-right" /></a>
+					<a class="btn dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></a>
 					<ul class="dropdown-menu">
-						<li><a class="handle pull-left"><icon type="move draggable" /> Drag Me</a></li>
-						<li modal modal-title="Confirm Delete of '{{flag.title}}'?" modal-body="Are you sure you want to delete '{{flag.title}}'?" modal-action="Delete" modal-click="deleteFlag(flags, $index)"><icon type="trash" /> Delete Me</li>
+						<li><a class="handle pull-left"><cw-icon type="move draggable"></cw-icon> Drag Me</a></li>
+						<li modal modal-title="Confirm Delete of '{{flag.title}}'?" modal-body="Are you sure you want to delete '{{flag.title}}'?" modal-action="Delete" modal-click="deleteFlag(flags, $index)"><cw-icon type="trash"></cw-icon> Delete Me</li>
 					</ul>
 				</div>
-				<div class="flag-title" contenteditable ng-model="flag.title"></div>
+				<div class="flag-title" cw-editable ng-model="flag.title"></div>
 			</div>
 			<div class="col-md-9">
-				<div class="flag-content" contenteditable ng-model="flag.content"></div>
+				<div class="flag-content" cw-editable ng-model="flag.content"></div>
 			</div>
 		</div>
 	</div>

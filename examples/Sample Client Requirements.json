@@ -8,14 +8,14 @@
     {
       "title": "Definitions and Conventions",
       "guid": "j10feq8myrju1gfsn",
-      "content": "Herein resides some terms and conventions used in this doc.",
+      "content": "",
       "features": [],
       "flags": [
         {
           "title": "Chrome Packaged App",
-          "guid": "fwisv95wmzczpmh7",
+          "guid": "qyw10gf8bh8229xko",
           "type": "definition",
-          "content": "<span style=\"color: rgb(119, 119, 119); font-family: 'Open Sans', Arial, 'Lucida Grande', sans-serif; font-size: 13px; line-height: 24px;\">Chrome Apps deliver an experience as capable as a native app, but as safe as a web page. Just like web apps, Chrome Apps are written in HTML5, JavaScript, and CSS. But Chrome Apps look and behave like native apps, and they have native-like capabilities that are much more powerful than those available to web apps.</span>"
+          "content": "From <b>Google</b>: \"<span style=\"color: rgb(119, 119, 119); font-family: 'Open Sans', Arial, 'Lucida Grande', sans-serif; font-size: 13px; line-height: 24px;\">Chrome Apps deliver an experience as capable as a native app, but as safe as a web page. Just like web apps, Chrome Apps are written in HTML5, JavaScript, and CSS. But Chrome Apps look and behave like native apps, and they have native-like capabilities that are much more powerful than those available to web apps.\"</span>"
         }
       ]
     },
@@ -96,7 +96,7 @@
             {
               "title": "Text Formatting",
               "guid": "rot4ujmzib3o22jx",
-              "content": "<p>The tool will support marking portions of text as <b>bold</b>, <i>italic</i>, and <strike>strikethrough</strike>.</p><p>Additionally, the tool will allow the following.</p><p></p><ul><li>Unordered lists.</li><ul><li>Indentable unordered lists.</li></ul></ul><div><ol><li>Ordered lists.</li><li>More ordered lists.</li><ol><li>Indentable ordered lists.</li></ol></ol><div style=\"text-align: center;\">Centering content.</div><div style=\"text-align: right;\">Right aligning content.</div><div style=\"text-align: left;\"><sub>Sub</sub>script and <sup>super</sup>script.</div><div style=\"text-align: left;\"><br/></div><br/></div><p></p>",
+              "content": "<p>The tool will support marking portions of text as <b>bold</b>, <i>italic</i>, and <strike>strikethrough</strike>.</p><p>Additionally, the tool will allow the following.</p><p></p><ul><li>Unordered lists.</li></ul><div><ol><li>Ordered lists.</li></ol></div><p></p>",
               "features": [],
               "flags": []
             },
@@ -120,7 +120,7 @@
         {
           "title": "Push and Pull to Website",
           "guid": "xqu4jahwd64pl2q2",
-          "content": "Someday, in the future, the tool should support including a reference to an API endpoint where you can &#34;Publish&#34; a version of the document.",
+          "content": "",
           "features": [],
           "flags": [],
           "tags": [

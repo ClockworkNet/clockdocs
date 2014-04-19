@@ -1,36 +1,15 @@
 angular.module('Clockdoc.Directives')
 
-// Adds angular binding to contenteditable elements
-.directive('contenteditable', function() {
-return {
-	restrict: 'A',
-	require: '?ngModel',
-	link: function($scope, el, attrs, ngModel) {
-		if (!ngModel) return;
-		ngModel.$render = function() {
-			el.html(ngModel.$viewValue || '');
-		};
-		var update = function() {
-			$scope.$apply(function() {
-				var html = el.html();
-				// Add any html re-formatting here
-				ngModel.$setViewValue(html);
-			});
-		};
-		el.on('blur keyup change', update);
-	}
-}})
-
 // Adds a click event to an element that will scroll the window
 // to the specified target (and select all text)
-.directive('scroller', function() {
+.directive('cwScroller', function() {
 return {
 	restrict: 'A',
 	link: function(scope, el, attrs) {
 		var targetId = null;
-		var padding = attrs.padding || 100;
-		var speed = attrs.scrollerSpeed || 1;
-		scope.$watch(attrs.scroller, function(value) {
+		var padding = attrs.padding || 120;
+		var speed = attrs.cwScrollerSpeed || 1;
+		scope.$watch(attrs.cwScroller, function(value) {
 			targetId = value;
 		});
 		var scroll = function() {
@@ -73,7 +52,7 @@ return {
 
 }})
 // Wrapper for injecting icons into the interface
-.directive('icon', function() {
+.directive('cwIcon', function() {
 return {
 	restrict: 'E',
 	scope: {

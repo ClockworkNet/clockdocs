@@ -1,0 +1,423 @@
+/* =============================================================================
+   Base
+   ========================================================================== */
+html {
+	overflow-y: auto;
+}
+
+body {
+	margin: 0;
+	font-family: "ProximaNovaCondRegular",Helvetica,Arial,sans-serif;
+	font-size: 16px;
+	line-height: 22px;
+	color: #525252;
+	background: #fff;
+	padding-bottom: 400px;
+}
+
+.container {
+	width: 1200px !important;
+	margin: 0;
+}
+
+.box-emp {
+  background: rgb(248, 248, 248);
+  min-height: 100px;
+  padding: 15px 0;
+  margin: 0 0 15px 0;
+  box-shadow: 0px 1px 5px -2px rgba(0, 0, 0, 0.32);
+  min-width: 275px;
+}
+
+.doc-content {
+	margin-top: 20px;
+}
+
+/* =============================================================================
+   Typography
+   ========================================================================== */
+
+h1, h2, h3, h4, h5, h6, .navbar-brand {
+    font-family: 'BrandonGrotesqueBlack', Helvetica, sans-serif;
+    text-transform: uppercase;
+    color: #1E1E1E;
+    line-height: 1em;
+    font-weight: normal;
+}
+
+.navbar-default .navbar-brand {
+	color: #D6D6D6;
+}
+
+.header-inverse h1, 
+.header-inverse h2, 
+.header-inverse h3, 
+.header-inverse h4, 
+.header-inverse h5 {
+	color:#FC0;
+}
+
+.header-alt h1, 
+.header-alt h2, 
+.header-alt h3, 
+.header-alt h4, 
+.header-alt h5 {
+	color:#FC0;
+}
+
+.doc-header h1 {
+	font-size: 16px;
+	margin-left: 105px;
+}
+
+h1 {
+    font-size: 3.5em; /* 40px */
+    line-height: 1.1em;
+}
+
+h2 {
+    font-size: 2.75em; /* 30px */
+    line-height: 1em;
+    margin: .65em 0 .4em 0;
+}
+
+.box-emp h2 {
+	font-size: 20px;
+	color: #707070;
+	padding: 0 0 0 20px;
+}
+
+h4 {
+    font-size: 1.25em; /* 26px */
+    line-height: 1em;
+    margin: 1.5em 0 .75em 0;
+}
+
+h3 {
+    font-size: 1.65em; /* 26px */
+    line-height: 1em;
+    margin: 1.2em 0 .6em 0;
+}
+
+.animated {
+	-webkit-transition: all 0.2s ease-in;
+}
+
+/* =============================================================================
+   Editors
+   ========================================================================== */
+
+[cw-editable], .ta-editor {
+	margin: 1px;
+	border: solid 1px #FFF;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+[cw-editable]:hover, .ta-editor:hover {
+	border: dashed 1px #ccc;
+}
+
+[cw-editable]:focus, .ta-editor:focus {
+	border: solid 1px #00c;
+}
+
+.ta-editor {
+	overflow-y: scroll;
+}
+.ta-root .ta-toolbar {
+	display: none;
+}
+.ta-root.focussed .ta-toolbar {
+	display: block;
+}
+.ta-root.focussed .ta-editor {
+	height: 200%;
+}
+.ta-toolbar button {
+	height: 30px;
+}
+
+.doc-container {
+	margin-top: 110px; /* Make room for the nav */
+}
+.counted {
+	counter-reset: item;
+}
+.counted-item:before {
+	content: counters(item, '.'); 
+	counter-increment: item;
+	color: rgb(201, 197, 197);
+
+	margin-right: .5em;
+	font-size: 0.8em;
+}
+
+
+/* =============================================================================
+   TOC
+   ========================================================================== */
+
+.nav-fixed {
+	position: fixed;
+	overflow-y: scroll;
+	height: 100%;
+	left: 0;
+}
+.doc-toc {
+	margin-left: 0.5em;
+}
+.doc-toc .nav > li > a {
+	padding: 5px 30px 5px 20px;
+	display: inline-block;
+	width: 100%;
+	box-sizing: border-box;
+	cursor: pointer;
+}
+.toc ul {
+	margin: 0;
+	padding: 0;
+}
+.toc li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+ul.sortable li a .draggable {
+	opacity: 0;
+	position: absolute;
+	right: 2px;
+	left: auto;
+	font-size: 16px;
+	top: 5px;
+	color: #DBDBDB;
+}
+ul.sortable li a:hover .draggable,
+ul.sortable li a:active .draggable {
+	-webkit-transition: all 0.2s ease-in;
+	opacity: 1.0;
+}
+.toc-section {
+	font-weight: 600;
+	font-size: 1.2em;
+}
+.toc-feature {
+	font-size: 1em;
+}
+
+
+/* =============================================================================
+   Tags
+   ========================================================================== */
+
+.feature-tags li {
+	display: inline-block;
+	padding-right: 1em;
+	margin-right: 2em;
+	font-weight: 600;
+}
+.feature-tags .close {
+	float: left;
+	padding-right: 5px;
+}
+.feature-tag  {
+	white-space: nowrap;
+}
+.feature-tag.future-phase {
+	color: green;
+}
+.feature-tag.out-of-scope {
+	color: red;
+}
+
+
+/* =============================================================================
+   Sections and Features
+   ========================================================================== */
+
+section {
+	padding-top: 2em;
+}
+
+.section-title {
+	font-family: 'BrandonGrotesqueRegular', Helvetica, sans-serif;
+	font-size: 3em;
+	margin-bottom: .25em;
+}
+
+.feature {
+	padding-top: 1em;
+}
+.feature .feature-label {
+	font-weight: 600;
+	font-size: 2em;
+	float: left;
+	margin-right: 16px;
+	color: #ccc;
+	background: #fafafa;
+	padding: 10px;
+	border-radius: 30px;
+}
+.feature.level_0 {
+	margin-top: 1em;
+}
+.feature.level_0 .feature-title {
+	font-size: 1.8em;
+	font-family: "ProximaNovaCondSemiBold",Helvetica,Arial,sans-serif;
+
+}
+.feature.level_1 .feature-title {
+	font-size: 1.5em;
+	font-family: "ProximaNovaCondRegular",Helvetica,Arial,sans-serif;
+}
+.feature.level_2 .feature-title {
+	font-size: 1.5em;
+	font-weight: 500;
+}
+.feature.level_3 .feature-title {
+	font-size: 1.3em;
+	font-weight: 400;
+}
+.feature-content {
+	
+}
+.sub-features {
+
+}
+
+
+/* =============================================================================
+   Flags
+   ========================================================================== */
+
+.flag-title {
+	font-family: "ProximaNovaCondSemiBold",Helvetica,Arial,sans-serif;
+	display: block;
+	text-align: right;
+}
+.flag-title:after {
+	content: ':';
+}
+.flag-content {
+	display: block;
+	margin-left: 1em;
+}
+
+
+.slideout {
+	opacity: 0.2;
+	cursor: hand;
+}
+.slideout a {
+	width: 100%;
+	height: 20px;
+	display: block;
+	color: #999;
+}
+.slideout:hover {
+	opacity: 1.0;
+}
+.slideout:hover a {
+	color: #333;
+}
+
+/* =============================================================================
+   Dropdown animations
+   ========================================================================== */
+
+.open > .dropdown-toggle .glyphicon {
+	-webkit-transform: rotate(90deg);
+}
+.dropdown-menu {
+	display: block;
+	-webkit-transform-origin: top;
+	-webkit-transition: all 0.2s ease-out;
+	-webkit-transform: scaleY(0);
+}
+.open > .dropdown-menu {
+	-webkit-transform: scaleY(1);
+}
+
+.dropdown {
+	margin-left: -40px;
+}
+
+
+/* =============================================================================
+   Header
+   ========================================================================== */
+
+.doc-header {
+	background: #333;
+	margin-top: 50px;
+	min-height: 55px;
+	position: fixed;
+	top: 0px;
+	width: 100%;
+	z-index: 1030;
+}
+
+.doc-header .version-num {
+font-family: 'BrandonGrotesqueRegular', Helvetica, sans-serif;
+font-size: .75em;
+color: #707070;
+}
+
+.doc-header .logo {
+    font-size: 35px; 
+    margin: 3px 10px 10px 10px; color: #707070; position: absolute; top: 8px; 
+    left: 20px;
+}
+
+
+
+/* =============================================================================
+   Bootstratp overrides
+   ========================================================================== */
+.form-control {
+	height: auto;
+	min-height: 34px;
+}
+
+
+/* =============================================================================
+   Print styles
+   ========================================================================== */
+
+
+@media print {
+  .dropdown,
+  .well,
+  .glyphicon-move,
+  .navbar-fixed-top  {
+  	display: none;
+
+  }
+
+  .doc-toc,
+  .doc-content,
+  .doc-header,
+  .nav-fixed {
+  	position: relative;
+  	float: none;
+  	width: 100%;
+  	height: auto;
+  }
+
+  .doc-container {
+  	margin-top: 0;
+  }
+
+  .toc-section {
+  	margin-top: .25em;
+	line-height: 1em;
+  }
+
+  .toc-feature {
+  	color: #9E9E9E !important
+  }
+
+  .doc-toc .nav > li > a {
+  	padding-left: 0;
+  }
+}
