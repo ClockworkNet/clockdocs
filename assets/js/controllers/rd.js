@@ -185,7 +185,7 @@ function($scope, $location, FileSystem, Random, Svn) {
 
 	$scope.checkout = function() {
 		var svn_path = $scope.rd.svn;
-		Svn.checkout(svn_path, function(contents) {
+		Svn.open(svn_path, function(contents) {
 			console.log('got from SVN', contents);
 			$scope.$apply(function() {
 				$scope.rd = angular.fromJson(contents);

@@ -22,6 +22,14 @@ angular.module('Clockdoc.Utils')
 			});
 		},
 
+		open: function(svnPath, callback) {
+			var self = this;
+			self.exec(['svn', 'cat', svnPath], function(response) {
+				console.log('received', response);
+				callback.call(self, response);
+			});
+		},
+
 		// Allows the user to checkout a file. The callback
 		// receives the contents, file entry, and progress event
 		checkout: function(svnPath, callback) {
@@ -58,12 +66,14 @@ angular.module('Clockdoc.Utils')
 
 		exec: function(args, callback) {
 			console.log("running", args);
+			var self = this;
 			chrome.runtime.sendNativeMessage(
 				'com.clockwork.svn',
 				{ command: args },
 				function(response) {
 					if (chrome.runtime.lastError) {
 						console.log('error running svn command', args, chrome.runtime.lastError);
+						self.fire('error', chrome.runtime.lastError);
 						return;
 					}
 					console.log("response", arguments);
