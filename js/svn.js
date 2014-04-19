@@ -57,14 +57,16 @@ angular.module('Clockdoc.Utils')
 		},
 
 		exec: function(args, callback) {
-			console.log("running");
-			console.log(args);
+			console.log("running", args);
 			chrome.runtime.sendNativeMessage(
 				'com.clockwork.svn',
 				{ command: args },
 				function(response) {
-					console.log("response");
-					console.log(response);
+					if (chrome.runtime.lastError) {
+						console.log('error running svn command', args, chrome.runtime.lastError);
+						return;
+					}
+					console.log("response", arguments);
 					callback(response);
 				}
 			);
