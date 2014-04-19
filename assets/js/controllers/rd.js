@@ -183,15 +183,31 @@ function($scope, $location, FileSystem, Random, Svn) {
 		FileSystem.open(['json']);
 	};
 
-	$scope.checkout = function() {
-		var svn_path = $scope.rd.svn;
-		Svn.open(svn_path, function(contents) {
-			console.log('got from SVN', contents);
-			$scope.$apply(function() {
-				$scope.rd = angular.fromJson(contents);
+	/// SVN ///
+	Svn.on('exec', function(args) {
+		$scope.working = true;
+	});
+
+	Svn.on('read', function(result) {
+		$scope.$apply(function() {
+			$scope.working = false;
+			$scope.fileEntry = null;
+			$scope.fileentryId = null;
+
+			var rd = angular.fromJson(result.content);
+			if (rd) {
+				rd.svn = result.path;
+				$scope.rd = rd;
 				console.log('set rd', $scope.rd);
-			});
+			}
+			else {
+				warn("Error opening file from SVN", "Could not read file");
+			}
 		});
+	});
+
+	$scope.checkout = function() {
+		Svn.open($scope.rd.svn);
 	};
 
 	$scope.save = function() {
