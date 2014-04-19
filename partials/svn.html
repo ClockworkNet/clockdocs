@@ -1,16 +1,38 @@
-<div class="modal" id="svn-form" ng-controller="RdCtrl">
+<div class="modal" id="svn-form">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">SVN Path of File</h4>
+				<h4 class="modal-title">SVN Checkout</h4>
 			</div>
 			<div class="modal-body">
-				<input ng-model="rd.svn" class="form-control" />
+				<input ng-model="svn.info.URL" class="form-control" placeholder="svn+ssh://svn.pozitronic.com/svnroot/" required />
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-				<button type="button" class="btn btn-primary btn-action" data-dismiss="modal" ng-click="checkout(rd.svn)">Checkout</button>
+				<button type="button" class="btn btn-primary btn-action" data-dismiss="modal" ng-click="checkout()" ng-show="svn.info.URL"><cw-icon type="cloud-download"></cw-icon> Checkout</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal" id="svn-form-commit">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Commit to SVN</h4>
+			</div>
+			<div class="modal-body">
+				<div class="input-group">
+					<input ng-model="svn.info.URL" class="form-control" placeholder="svn+ssh://svn.pozitronic.com/svnroot/" />
+					<span class="input-group-addon">@{{svn.info.Revision}}</span>
+				</div>
+				<textarea ng-model="svn.info.Message" class="form-control" placeholder="Enter a commit message" required></textarea>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-warning btn-action" data-dismiss="modal" ng-click="commit()" ng-show="svn.info.Message"><cw-icon type="cloud-upload"></cw-icon> Commit Changes</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->

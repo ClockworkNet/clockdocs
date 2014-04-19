@@ -126,6 +126,14 @@
           "tags": [
             "Future Phase"
           ]
+        },
+        {
+          "title": "SVN Integration",
+          "guid": "nwpb4gq4pshken16",
+          "content": "The tool will support reading from and committing to an SVN repository.",
+          "features": [],
+          "flags": [],
+          "tags": []
         }
       ],
       "flags": []

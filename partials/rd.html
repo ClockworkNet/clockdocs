@@ -22,7 +22,7 @@
 						<ul class="dropdown-menu">
 							<li ng-show="fileEntryId"><a ng-click="save()"><cw-icon type="save"></cw-icon> Save to <em>{{fileEntry.name}}</em></a></li>
 							<li ng-show="rd"><a ng-click="saveAs()"><cw-icon type="export"></cw-icon> Save As ...</a></li>
-							<li ng-show="rd.svn"><a ng-click="commit()"><cw-icon type="cloud-upload"></cw-icon> Commit to SVN</a></li>
+							<li ng-show="svn.info.Revision"><a data-toggle="modal" data-target="#svn-form-commit"><cw-icon type="cloud-upload"></cw-icon> Commit to SVN</a></li>
 						</ul>
 					</li>
 					<li ng-show="rd"><a ng-click="print()"><cw-icon type="print"></cw-icon> Print</a></li>
@@ -86,5 +86,5 @@
 		</div> <!-- /.doc-content -->
 		<div class="col-md-1 doc-gutter"></div>
 	</div>
+	<div id="svn" class="svn" ng-include="'partials/svn.html'"></div>
 </div>
-<div id="svn" class="svn" ng-include="'partials/svn.html'"></div>

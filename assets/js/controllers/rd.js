@@ -121,6 +121,9 @@ function($scope, $location, FileSystem, Random, Svn) {
 	$scope.fileEntry = null;
 	$scope.fileEntryId = null;
 
+	// The svn info associated with an entry
+	$scope.svn = {};
+
 	/// Filesystem Methods ///
 	FileSystem.on('error', function(e) {
 		return warn("Filesystem Error", "There was an error accessing the file system.");
@@ -136,6 +139,7 @@ function($scope, $location, FileSystem, Random, Svn) {
 				$scope.rd = angular.fromJson(result.content);
 				$scope.fileEntry = result.entry;
 				$scope.fileEntryId = result.entryId;
+				$scope.svn = {};
 			}
 			catch (e) {
 				console.error('file open error', e);
@@ -155,6 +159,7 @@ function($scope, $location, FileSystem, Random, Svn) {
 			$scope.working = false;
 			$scope.fileEntry = result.entry;
 			$scope.fileEntryId = result.entryId;
+			$scope.svn = null;
 		});
 	});
 
@@ -164,7 +169,6 @@ function($scope, $location, FileSystem, Random, Svn) {
 			author: 'Anonymous',
 			created: new Date(),
 			guid: Random.id(),
-			svn: null,
 			revisions: [],
 			sections: [
 				createFeature('Definitions and Conventions'),
@@ -177,6 +181,7 @@ function($scope, $location, FileSystem, Random, Svn) {
 		};
 		$scope.fileEntry = null;
 		$scope.fileEntryId = null;
+		$scope.svn = {};
 	};
 
 	$scope.open = function() {
@@ -184,30 +189,44 @@ function($scope, $location, FileSystem, Random, Svn) {
 	};
 
 	/// SVN ///
-	Svn.on('exec', function(args) {
+	Svn.on('error', function(e) {
+		$scope.$apply(function() {
+			warn("SVN error", "An error occurred with SVN: " + e);
+		});
+	});
+
+	Svn.on('executing', function(args) {
 		$scope.working = true;
+		console.log("Executing", args);
 	});
 
 	Svn.on('read', function(result) {
+		console.info("Read from SVN", result);
+
 		$scope.$apply(function() {
 			$scope.working = false;
 			$scope.fileEntry = null;
 			$scope.fileentryId = null;
 
-			var rd = angular.fromJson(result.content);
-			if (rd) {
-				rd.svn = result.path;
-				$scope.rd = rd;
-				console.log('set rd', $scope.rd);
-			}
-			else {
-				warn("Error opening file from SVN", "Could not read file");
-			}
+			$scope.svn = {info: result.info};
+			$scope.rd = angular.fromJson(result.content);
+		});
+	});
+
+	Svn.on('commit', function(result) {
+		$scope.$apply(function() {
+			$scope.working = false;
+			$scope.fileEntry = null;
+			$scope.fileentryId = null;
 		});
 	});
 
 	$scope.checkout = function() {
-		Svn.open($scope.rd.svn);
+		Svn.open($scope.svn.info.URL);
+	};
+
+	$scope.commit = function() {
+		Svn.commit($scope.rd, $scope.svn.info);
 	};
 
 	$scope.save = function() {
