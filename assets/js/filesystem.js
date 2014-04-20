@@ -11,15 +11,21 @@ var listeners = {
 };
 
 return {
-	on: function(event, callback) {
-		listeners[event].push(callback);
+	on: function(events, callback) {
+		var events = events.split(' ');
+		events.forEach(function(event) {
+			listeners[event].push(callback);
+		});
 	},
 
 	fire: function(event) {
 		var args = Array.prototype.splice.call(arguments, 1);
 		var self = this;
 		listeners[event].forEach(function(callback) {
-			callback.apply(self, args);
+			// Wrapped in timeout to ensure asynchronous firing
+			setTimeout(function() {
+				callback.apply(self, args);
+			}, 0);
 		});
 	},
 

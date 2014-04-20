@@ -1,34 +1,48 @@
 angular.module('Clockdoc.Utils')
-.factory('Svn', function() {
+.factory('Svn', ['$q', function($q) {
 
 	var nativeSvnApp = 'com.clockwork.svn';
+	var svnRoot = 'svn+ssh://svn.pozitronic.com/svnroot';
 
 	var listeners = {
 		'error'     : [],
 		'cancel'    : [],
 		'executing' : [],
 		'read'      : [],
+		'checkout'  : [],
 		'info'      : [],
 		'commit'    : [],
 		'update'    : []
 	};
 
 	return {
-		on: function(event, callback) {
-			listeners[event].push(callback);
-		},
-
-		fire: function(event) {
-			var args = Array.prototype.splice.call(arguments, 1);
-			var self = this;
-			listeners[event].forEach(function(callback) {
-				callback.apply(self, args);
+		on: function(events, callback) {
+			var events = events.split(' ');
+			events.forEach(function(event) {
+				listeners[event].push(callback);
 			});
 		},
 
-		info: function(svnPath, callback) {
+		fire: function(event) {
+			if (!listeners[event]) {
+				console.warn('Undefined event', event);
+				return;
+			}
+
+			var args = Array.prototype.splice.call(arguments, 1);
 			var self = this;
-			self.exec(['svn', 'info', svnPath], function(response) {
+			listeners[event].forEach(function(callback) {
+				// Wrapped in timeout to ensure asynchronous firing
+				setTimeout(function() {
+					callback.apply(self, args);
+				}, 0);
+			});
+		},
+
+		info: function(svnPath) {
+			var self = this;
+			var args = ['svn', 'info', svnPath];
+			return self.exec(args).then(function(response) {
 				var data = angular.fromJson(response);
 				var info = data.response;
 				var lines = info.split('\n');
@@ -39,27 +53,65 @@ angular.module('Clockdoc.Utils')
 					var value = line.substr(colon + 1).trim();
 					values[key] = value;
 				});
-				if (callback) callback.call(self, values);
 				self.fire('info', values);
+			}, function(e) {
+				self.fire('error', e);
+			});
+		},
+
+		resolveWithInfo: function(svnPath, event, response) {
+			var self = this;
+			var text = angular.fromJson(response);
+			var result = {
+				content: text && text.response,
+				path: svnPath
+			};
+			// Add info to the checkout
+			self.info(svnPath).then(function(values) {
+				result.info = values;
+				self.fire(event, result);
+			}, function(e) {
+				self.fire('error', e);
 			});
 		},
 
 		// svn+ssh://svn.pozitronic.com/svnroot/templates/rd-rd.json
-		open: function(svnPath, callback) {
+		open: function(svnPath) {
 			var self = this;
-			self.exec(['svn', 'cat', svnPath], function(response) {
-				var text = angular.fromJson(response);
-				var result = {
-					content: text && text.response,
-					path: svnPath
-				};
-				// Add info to the checkout
-				self.info(svnPath, function(values) {
-					result.info = values;
-					if (callback) callback.call(self, result);
-					self.fire('read', result);
-				});
+			var args = ['svn', 'cat', svnPath];
+			return self.exec(args).then(function(response) {
+				self.resolveWithInfo(svnPath, 'read', response);
+			},
+			function(e) {
+				self.fire('error', e);
 			});
+		},
+
+		// Allows the user to checkout a file. The callback
+		// receives the contents, path, file entry and svn info
+		checkout: function(svnPath) {
+			var self = this,
+				path = svnPath.replace(svnRoot, ''),
+				dir = path.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, ''),
+				file = path.split('/').reverse()[0];
+
+			var run = function(args) {
+				return function(response) {
+					self.exec(args);
+				}
+			}
+			
+			var err = function(e) {
+				self.fire('error', e);
+			}
+
+			return self.exec(['rm', '-rf', '.' + dir], err)
+			.then(run(['svn', 'co', '--depth=empty', svnRoot + dir]), err)
+			.then(run(['svn', 'up', '--depth=empty', '.' + dir + '/' + file]), err)
+			.then(run(['cat', '.' + dir + '/' + file]), err)
+			.then(function(response) {
+				self.resolveWithInfo(svnPath, 'checkout', response);
+			}, err);
 		},
 
 		commit: function(data, info) {
@@ -71,30 +123,32 @@ angular.module('Clockdoc.Utils')
 				info.URL,
 				'-m', info['Message']
 			];
-			console.log('would be committing with this:', args);
-			// see svnmucc for details
-			// svnmucc -r 14 put README.tmpfile ://svn.example.com/projects/sandbox/README -m "Tweak the README file."
+			var self = this;
+			return self.exec(args).then(function(response) {
+				self.fire('commit', response);
+				console.log("committed!", response);
+			});
 		},
 
-		exec: function(args, callback) {
-			console.trace('exec', args);
-			var self = this;
-			self.fire('executing', args);
-			chrome.runtime.sendNativeMessage(
-				nativeSvnApp,
-				{ command: args },
-				function(response) {
-					if (chrome.runtime.lastError) {
-						console.log('error running svn command', args, chrome.runtime.lastError);
-						self.fire('error', chrome.runtime.lastError);
-						return;
-					}
-					console.log("response", arguments);
-					callback(response);
+		// Queues up the execution of a command and returns a promise
+		exec: function(args) {
+			var deferred = $q.defer();
+			var self     = this;
+
+			var resolveResponse = function(response) {
+				if (chrome.runtime.lastError) {
+					deferred.reject(chrome.runtime.lastError);
 				}
+				deferred.resolve(response);
+			};
+
+			chrome.runtime.sendNativeMessage(
+				nativeSvnApp, 
+				{ command: args },
+				resolveResponse
 			);
+
+			return deferred.promise;
 		}
-
-
 	};
-});
+}]);

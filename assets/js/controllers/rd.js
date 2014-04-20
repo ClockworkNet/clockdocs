@@ -126,7 +126,9 @@ function($scope, $location, FileSystem, Random, Svn) {
 
 	/// Filesystem Methods ///
 	FileSystem.on('error', function(e) {
-		return warn("Filesystem Error", "There was an error accessing the file system.");
+		$scope.$apply(function() {
+			return warn("Filesystem Error", "There was an error accessing the file system.");
+		});
 	});
 
 	FileSystem.on('read', function(result) {
@@ -149,8 +151,10 @@ function($scope, $location, FileSystem, Random, Svn) {
 	});
 
 	FileSystem.on('writing', function(result) {
-		console.info('saving...', result);
-		$scope.working = true;
+		$scope.$apply(function() {
+			console.info('saving...', result);
+			$scope.working = true;
+		});
 	});
 
 	FileSystem.on('write', function(result) {
@@ -196,15 +200,18 @@ function($scope, $location, FileSystem, Random, Svn) {
 	});
 
 	Svn.on('executing', function(args) {
-		$scope.working = true;
-		console.log("Executing", args);
+		$scope.$apply(function() {
+			$scope.working = true;
+			console.log("Executing", args);
+		});
 	});
 
-	Svn.on('read', function(result) {
+	Svn.on('read checkout', function(result) {
 		console.info("Read from SVN", result);
 
 		$scope.$apply(function() {
 			$scope.working = false;
+
 			$scope.fileEntry = null;
 			$scope.fileentryId = null;
 
@@ -221,8 +228,12 @@ function($scope, $location, FileSystem, Random, Svn) {
 		});
 	});
 
-	$scope.checkout = function() {
+	$scope.openSvn = function() {
 		Svn.open($scope.svn.info.URL);
+	};
+
+	$scope.checkout = function() {
+		Svn.checkout($scope.svn.info.URL);
 	};
 
 	$scope.commit = function() {
