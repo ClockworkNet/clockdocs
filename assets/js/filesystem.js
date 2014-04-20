@@ -29,8 +29,13 @@ return {
 		});
 	},
 
-	// Allows the user to open a file. The callback
-	// receives the contents, file entry, and progress event
+	// Allows the user to open a file or directory. 
+	//
+	// If you specify extensions, the promise resolves with an object that
+	// contains the contents, file entry, entry id, and progress event
+	//
+	// If you leave out extensions, the promise resolves to an object
+	// with the entry and entry id
 	open: function(extensions) {
 		var self = this;
 		var deferred = $q.defer();
@@ -50,7 +55,7 @@ return {
 
 			self.fire('open', result);
 
-			if (typeof entry == 'DirectoryEntry') {
+			if (entry.isDirectory) {
 				return deferred.resolve(result);
 			}
 

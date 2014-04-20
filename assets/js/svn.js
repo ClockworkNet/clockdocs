@@ -1,5 +1,5 @@
 angular.module('Clockdoc.Utils')
-.factory('Svn', ['$q', 'FileSystem', function($q) {
+.factory('Svn', ['$q', 'FileSystem', function($q, FileSystem) {
 
 	var nativeSvnApp = 'com.clockwork.svn';
 	var svnRoot = 'svn+ssh://svn.pozitronic.com/svnroot';
@@ -106,32 +106,44 @@ angular.module('Clockdoc.Utils')
 		checkout: function(svnPath) {
 			var self = this,
 				path = svnPath.replace(svnRoot, ''),
-				dir = path.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, ''),
-				file = path.split('/').reverse()[0];
+				svnDir = svnPath.substr(0, svnPath.lastIndexOf('/')),
+				svnFile = path.split('/').reverse()[0];
 
 			// @todo: get the user's preferred directory
+			return FileSystem.open()
+			.then(function(localDir) {
 
-			var run = function(args) {
-				return function(response) {
-					console.log('Received', response, 'Running', args);
-					return self.exec(args);
+				console.log("Selected directory", localDir);
+				if (!localDir || !localDir.entry) {
+					return self.fire('cancel');
 				}
-			}
 
-			return self.exec(['rm', '-rf', '.' + dir])
-			.then(run(['svn', 'co', '--depth=empty', svnRoot + dir]))
-			.then(run(['svn', 'up', '--depth=empty', '.' + dir + '/' + file]))
-			.then(run(['cat', '.' + dir + '/' + file]))
-			.then(function(response) {
-				var text = angular.fromJson(response);
-				var result = {
-					content: text && text.response,
-					path: svnPath
-				};
-				return self.fireWithInfo('checkout', result);
-			})
-			.catch(function(e) {
-				self.fire('error', e);
+				var run = function(args) {
+					return function(response) {
+						console.log('Received', response, 'Running', args);
+						return self.exec(args);
+					}
+				}
+
+				var localDirPath = '.' + localDir.entry.fullPath + '/';
+				var localFilePath = localDirPath + svnFile;
+
+				return self.exec(['svn', 'co', '--depth=empty', svnDir, localDirPath])
+				.then(run['svn', 'up', '--depth=empty', svnFile, localDirPath])
+				.then(run(['cat', localFilePath]))
+				.then(function(response) {
+					var text = angular.fromJson(response);
+					var result = {
+						content: text && text.response,
+						path: svnPath,
+						entry: localDir.entry,
+						entryId: localDir.entryId
+					};
+					return self.fireWithInfo('checkout', result);
+				})
+				.catch(function(e) {
+					self.fire('error', e);
+				});
 			});
 		},
 
@@ -169,6 +181,7 @@ angular.module('Clockdoc.Utils')
 				deferred.resolve(response);
 			};
 
+			console.log('exec', args);
 			chrome.runtime.sendNativeMessage(
 				nativeSvnApp, 
 				{ command: args },

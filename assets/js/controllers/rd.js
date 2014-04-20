@@ -195,7 +195,8 @@ function($scope, $location, FileSystem, Random, Svn) {
 	/// SVN ///
 	Svn.on('error', function(e) {
 		$scope.$apply(function() {
-			warn("SVN error", "An error occurred with SVN: " + e);
+			console.error('SVN error', e);
+			warn("A SVN error occurred.", "Check the console log for details.");
 		});
 	});
 
