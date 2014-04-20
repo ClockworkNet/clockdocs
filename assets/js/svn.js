@@ -42,7 +42,9 @@ angular.module('Clockdoc.Utils')
 		info: function(svnPath) {
 			var self = this;
 			var args = ['svn', 'info', svnPath];
-			return self.exec(args).then(function(response) {
+
+			return self.exec(args)
+			.then(function(response) {
 				var data = angular.fromJson(response);
 				var info = data.response;
 				var lines = info.split('\n');
@@ -54,7 +56,8 @@ angular.module('Clockdoc.Utils')
 					values[key] = value;
 				});
 				self.fire('info', values);
-			}, function(e) {
+			})
+			.catch(function(e) {
 				self.fire('error', e);
 			});
 		},
@@ -67,10 +70,12 @@ angular.module('Clockdoc.Utils')
 				path: svnPath
 			};
 			// Add info to the checkout
-			self.info(svnPath).then(function(values) {
+			self.info(svnPath)
+			.then(function(values) {
 				result.info = values;
 				self.fire(event, result);
-			}, function(e) {
+			})
+			.catch(function(e) {
 				self.fire('error', e);
 			});
 		},
@@ -79,10 +84,11 @@ angular.module('Clockdoc.Utils')
 		open: function(svnPath) {
 			var self = this;
 			var args = ['svn', 'cat', svnPath];
-			return self.exec(args).then(function(response) {
+			return self.exec(args)
+			.then(function(response) {
 				self.resolveWithInfo(svnPath, 'read', response);
-			},
-			function(e) {
+			})
+			.catch(function(e) {
 				self.fire('error', e);
 			});
 		},
@@ -97,21 +103,21 @@ angular.module('Clockdoc.Utils')
 
 			var run = function(args) {
 				return function(response) {
-					self.exec(args);
+					console.log('Received', response, 'Running', args);
+					return self.exec(args);
 				}
 			}
-			
-			var err = function(e) {
-				self.fire('error', e);
-			}
 
-			return self.exec(['rm', '-rf', '.' + dir], err)
-			.then(run(['svn', 'co', '--depth=empty', svnRoot + dir]), err)
-			.then(run(['svn', 'up', '--depth=empty', '.' + dir + '/' + file]), err)
-			.then(run(['cat', '.' + dir + '/' + file]), err)
+			return self.exec(['rm', '-rf', '.' + dir])
+			.then(run(['svn', 'co', '--depth=empty', svnRoot + dir]))
+			.then(run(['svn', 'up', '--depth=empty', '.' + dir + '/' + file]))
+			.then(run(['cat', '.' + dir + '/' + file]))
 			.then(function(response) {
 				self.resolveWithInfo(svnPath, 'checkout', response);
-			}, err);
+			})
+			.catch(function(e) {
+				self.fire('error', e);
+			});
 		},
 
 		commit: function(data, info) {
@@ -124,9 +130,13 @@ angular.module('Clockdoc.Utils')
 				'-m', info['Message']
 			];
 			var self = this;
-			return self.exec(args).then(function(response) {
+			return self.exec(args)
+			.then(function(response) {
 				self.fire('commit', response);
 				console.log("committed!", response);
+			}).
+			catch(function(e) {
+				self.fire('error', e);
 			});
 		},
 

@@ -202,7 +202,6 @@ function($scope, $location, FileSystem, Random, Svn) {
 	Svn.on('executing', function(args) {
 		$scope.$apply(function() {
 			$scope.working = true;
-			console.log("Executing", args);
 		});
 	});
 
