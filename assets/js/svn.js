@@ -39,22 +39,29 @@ angular.module('Clockdoc.Utils')
 			});
 		},
 
+		parseInfo: function(response) {
+			var data = angular.fromJson(response);
+			var info = data.response;
+			var lines = info.split('\n');
+			var values = {};
+			lines.forEach(function(line) {
+				var colon = line.indexOf(':');
+				var key = line.substr(0, colon).trim();
+				var value = line.substr(colon + 1).trim();
+				if (key && key.length) {
+					values[key] = value;
+				}
+			});
+			return values;
+		},
+
 		info: function(svnPath) {
 			var self = this;
 			var args = ['svn', 'info', svnPath];
 
 			return self.exec(args)
 			.then(function(response) {
-				var data = angular.fromJson(response);
-				var info = data.response;
-				var lines = info.split('\n');
-				var values = {};
-				lines.forEach(function(line) {
-					var colon = line.indexOf(':');
-					var key = line.substr(0, colon).trim();
-					var value = line.substr(colon + 1).trim();
-					values[key] = value;
-				});
+				var values = self.parseInfo(response);
 				self.fire('info', values);
 			})
 			.catch(function(e) {
@@ -62,17 +69,18 @@ angular.module('Clockdoc.Utils')
 			});
 		},
 
-		resolveWithInfo: function(svnPath, event, response) {
+		fireWithInfo: function(svnPath, event, response) {
 			var self = this;
+			var args = ['svn', 'info', svnPath];
 			var text = angular.fromJson(response);
 			var result = {
 				content: text && text.response,
 				path: svnPath
 			};
 			// Add info to the checkout
-			self.info(svnPath)
-			.then(function(values) {
-				result.info = values;
+			return self.exec(args)
+			.then(function(response) {
+				result.info = self.parseInfo(response);
 				self.fire(event, result);
 			})
 			.catch(function(e) {
@@ -86,7 +94,7 @@ angular.module('Clockdoc.Utils')
 			var args = ['svn', 'cat', svnPath];
 			return self.exec(args)
 			.then(function(response) {
-				self.resolveWithInfo(svnPath, 'read', response);
+				return self.fireWithInfo(svnPath, 'read', response);
 			})
 			.catch(function(e) {
 				self.fire('error', e);
@@ -113,7 +121,7 @@ angular.module('Clockdoc.Utils')
 			.then(run(['svn', 'up', '--depth=empty', '.' + dir + '/' + file]))
 			.then(run(['cat', '.' + dir + '/' + file]))
 			.then(function(response) {
-				self.resolveWithInfo(svnPath, 'checkout', response);
+				return self.fireWithInfo(svnPath, 'checkout', response);
 			})
 			.catch(function(e) {
 				self.fire('error', e);
