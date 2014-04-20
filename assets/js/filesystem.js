@@ -1,5 +1,5 @@
 angular.module('Clockdoc.Utils')
-.factory('FileSystem', function() {
+.factory('FileSystem', ['$q', function($q) {
 
 var listeners = {
 	'error'  : [],
@@ -31,51 +31,68 @@ return {
 
 	// Allows the user to open a file. The callback
 	// receives the contents, file entry, and progress event
-	open: function(extensions, callback) {
+	open: function(extensions) {
 		var self = this;
+		var deferred = $q.defer();
+
 		var onOpen = function(entry) {
 			if (!entry) {
 				self.fire('cancel');
-				if (callback) callback.apply(self, arguments);
-				return;
+				return deferred.resolve(null);
 			}
 
 			var entryId = chrome.fileSystem.retainEntry(entry);
 
-			self.fire('open', entry, entryId);
+			var result = {
+				entry: entry,
+				entryId: entryId
+			};
+
+			self.fire('open', result);
+
+			if (typeof entry == 'DirectoryEntry') {
+				return deferred.resolve(result);
+			}
+
 			var reader = new FileReader();
 
 			reader.onerror = function(e) {
 				self.fire('error', e);
+				return deferred.reject(e);
 			};
 
 			reader.onload = function(event) {
-				var content = event.target && event.target.result;
-				var result  = {
-					content: content,
-					entry: entry,
-					event: event,
-					entryId: entryId
-				};
+				result.event   = event;
+				result.content = event.target && event.target.result;
 				self.fire('read', result);
-				if (callback) {
-					callback.call(self, result);
-				}
+				return deferred.resolve(result);
 			};
 
 			entry.file(function(file) {
 				reader.readAsText(file);
 			}, function(e) {
 				self.fire('error', e);
+				return deferred.reject(e);
 			});
+
 		};
-		var args = {type: 'openWritableFile'};
-		if (extensions) args.accepts = [{extensions: extensions}];
+		var args = {}
+		if (extensions) {
+			args.type = 'openWritableFile';
+			args.accepts = [{extensions: extensions}];
+		}
+		// If extensions weren't specified, then we're getting a directory
+		else {
+			args.type = 'openDirectory';
+		}
 		chrome.fileSystem.chooseEntry(args, onOpen);
+
+		return deferred.promise;
 	},
 
 	write: function(entry, data, type) {
 		var self = this;
+		var deferred = $q.defer();
 
 		if (!entry) {
 			self.fire('cancel');
@@ -91,6 +108,7 @@ return {
 
 		var onError = function(e) {
 			self.fire('error', e);
+			deferred.reject(e);
 		};
 
 		var onWrite = function(w) {
@@ -102,6 +120,7 @@ return {
 				entryId: entryId
 			};
 			self.fire('write', result);
+			deferred.resolve(result);
 		};
 
 		entry.createWriter(function(writer) {
@@ -109,30 +128,46 @@ return {
 			writer.onwriteend = onWrite;
 			writer.write(new Blob([data], {type: type}));
 		}, onError);
+
+		return deferred.promise;
 	},
 
 	save: function(entryId, data, type) {
 		var self = this;
+		var deferred = $q.defer();
 		chrome.fileSystem.restoreEntry(entryId, function(entry) {
 			if (chrome.runtime.lastError) {
 				self.fire('error', chrome.runtime.lastError);
 				return;
 			}
-			self.write(entry, data, type);
+			self.write(entry, data, type)
+			.then(function(result) {
+				deferred.resolve(result);
+			}, function(e) {
+				deferred.reject(e);
+			});
 		});
+		return deferred.promise;
 	},
 
 	saveAs: function (filename, extension, data, type) {
 		var self = this;
+		var deferred = $q.defer();
 		var args = {
 			type: 'saveFile',
 			suggestedName: filename,
 			accepts: [{extensions: [extension]}]
 		};
 		chrome.fileSystem.chooseEntry(args, function(entry) {
-			self.write(entry, data, type);
+			self.write(entry, data, type)
+			.then(function(result) {
+				deferred.resolve(result);
+			}, function(e) {
+				deferred.reject(e);
+			});
 		});
+		return deferred.promise;
 	}
 };
 
-});
+}]);

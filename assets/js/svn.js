@@ -1,5 +1,5 @@
 angular.module('Clockdoc.Utils')
-.factory('Svn', ['$q', function($q) {
+.factory('Svn', ['$q', 'FileSystem', function($q) {
 
 	var nativeSvnApp = 'com.clockwork.svn';
 	var svnRoot = 'svn+ssh://svn.pozitronic.com/svnroot';
@@ -69,14 +69,9 @@ angular.module('Clockdoc.Utils')
 			});
 		},
 
-		fireWithInfo: function(svnPath, event, response) {
+		fireWithInfo: function(event, result) {
 			var self = this;
-			var args = ['svn', 'info', svnPath];
-			var text = angular.fromJson(response);
-			var result = {
-				content: text && text.response,
-				path: svnPath
-			};
+			var args = ['svn', 'info', result.path];
 			// Add info to the checkout
 			return self.exec(args)
 			.then(function(response) {
@@ -94,7 +89,12 @@ angular.module('Clockdoc.Utils')
 			var args = ['svn', 'cat', svnPath];
 			return self.exec(args)
 			.then(function(response) {
-				return self.fireWithInfo(svnPath, 'read', response);
+				var text = angular.fromJson(response);
+				var result = {
+					content: text && text.response,
+					path: svnPath
+				};
+				return self.fireWithInfo('read', result);
 			})
 			.catch(function(e) {
 				self.fire('error', e);
@@ -109,6 +109,8 @@ angular.module('Clockdoc.Utils')
 				dir = path.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, ''),
 				file = path.split('/').reverse()[0];
 
+			// @todo: get the user's preferred directory
+
 			var run = function(args) {
 				return function(response) {
 					console.log('Received', response, 'Running', args);
@@ -121,7 +123,12 @@ angular.module('Clockdoc.Utils')
 			.then(run(['svn', 'up', '--depth=empty', '.' + dir + '/' + file]))
 			.then(run(['cat', '.' + dir + '/' + file]))
 			.then(function(response) {
-				return self.fireWithInfo(svnPath, 'checkout', response);
+				var text = angular.fromJson(response);
+				var result = {
+					content: text && text.response,
+					path: svnPath
+				};
+				return self.fireWithInfo('checkout', result);
 			})
 			.catch(function(e) {
 				self.fire('error', e);
