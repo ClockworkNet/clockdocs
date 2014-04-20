@@ -135,6 +135,8 @@ angular.module('Clockdoc.Utils')
 			var deferred = $q.defer();
 			var self     = this;
 
+			self.fire('executing', args);
+
 			var resolveResponse = function(response) {
 				if (chrome.runtime.lastError) {
 					deferred.reject(chrome.runtime.lastError);
