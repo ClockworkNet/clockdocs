@@ -53,12 +53,21 @@ return {
 				entryId: entryId
 			};
 
-			self.fire('open', result);
+			chrome.fileSystem.getDisplayPath(entry, function(displayPath) {
+				result.displayPath = displayPath;
 
-			if (entry.isDirectory) {
-				return deferred.resolve(result);
-			}
+				self.fire('open', result);
 
+				if (entry.isDirectory) {
+					return deferred.resolve(result);
+				}
+				else {
+					read(result);
+				}
+			});
+		};
+
+		var read = function(result) {
 			var reader = new FileReader();
 
 			reader.onerror = function(e) {
@@ -73,14 +82,14 @@ return {
 				return deferred.resolve(result);
 			};
 
-			entry.file(function(file) {
+			result.entry.file(function(file) {
 				reader.readAsText(file);
 			}, function(e) {
 				self.fire('error', e);
 				return deferred.reject(e);
 			});
-
 		};
+
 		var args = {}
 		if (extensions) {
 			args.type = 'openWritableFile';
@@ -100,8 +109,8 @@ return {
 		var deferred = $q.defer();
 
 		if (!entry) {
-			self.fire('cancel');
-			return;
+			deferred.resolve(null);
+			return deferred.promise;
 		}
 
 		self.fire('writing', {
@@ -112,7 +121,6 @@ return {
 		type = type || 'text';
 
 		var onError = function(e) {
-			self.fire('error', e);
 			deferred.reject(e);
 		};
 
@@ -124,7 +132,6 @@ return {
 				entry: entry,
 				entryId: entryId
 			};
-			self.fire('write', result);
 			deferred.resolve(result);
 		};
 
@@ -147,8 +154,15 @@ return {
 			}
 			self.write(entry, data, type)
 			.then(function(result) {
+				if (result) {
+					self.fire('write', result);
+				}
+				else {
+					self.fire('cancel', result);
+				}
 				deferred.resolve(result);
 			}, function(e) {
+				self.fire('error', e);
 				deferred.reject(e);
 			});
 		});
@@ -166,8 +180,15 @@ return {
 		chrome.fileSystem.chooseEntry(args, function(entry) {
 			self.write(entry, data, type)
 			.then(function(result) {
+				if (result) {
+					self.fire('write', result);
+				}
+				else {
+					self.fire('cancel', result);
+				}
 				deferred.resolve(result);
 			}, function(e) {
+				self.fire('error', e);
 				deferred.reject(e);
 			});
 		});

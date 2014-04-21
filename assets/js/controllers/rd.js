@@ -117,12 +117,8 @@ function($scope, $location, FileSystem, Random, Svn) {
 	// The rd being edited
 	$scope.rd = null;
 
-	// Used to retain the opened file entry for saving.
-	$scope.fileEntry = null;
-	$scope.fileEntryId = null;
-
-	// The svn info associated with an entry
-	$scope.svn = {};
+	// Used to retain the result of a file open or SVN checkout
+	$scope.result = {};
 
 	/// Filesystem Methods ///
 	FileSystem.on('error', function(e) {
@@ -139,9 +135,7 @@ function($scope, $location, FileSystem, Random, Svn) {
 		$scope.$apply(function() {
 			try {
 				$scope.rd = angular.fromJson(result.content);
-				$scope.fileEntry = result.entry;
-				$scope.fileEntryId = result.entryId;
-				$scope.svn = {};
+				$scope.result = result;
 			}
 			catch (e) {
 				console.error('file open error', e);
@@ -152,18 +146,14 @@ function($scope, $location, FileSystem, Random, Svn) {
 
 	FileSystem.on('writing', function(result) {
 		$scope.$apply(function() {
-			console.info('saving...', result);
 			$scope.working = true;
 		});
 	});
 
 	FileSystem.on('write', function(result) {
-		console.info('write file', result);
 		$scope.$apply(function() {
 			$scope.working = false;
-			$scope.fileEntry = result.entry;
-			$scope.fileEntryId = result.entryId;
-			$scope.svn = null;
+			$scope.result = result;
 		});
 	});
 
@@ -183,9 +173,7 @@ function($scope, $location, FileSystem, Random, Svn) {
 			],
 			flags: []
 		};
-		$scope.fileEntry = null;
-		$scope.fileEntryId = null;
-		$scope.svn = {};
+		$scope.result = {};
 	};
 
 	$scope.open = function() {
@@ -211,11 +199,7 @@ function($scope, $location, FileSystem, Random, Svn) {
 
 		$scope.$apply(function() {
 			$scope.working = false;
-
-			$scope.fileEntry = null;
-			$scope.fileentryId = null;
-
-			$scope.svn = {info: result.info};
+			$scope.result = result;
 			$scope.rd = angular.fromJson(result.content);
 		});
 	});
@@ -223,30 +207,30 @@ function($scope, $location, FileSystem, Random, Svn) {
 	Svn.on('commit', function(result) {
 		$scope.$apply(function() {
 			$scope.working = false;
-			$scope.fileEntry = null;
-			$scope.fileentryId = null;
+			$scope.result = result;
 		});
 	});
 
 	$scope.openSvn = function() {
-		Svn.open($scope.svn.info.URL);
+		Svn.open($scope.result.svn.URL);
 	};
 
 	$scope.checkout = function() {
-		Svn.checkout($scope.svn.info.URL);
+		Svn.checkout($scope.result.svn.URL);
 	};
 
 	$scope.commit = function() {
-		Svn.commit($scope.rd, $scope.svn.info);
+		$scope.result.content = angular.toJson($scope.rd);
+		Svn.commit($scope.result);
 	};
 
 	$scope.save = function() {
-		if (!$scope.fileEntryId) {
+		if (!$scope.entryId) {
 			$scope.saveAs();
 			return;
 		}
 		var content = angular.toJson($scope.rd, true);
-		FileSystem.save($scope.fileEntryId, content);
+		FileSystem.save($scope.entryId, content);
 	};
 
 	$scope.saveAs = function() {

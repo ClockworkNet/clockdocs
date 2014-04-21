@@ -75,7 +75,7 @@ angular.module('Clockdoc.Utils')
 			// Add info to the checkout
 			return self.exec(args)
 			.then(function(response) {
-				result.info = self.parseInfo(response);
+				result.svn = self.parseInfo(response);
 				self.fire(event, result);
 			})
 			.catch(function(e) {
@@ -109,7 +109,6 @@ angular.module('Clockdoc.Utils')
 				svnDir = svnPath.substr(0, svnPath.lastIndexOf('/')),
 				svnFile = path.split('/').reverse()[0];
 
-			// @todo: get the user's preferred directory
 			return FileSystem.open()
 			.then(function(localDir) {
 
@@ -120,26 +119,32 @@ angular.module('Clockdoc.Utils')
 
 				var run = function(args) {
 					return function(response) {
-						console.log('Received', response, 'Running', args);
 						return self.exec(args);
 					}
 				}
 
-				var localDirPath = '.' + localDir.entry.fullPath + '/';
+				var localDirPath = localDir.displayPath + '/';
 				var localFilePath = localDirPath + svnFile;
 
 				return self.exec(['svn', 'co', '--depth=empty', svnDir, localDirPath])
-				.then(run['svn', 'up', '--depth=empty', svnFile, localDirPath])
+				.then(run(['svn', 'up', localFilePath]))
 				.then(run(['cat', localFilePath]))
 				.then(function(response) {
 					var text = angular.fromJson(response);
 					var result = {
 						content: text && text.response,
 						path: svnPath,
-						entry: localDir.entry,
-						entryId: localDir.entryId
+						localPath: localFilePath,
+						dir: localDir.entry,
+						dirId: localDir.entryId
 					};
-					return self.fireWithInfo('checkout', result);
+					console.log('trying to get file', svnFile);
+					localDir.entry.getFile(svnFile, {create: true}, function(entry) {
+						result.entry = entry;
+						self.fireWithInfo('checkout', result);
+					}, function(e) {
+						self.fire('error', e);
+					});
 				})
 				.catch(function(e) {
 					self.fire('error', e);
@@ -147,23 +152,29 @@ angular.module('Clockdoc.Utils')
 			});
 		},
 
-		commit: function(data, info) {
-			var args = [
-				'echo', angular.toJson(data), '|', // Pipe the file contents to svnmucc
-				'svnmucc',
-				'-r', info['Revision'], // Include revision # to prevent clobbering a newer version
-				'put', '-', // Use '-' to indicate using STDIN
-				info.URL,
-				'-m', info['Message']
-			];
+		// Commits changes made to a checkout. Uses the 'result' object
+		// returned by a checkout
+		commit: function(result) {
+			if (!result.svn || !result.svn.Message) {
+				self.fire('error', new Error('Commits require a message'));
+				return;
+			}
+			if (!result.entry || !result.localPath) {
+				self.fire('error', new Error('Local path not found'));
+				return;
+			}
 			var self = this;
-			return self.exec(args)
-			.then(function(response) {
-				self.fire('commit', response);
-				console.log("committed!", response);
-			}).
-			catch(function(e) {
-				self.fire('error', e);
+			return FileSystem.write(result.entry, result.content)
+			.then(function(rsp) {
+				var message = result.svn.Message;
+				self.exec(['svn', 'ci', result.localPath, '-m', message])
+				.then(function(response) {
+					console.log("committed!", response);
+					self.fire('commit', response);
+				}).
+				catch(function(e) {
+					self.fire('error', e);
+				});
 			});
 		},
 
@@ -181,7 +192,7 @@ angular.module('Clockdoc.Utils')
 				deferred.resolve(response);
 			};
 
-			console.log('exec', args);
+			console.log('Svn.exec:', args);
 			chrome.runtime.sendNativeMessage(
 				nativeSvnApp, 
 				{ command: args },
