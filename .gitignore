@@ -1,4 +1,4 @@
 *.vim
-/bowery
 .DS_Store
 .svn
+/bowery

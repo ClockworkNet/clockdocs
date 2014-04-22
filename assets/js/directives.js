@@ -2,35 +2,26 @@ angular.module('Clockdoc.Directives')
 
 // Adds a click event to an element that will scroll the window
 // to the specified target (and select all text)
-.directive('cwScroller', function() {
+.directive('cwScroller', ['Scroll', function(Scroll) {
 return {
 	restrict: 'A',
 	link: function(scope, el, attrs) {
 		var targetId = null;
-		var padding = attrs.padding || 120;
-		var speed = attrs.cwScrollerSpeed || 1;
+		var self     = this;
+
+		attrs.cwScrollerSource = el;
+
 		scope.$watch(attrs.cwScroller, function(value) {
 			targetId = value;
 		});
+
 		var scroll = function() {
-			var targetEl = $('#' + targetId);
-			var offset = targetEl && targetEl.offset();
-			if (!offset) {
-				console.error("Invalid scroller target id", targetId);
-				return false;
-			}
-			var destination = offset.top - padding;
-			var distance = Math.abs(el.offset().top - destination);
-			var time = distance / speed;
-			$('body').animate({scrollTop: destination}, time, function() {
-				targetEl.focus();
-				document.execCommand('selectAll', false, null);
-			});
-			return false;
+			Scroll.to(targetId, attrs);
 		};
+
 		el.on('click', scroll);
 	}
-}})
+}}])
 
 // Executes one or more content editing commands on the target specified
 // with the exec-target attribute

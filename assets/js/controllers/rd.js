@@ -1,6 +1,6 @@
 angular.module('Clockdoc.Controllers')
-.controller('RdCtrl', ['$scope', '$location', 'FileSystem', 'Random', 'Svn',
-function($scope, $location, FileSystem, Random, Svn) {
+.controller('RdCtrl', ['$scope', '$location', 'FileSystem', 'Random', 'Svn', 'Scroll',
+function($scope, $location, FileSystem, Random, Svn, Scroll) {
 
 	$scope.version = '1.1';
 
@@ -27,6 +27,10 @@ function($scope, $location, FileSystem, Random, Svn) {
 		"Future Phase"
 	];
 
+	function scrollTo(guid) {
+		Scroll.to(guid);
+	};
+
 	function warn(title, msg, type) {
 		type = type || 'danger';
 		$scope.alert = {
@@ -35,7 +39,7 @@ function($scope, $location, FileSystem, Random, Svn) {
 			content: msg
 		};
 		$('.alert').alert();
-	}
+	};
 
 	function createFeature(title) {
 		title = title || 'Untitled';
@@ -47,7 +51,7 @@ function($scope, $location, FileSystem, Random, Svn) {
 			'flags': [],
 			'tags': []
 		};
-	}
+	};
 
 	function createFlag(type) {
 		var flag = {};
@@ -240,7 +244,9 @@ function($scope, $location, FileSystem, Random, Svn) {
 
 	/// Section methods ///
 	$scope.insertSection = function(sectionIndex) {
-		$scope.rd.sections.splice(sectionIndex, 0, createFeature('Untitled Section'));
+		var section = createFeature('Untitled Section');
+		$scope.rd.sections.splice(sectionIndex, 0, section);
+		scrollTo(section.guid);
 	};
 
 	$scope.deleteSection = function(index) {
@@ -271,8 +277,7 @@ function($scope, $location, FileSystem, Random, Svn) {
 		featureIndex = featureIndex || features.length + 1;
 		features.splice(featureIndex, 0, feature);
 
-		$('#' + feature.guid).focus();
-		document.execCommand('selectAll', false, null);
+		scrollTo(feature.guid);
 	};
 
 	/// Tag methods ///
@@ -307,7 +312,9 @@ function($scope, $location, FileSystem, Random, Svn) {
 		if (!flags) {
 			return warn("Error adding flag", "The 'flags' colleciton was empty.");
 		}
-		flags.push(createFlag(type));
+		var flag = createFlag(type);
+		flags.push(flag);
+		scrollTo(flag.guid);
 	};
 
 	$scope.deleteFlag = function(flags, index) {
