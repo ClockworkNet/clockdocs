@@ -8,7 +8,9 @@ import os
 
 #print '{"foo": "bar"}'
 #print subprocess.check_output(["svn", "info", "svn+ssh://svn.pozitronic.com/svnroot/projects/bi_worldwide/dpsg"])
-os.chdir(os.path.dirname(os.path.realpath(__file__)))
+#os.chdir(os.path.dirname(os.path.realpath(__file__)) + '/svn')
+homedir = os.path.expanduser('~')
+os.chdir(homedir)
 
 def send_message(message):
 	sys.stdout.write(struct.pack('I', len(message)))

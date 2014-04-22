@@ -123,7 +123,14 @@ angular.module('Clockdoc.Utils')
 					}
 				}
 
+				// The display path typically has a "~" indication 
+				// for the home directory. We need to get the real home
+				// first and replace it
 				var localDirPath = localDir.displayPath + '/';
+				if (localDirPath[0] == '~') {
+					localDirPath = '.' + localDirPath.substring(1);
+				}
+
 				var localFilePath = localDirPath + svnFile;
 
 				return self.exec(['svn', 'co', '--depth=empty', svnDir, localDirPath])
@@ -139,7 +146,7 @@ angular.module('Clockdoc.Utils')
 						dirId: localDir.entryId
 					};
 					console.log('trying to get file', svnFile);
-					localDir.entry.getFile(svnFile, {create: true}, function(entry) {
+					localDir.entry.getFile(svnFile, {create: false}, function(entry) {
 						result.entry = entry;
 						self.fireWithInfo('checkout', result);
 					}, function(e) {
