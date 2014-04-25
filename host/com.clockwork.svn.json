@@ -1,0 +1,9 @@
+{
+	"name": "com.clockwork.svn",
+	"description": "Clockdocs Subversion client",
+	"path": "$HOST_DIR/native_messaging_client.py",
+	"type": "stdio",
+	"allowed_origins": [
+		"chrome-extension://$APP_ID/"
+	]
+}

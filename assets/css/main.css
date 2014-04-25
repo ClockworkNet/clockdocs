@@ -107,6 +107,10 @@ h3 {
    Editors
    ========================================================================== */
 
+.copyable {
+	cursor: hand;
+}
+
 [cw-editable], .ta-editor {
 	margin: 1px;
 	border: solid 1px #FFF;

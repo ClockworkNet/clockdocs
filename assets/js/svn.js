@@ -2,6 +2,7 @@ angular.module('Clockdoc.Utils')
 .factory('Svn', ['$q', 'FileSystem', function($q, FileSystem) {
 
 	var nativeSvnApp = 'com.clockwork.svn';
+	var clientApp = '/native_messaging_client.py';
 	var svnRoot = 'svn+ssh://svn.pozitronic.com/svnroot';
 
 	var listeners = {
@@ -16,6 +17,92 @@ angular.module('Clockdoc.Utils')
 	};
 
 	return {
+		manifest: function(installDir) {
+			var deferred = $q.defer();
+			var appId = chrome.runtime.id;
+			var clientPath = installDir + clientApp;
+
+			deferred.resolve({
+				name: nativeSvnApp,
+				description: "Subversion",
+				path: clientPath,
+				type: "stdio",
+				allowed_origins: ["chrome-extension://" + appId + "/"]
+			});
+
+			return deferred.promise;
+		},
+
+		install: function() {
+			var deferred = $q.defer();
+			var text = '';
+			var filename = nativeSvnApp + '.json';
+			var self = this;
+
+			var resolve = function() {
+				setTimeout(function() {
+					console.log("Wrote manifest file", filename);
+					deferred.resolve(true);
+				}, 0);
+			};
+
+			var reject = function() {
+				setTimeout(function() {
+					deferred.reject(false);
+				}, 0);
+			};
+
+			FileSystem.open()
+			.then(function(result) {
+				if (!result) {
+					return reject();
+				}
+				// @todo: Get the installation path somehow?
+				self.manifest('.').then(function(manifest) {
+					text = angular.toJson(manifest, true);
+					// Get the manifest and update it
+					result.entry.getFile(filename, {create: true}, function(entry) {
+						FileSystem.write(entry, text)
+						.then(resolve, reject);
+					}, function(e) {
+						self.fire('error', e);
+						reject();
+					});
+				});
+			});
+
+			return deferred.promise;
+		},
+
+		test: function() {
+			var deferred = $q.defer();
+
+			var pwd = function() {
+				try {
+					var args = ['pwd'];
+					chrome.runtime.sendNativeMessage(
+						nativeSvnApp, 
+						{ command: args },
+						function(response) {
+							if (response) {
+								deferred.resolve(response);
+							}
+							else {
+								deferred.reject(e);
+							}
+						}
+					);
+				}
+				catch (e) {
+					deferred.reject(e);
+				}
+			};
+
+			setTimeout(pwd, 0);
+
+			return deferred.promise;
+		},
+
 		on: function(events, callback) {
 			var events = events.split(' ');
 			events.forEach(function(event) {

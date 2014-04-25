@@ -10,6 +10,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-info btn-action" data-dismiss="modal" ng-click="open()" ng-show="result.svn.URL"><cw-icon type="cloud"></cw-icon> Open</button>
 				<button type="button" class="btn btn-primary btn-action" data-dismiss="modal" ng-click="checkout()" ng-show="result.svn.URL"><cw-icon type="cloud-download"></cw-icon> Checkout</button>
 			</div>
 		</div><!-- /.modal-content -->
@@ -33,6 +34,46 @@
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 				<button type="button" class="btn btn-warning btn-action" data-dismiss="modal" ng-click="commit()" ng-show="result.svn.Message"><cw-icon type="cloud-upload"></cw-icon> Commit Changes</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal" id="svn-form-install">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Install SVN Support</h4>
+			</div>
+			<div class="modal-body">
+				<div ng-hide="svnInstallStep">
+					<h2>Step 1</h2>
+					<p>Run the following command from the root of your installation of this app:
+						<kbd class="copyable">cd host; python setup.py install</kbd>
+					</p>
+					<button type="button" class="btn btn-link btn-action" ng-click="svnInstallStep = 1">Next <cw-icon type="arrow-right"></cw-icon></button>
+				</div>
+				<div ng-show="svnInstallStep == 1">
+					<h2>Step 2</h2>
+					<p>Give me permission to modify the permissions file. Select the directory located here:
+						<pre class="copyable" ng-show="platform.linux">~/.config/google-chrome/NativeMessagingHosts/</pre>
+						<pre class="copyable" ng-show="platform.mac">~/Library/Application Support/Google/Chrome/NativeMessagingHosts</pre>
+						<em ng-show="platform.mac"><strong>Mac Hint!</strong> Hit <kbd>Cmd+Shift+G</kbd> and paste the path</em>
+					</p>
+					<button type="button" class="btn btn-link btn-action" ng-click="svnInstallStep = 0"><cw-icon type="arrow-left"></cw-icon> Back</button>
+					<button type="button" class="btn btn-primary btn-action" ng-click="installSvn(); svnInstallStep = 2"><cw-icon type="folder-close"></cw-icon> Find directory</button>
+				</div>
+				<div ng-show="svnInstallStep == 2">
+					<h2>Step 3</h3>
+					<p ng-show="svnInstalled">SVN was successfully installed.</p>
+					<p ng-hide="svnInstalled">Something went wrong.</p>
+					<button type="button" class="btn btn-link btn-action" ng-click="svnInstallStep = 1" ng-hide="svnInstalled"><cw-icon type="arrow-left"></cw-icon> Back</button>
+					<button type="button" class="btn btn-primary btn-action" ng-click="svnInstallStep = 0" data-dismiss="modal"><cw-icon type="gift"></cw-icon> Profit!</button>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->

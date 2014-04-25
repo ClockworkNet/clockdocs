@@ -1,8 +1,11 @@
 angular.module('Clockdoc.Controllers')
-.controller('RdCtrl', ['$scope', '$location', 'FileSystem', 'Random', 'Svn', 'Scroll',
-function($scope, $location, FileSystem, Random, Svn, Scroll) {
+.controller('RdCtrl', ['$scope', '$location', 'FileSystem', 'Random', 'Svn', 'Scroll', 'Platform',
+function($scope, $location, FileSystem, Random, Svn, Scroll, Platform) {
 
+	var extension = 'cw'
 	$scope.version = '1.1';
+
+	Platform.load($scope, 'platform');
 
 	var flagTypes = $scope.flagTypes = [
 		{
@@ -181,10 +184,16 @@ function($scope, $location, FileSystem, Random, Svn, Scroll) {
 	};
 
 	$scope.open = function() {
-		FileSystem.open(['json']);
+		FileSystem.open([extension, 'json']);
 	};
 
 	/// SVN ///
+	$scope.svnInstalled = false;
+
+	Svn.test().then(function(rsp) {
+		$scope.svnInstalled = true;
+	});
+
 	Svn.on('error', function(e) {
 		$scope.$apply(function() {
 			console.error('SVN error', e);
@@ -223,6 +232,16 @@ function($scope, $location, FileSystem, Random, Svn, Scroll) {
 		Svn.checkout($scope.result.svn.URL);
 	};
 
+	$scope.installSvn = function() {
+		Svn.install().then(function() {
+			$scope.working = false;
+			$scope.svnInstalled = true;
+		}, function() {
+			// installation was cancelled
+			$scope.working = false;
+		});
+	};
+
 	$scope.commit = function() {
 		$scope.result.content = angular.toJson($scope.rd);
 		Svn.commit($scope.result);
@@ -239,7 +258,7 @@ function($scope, $location, FileSystem, Random, Svn, Scroll) {
 
 	$scope.saveAs = function() {
 		var rd = $scope.rd;
-		FileSystem.saveAs(rd.title, 'json', angular.toJson(rd, true), 'txt');
+		FileSystem.saveAs(rd.title, extension, angular.toJson(rd, true));
 	};
 
 	/// Section methods ///

@@ -14,7 +14,8 @@
 						<a class="dropdown-toggle" data-toggle="dropdown"><cw-icon type="open"></cw-icon> Open<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li><a ng-click="open()"><cw-icon type="open"></cw-icon> Open File</a></li>
-							<li><a data-toggle="modal" data-target="#svn-form"><cw-icon type="cloud-download"></cw-icon> Checkout from SVN</a></li>
+							<li ng-hide="svnInstalled"><a data-toggle="modal" data-target="#svn-form-install"><cw-icon type="folder-close"></cw-icon> Install SVN Support</a></li>
+							<li ng-show="svnInstalled"><a data-toggle="modal" data-target="#svn-form"><cw-icon type="cloud-download"></cw-icon> Open from SVN</a></li>
 						</ul>
 					</li>
 					<li class="dropdown" ng-show="rd">
@@ -39,7 +40,7 @@
 
 	<header class="row doc-header header-alt">
 		<div aria-hidden="true" class="cw_icon-cw_big logo"></div>
-		<h1>Project Requirements Definition <span class="version-num">v.{{version}}</span></h1>
+		<h1 class="copyable">Project Requirements Definition <span class="version-num">v.{{version}}</span></h1>
 	</header>
 
 

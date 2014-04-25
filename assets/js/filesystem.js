@@ -29,6 +29,37 @@ return {
 		});
 	},
 
+	read: function(result) {
+		var deferred = $q.defer();
+
+		if (!result.entry || !result.entry.file) {
+			deferred.reject(new Error("No entry file to tread"));
+			return deferred.promise;
+		}
+
+		var reader = new FileReader();
+
+		reader.onerror = function(e) {
+			self.fire('error', e);
+			return deferred.reject(e);
+		};
+
+		reader.onload = function(event) {
+			result.event   = event;
+			result.content = event.target && event.target.result;
+			return deferred.resolve(result);
+		};
+
+		result.entry.file(function(file) {
+			reader.readAsText(file);
+		}, function(e) {
+			self.fire('error', e);
+			return deferred.reject(e);
+		});
+
+		return deferred.promise;
+	},
+
 	// Allows the user to open a file or directory. 
 	//
 	// If you specify extensions, the promise resolves with an object that
@@ -62,31 +93,12 @@ return {
 					return deferred.resolve(result);
 				}
 				else {
-					read(result);
+					self.read(result)
+					.then(function(result) {
+						self.fire('read', result);
+						return deferred.resolve(result);
+					});
 				}
-			});
-		};
-
-		var read = function(result) {
-			var reader = new FileReader();
-
-			reader.onerror = function(e) {
-				self.fire('error', e);
-				return deferred.reject(e);
-			};
-
-			reader.onload = function(event) {
-				result.event   = event;
-				result.content = event.target && event.target.result;
-				self.fire('read', result);
-				return deferred.resolve(result);
-			};
-
-			result.entry.file(function(file) {
-				reader.readAsText(file);
-			}, function(e) {
-				self.fire('error', e);
-				return deferred.reject(e);
 			});
 		};
 
@@ -118,13 +130,15 @@ return {
 			entry: entry
 		});
 
-		type = type || 'text';
+		type = type || 'text/plain';
 
 		var onError = function(e) {
+			console.error("Error writing file", e);
 			deferred.reject(e);
 		};
 
 		var onWrite = function(w) {
+			this.truncate(this.position); // Trim off the excess
 			var entryId = chrome.fileSystem.retainEntry(entry);
 			var result = {
 				writer: w,

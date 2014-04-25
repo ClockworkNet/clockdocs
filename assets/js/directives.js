@@ -118,4 +118,23 @@ return {
 		});
 	}
 }})
+
+// Make an element copyable
+.directive('copyable', function() {
+return {
+	restrict: 'C',
+	link: function(scope, el, attrs) {
+		el.attr('title', "Click to copy to clipboard");
+		el.on('click', function() { 
+			var copy = $('<input />').val(el.text());
+			$('body').append(copy);
+			copy.focus().select();
+			document.execCommand('SelectAll');
+			document.execCommand('Copy');
+			copy.remove();
+			console.info("Copied to clipboard '" + el.text() + "'");
+		});
+	}
+}
+})
 ;
