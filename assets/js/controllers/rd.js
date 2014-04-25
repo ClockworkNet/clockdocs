@@ -34,6 +34,10 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform) {
 		Scroll.to(guid);
 	};
 
+	function unwarn() {
+		$scope.alert = {};
+	};
+
 	function warn(title, msg, type) {
 		type = type || 'danger';
 		$scope.alert = {
@@ -204,6 +208,7 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform) {
 	Svn.on('executing', function(args) {
 		$scope.$apply(function() {
 			$scope.working = true;
+			warn("Running", args.join(' '), "info");
 		});
 	});
 
@@ -213,7 +218,14 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform) {
 		$scope.$apply(function() {
 			$scope.working = false;
 			$scope.result = result;
-			$scope.rd = angular.fromJson(result.content);
+			try {
+				$scope.rd = angular.fromJson(result.content);
+				unwarn();
+			}
+			catch (e) {
+				console.error("Error reading file", e, result);
+				warn("File error", "There was an error reading the SVN file. Check the console log for details");
+			}
 		});
 	});
 
@@ -221,6 +233,7 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform) {
 		$scope.$apply(function() {
 			$scope.working = false;
 			$scope.result = result;
+			warn("Committed", "changes committed to SVN", "success");
 		});
 	});
 
@@ -243,7 +256,7 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform) {
 	};
 
 	$scope.commit = function() {
-		$scope.result.content = angular.toJson($scope.rd);
+		$scope.result.content = angular.toJson($scope.rd, true);
 		Svn.commit($scope.result);
 	};
 

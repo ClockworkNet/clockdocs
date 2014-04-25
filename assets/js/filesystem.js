@@ -132,8 +132,12 @@ return {
 
 		type = type || 'text/plain';
 
+		var loggedError = false;
 		var onError = function(e) {
-			console.error("Error writing file", e);
+			if (!loggedError) {
+				console.error("Error writing file", e);
+				loggedError = true;
+			}
 			deferred.reject(e);
 		};
 
