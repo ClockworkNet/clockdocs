@@ -57,8 +57,8 @@
 				<div ng-show="svnInstallStep == 1">
 					<h2>Step 2</h2>
 					<p>Give me permission to modify the permissions file. Select the directory located here:
-						<pre class="copyable" ng-show="platform.linux">~/.config/google-chrome/NativeMessagingHosts/</pre>
-						<pre class="copyable" ng-show="platform.mac">~/Library/Application Support/Google/Chrome/NativeMessagingHosts</pre>
+						<pre class="copyable" ng-show="platform.linux">~/.config/google-chrome/NativeMessagingHosts/com.clockwork.svn.json</pre>
+						<pre class="copyable" ng-show="platform.mac">~/Library/Application Support/Google/Chrome/NativeMessagingHosts/com.clockwork.svn.json</pre>
 						<em ng-show="platform.mac"><strong>Mac Hint!</strong> Hit <kbd>Cmd+Shift+G</kbd> and paste the path</em>
 					</p>
 					<button type="button" class="btn btn-link btn-action" ng-click="svnInstallStep = 0"><cw-icon type="arrow-left"></cw-icon> Back</button>

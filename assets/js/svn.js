@@ -1,8 +1,9 @@
 angular.module('Clockdoc.Utils')
 .factory('Svn', ['$q', 'FileSystem', function($q, FileSystem) {
 
+	// svn+ssh://svn.pozitronic.com/svnroot/templates/rd-rd.json
 	var nativeSvnApp = 'com.clockwork.svn';
-	var clientApp = '/native_messaging_client.py';
+	var clientApp = '/bin/native_messaging_client.py';
 	var svnRoot = 'svn+ssh://svn.pozitronic.com/svnroot';
 
 	var listeners = {
@@ -47,28 +48,24 @@ angular.module('Clockdoc.Utils')
 			};
 
 			var reject = function() {
+				self.fire('error', e);
 				setTimeout(function() {
 					deferred.reject(false);
 				}, 0);
 			};
 
-			FileSystem.open()
+			FileSystem.open(['json'])
 			.then(function(result) {
 				if (!result) {
 					return reject();
 				}
-				// @todo: Get the installation path somehow?
-				self.manifest('.').then(function(manifest) {
-					text = angular.toJson(manifest, true);
-					// Get the manifest and update it
-					result.entry.getFile(filename, {create: true}, function(entry) {
-						FileSystem.write(entry, text)
-						.then(resolve, reject);
-					}, function(e) {
-						self.fire('error', e);
-						reject();
-					});
-				});
+				var manifest = angular.fromJson(result.content);
+				if (!manifest.allowed_origins) {
+					mainifest.allowed_origins = [];
+				}
+				manifest.allowed_origins.push(chrome.runtime.getURL('.'));
+				var manifestText = angular.toJson(manifest, true);
+				FileSystem.write(result.entry, manifestText).then(resolve, reject);
 			});
 
 			return deferred.promise;
@@ -170,7 +167,6 @@ angular.module('Clockdoc.Utils')
 			});
 		},
 
-		// svn+ssh://svn.pozitronic.com/svnroot/templates/rd-rd.json
 		open: function(svnPath) {
 			var self = this;
 			var args = ['svn', 'cat', svnPath];
@@ -264,7 +260,7 @@ angular.module('Clockdoc.Utils')
 				self.exec(['svn', 'ci', result.localPath, '-m', message])
 				.then(function(response) {
 					console.log("committed!", response);
-					self.fire('commit', response);
+					self.fireWithInfo('commit', result);
 				}).
 				catch(function(e) {
 					self.fire('error', e);
