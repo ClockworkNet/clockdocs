@@ -30,3 +30,18 @@ angular.module('Clockdoc.Utils')
 		return false;
 	}
 });
+
+window.prompt = function(text, value) {
+	var modal = $('#prompt');
+	var input = modal.find('.modal-value').val(value);
+
+	modal.find('.modal-title').html(text);
+	modal.modal('show');
+
+
+	modal.on('hide.bs.modal', function() {
+		console.log("Would have said", input.val());
+	});
+
+	return val;
+};

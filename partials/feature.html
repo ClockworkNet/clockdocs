@@ -13,7 +13,7 @@
 
 		<li class="divider"></li>
 		<li><a exec="strikeThrough" exec-target="#{{feature.guid}}"><cw-icon type="remove"></cw-icon> Strike Feature</a></li>
-		<li modal modal-click="deleteFeature(section, feature)" modal-title="Delete '{{feature.title}}'?" modal-body="Are you sure you want to delete '{{feature.title}}'?"><cw-icon type="trash" /> Delete Feature</li>
+		<li modal modal-click="deleteFeature(section, feature)" modal-title="Delete '{{feature.title}}'?" modal-body="Are you sure you want to delete '{{feature.title}}'?"><cw-icon type="trash"></cw-icon> Delete Feature</li>
 	</ul>
 </div>
 <div class="feature-title counted-item" cw-editable ng-model="feature.title" id="{{feature.guid}}"></div>
@@ -25,6 +25,6 @@
 		</li>
 	</ul>
 </div>
-<div class="feature-content" text-angular ng-model="feature.content"></div>
-<div class="flags" ng-include="'partials/flags.html'" ng-init="flags = feature.flags" />
+<div class="feature-content" id="{{feature.guid}}-content" text-angular ng-model="feature.content"></div>
+<div class="flags" id="{{feature.guid}}-flags" ng-include="'partials/flags.html'" ng-init="flags = feature.flags" />
 <div class="feature level_{{$level}} counted" ng-repeat="feature in feature.features" ng-include="'partials/feature.html'" ng-init="$level = $level + 1;"></div>
