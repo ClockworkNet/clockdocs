@@ -33,6 +33,11 @@ body {
 	margin-top: 20px;
 }
 
+.controller {
+	margin: 0;
+	padding: 0;
+}
+
 /* =============================================================================
    Typography
    ========================================================================== */
@@ -427,11 +432,35 @@ color: #707070;
 /* Library */
 .doc-library {
 	position: fixed;
-	overflow-x: scroll;
+	bottom: -150px;
+	left: 0;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 190px;
+	background: transparent;
+}
+.doc-library.showing {
 	bottom: 0;
+}
+.doc-library-toggle {
+	width: 100%;
+	height: 30px;
+	text-align: right;
+	height: 30px;
+}
+.doc-library-toggle .library-handle {
+	padding-right: 1em;
+}
+.doc-library-toggle .library-handle a {
+	font-size: 1.5em;
+	text-decoration: none;
+}
+.doc-library-items {
+	overflow-y: scroll;
+	width: 100%;
+	height: 100%;
 	border-top: 1px solid #ccc;
-	padding: 5px;
-	height: 160px;
 	background: #f0f0f0;
 }
 .doc-library .thumbnail {

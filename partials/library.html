@@ -1,0 +1,19 @@
+<div class="doc-library animated" ng-class="{showing: showingLibrary}">
+	<div class="doc-library-toggle">
+		<div class="library-handle">
+			<a ng-click="showingLibrary = true" ng-hide="showingLibrary"><cw-icon type="arrow-up"></cw-icon> Show Image Library</a>
+			<a ng-click="showingLibrary = false" ng-show="showingLibrary"><cw-icon type="arrow-down"></cw-icon> Hide Image Library</a>
+		</div>
+	</div> <!-- /.doc-library-toggle -->
+	<div class="doc-library-items">
+		<div class="file-drop thumbnail" cw-file-drop="addFile(file)" cw-dragover-class="dragover" cw-uploading-class="uploading">
+			<cw-icon type="picture"></cw-icon> Add an Image
+		</div>
+		<div class="file-item thumbnail" style="background-image: url({{file.data}});" ng-repeat="file in files track by $index">
+			<div class="file-header">
+				<a ng-click="removeFile($index)" class="close">&times;</a>
+				<div class="caption" title="{{file.name}}">{{file.name | truncate:25}}</div>
+			</div>
+		</div>
+	</div> <!-- /.doc-library-items -->
+</div> <!-- /.doc-library -->
