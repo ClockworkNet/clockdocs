@@ -77,6 +77,31 @@ angular.module('textAngular')
 		taTools.html.iconclass = 'fa fa-code';
 		delete taTools.html.buttontext;
 
+		function makeSelection(msg, cmd, placeholder) {
+			var self = this;
+			var selection = window.getSelection();
+			var selectedNode = selection && selection.focusNode;
+			placeholder = placeholder || '';
+			prompt(msg, placeholder, function(val) {
+
+				var currentSelection = window.getSelection();
+				var range = document.createRange();
+				range.selectNodeContents(selectedNode);
+				currentSelection.addRange(range);
+
+				if (!val || !val.length || val == placeholder) return;
+				return self.$editor().wrapSelection(cmd, val);
+			});
+		};
+
+		taTools.insertImage.action = function() {
+			makeSelection.call(this, "Please enter an image URL", 'insertImage', 'http://');
+		};
+
+		taTools.insertLink.action = function() {
+			makeSelection.call(this, "Please enter a URL to insert", 'createLink', 'http://');
+		};
+
 		return taTools;
 	}]);
 });

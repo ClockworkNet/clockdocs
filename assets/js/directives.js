@@ -137,4 +137,76 @@ return {
 	}
 }
 })
-;
+
+// Create a drag-n-drop area for adding an image.
+.directive('cwFileDrop', ['$rootScope', function($rootScope) {
+return {
+	restrict: 'A',
+	scope: {
+		dropped: '&cwFileDrop',
+		uploadingClass: '@cwUploadingClass',
+		dragoverClass: '@cwDragoverClass'
+	},
+	link: function(scope, el, attrs) {
+		scope.dropped = scope.dropped || function(result) {
+			console.info("File uploaded", result);
+		};
+
+		var read = function(file, progress) {
+			var reader = new FileReader();
+
+			reader.onerror = function(e) {
+				console.error("Error reading file", file, e);
+			};
+
+			reader.onload = function(e) {
+				file.data = reader.result;
+				$rootScope.$apply(function() {
+					scope.dropped({file: file});
+				});
+				progress.update();
+				if (progress.done()) {
+					el.removeClass(scope.uploadingClass)
+					.removeClass(scope.dragoverClass);
+				}
+			};
+
+			console.log("Starting file read", file);
+			reader.readAsDataURL(file);
+		};
+
+		el.on('dragout', function(e) {
+			el.removeClass(scope.dragoverClass)
+			.removeClass(scope.uploadingClass);
+		});
+
+		el.on('dragover', function(e) { 
+			el.addClass(scope.dragoverClass);
+			return false; 
+		});
+
+		el.on('drop', function(e) {
+			el.addClass(scope.uploadingClass);
+			var transfer = e.originalEvent && e.originalEvent.dataTransfer;
+			var files    = transfer && transfer.files;
+			if (!files || files.length == 0) {
+				return false;
+			}
+			var progress = {
+				count: files.length,
+				processed: 0,
+				done: function() {
+					return this.processed >= this.count;
+				},
+				update: function() {
+					this.processed += 1;
+						}
+			};
+			for (var i=0; i<files.length; i++) {
+				read(files[i], progress);
+			}
+			return false;
+		});
+	}
+}
+}])

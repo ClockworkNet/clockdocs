@@ -31,17 +31,22 @@ angular.module('Clockdoc.Utils')
 	}
 });
 
-window.prompt = function(text, value) {
+window.prompt = function(text, value, callback) {
 	var modal = $('#prompt');
 	var input = modal.find('.modal-value').val(value);
 
 	modal.find('.modal-title').html(text);
 	modal.modal('show');
 
+	if (callback) {
+		modal.find('.btn-cancel').show();
+		modal.one('click', '.btn-action', function() {
+			callback(input.val());
+		});
+	}
+	else {
+		modal.find('.btn-cancel').hide();
+	}
 
-	modal.on('hide.bs.modal', function() {
-		console.log("Would have said", input.val());
-	});
-
-	return val;
+	return modal;
 };

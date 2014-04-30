@@ -364,4 +364,16 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform) {
 	$scope.print = function() {
 		window.print();
 	};
+
+	$scope.addFile = function(result) {
+		if (!$scope.files) {
+			$scope.files = [];
+		}
+		$scope.files.splice(0, 0, result);
+	};
+
+	$scope.removeFile = function(index) {
+		if (!$scope.files) return;
+		$scope.files.splice(index, 1);
+	};
 }]);

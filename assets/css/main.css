@@ -113,7 +113,7 @@ h3 {
 
 [cw-editable], .ta-editor {
 	margin: 1px;
-	border: solid 1px #FFF;
+	border: solid 1px #fff;
 	padding-left: 0;
 	padding-right: 0;
 }
@@ -127,6 +127,7 @@ h3 {
 }
 
 .ta-editor {
+	width: 100%;
 	overflow-y: scroll;
 }
 .ta-root .ta-toolbar {
@@ -136,7 +137,7 @@ h3 {
 	display: block;
 }
 .ta-root.focussed .ta-editor {
-	height: 200%;
+	height: 100%;
 }
 .ta-toolbar button {
 	height: 30px;
@@ -420,4 +421,59 @@ color: #707070;
   .doc-toc .nav > li > a {
   	padding-left: 0;
   }
+}
+
+
+/* Library */
+.doc-library {
+	position: fixed;
+	overflow-x: scroll;
+	bottom: 0;
+	border-top: 1px solid #ccc;
+	padding: 5px;
+	height: 160px;
+	background: #f0f0f0;
+}
+.doc-library .thumbnail {
+	float: left;
+	width: 200px;
+	height: 140px;
+	margin: 5px;
+}
+.doc-library .file-drop {
+	text-align: center;
+	padding: 50px 0;
+	border: 3px dashed #c0c0c0;
+	cursor: move;
+}
+.doc-library .file-drop.dragover {
+	border-color: #c00;
+}
+.doc-library .file-drop.uploading .glyphicon {
+	-webkit-animation: spin 3s linear infinite;
+}
+.doc-library .file-item {
+	padding: 0;
+	background: #fff;
+	background-size: cover; 
+	border: 3px solid #ccc;
+	border-radius: 2px;
+}
+.doc-library .file-item .file-header {
+	margin: 0;
+	padding: 0;
+	background: white;
+	height: 40px;
+	opacity: 0.8;
+}
+.doc-library .file-item .file-header .caption {
+	float: left;
+}
+
+
+/* Animations */
+@-webkit-keyframes spin {
+	100% {
+		-webkit-transform: rotate(360deg);
+	}
 }

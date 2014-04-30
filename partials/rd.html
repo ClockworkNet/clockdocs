@@ -87,5 +87,18 @@
 		</div> <!-- /.doc-content -->
 		<div class="col-md-1 doc-gutter"></div>
 	</div>
+	<div class="row">
+		<div class="col-md-12 doc-library">
+			<div class="file-drop thumbnail" cw-file-drop="addFile(file)" cw-dragover-class="dragover" cw-uploading-class="uploading">
+				<cw-icon type="picture"></cw-icon> Add an Image
+			</div>
+			<div class="file-item thumbnail" style="background-image: url({{file.data}});" ng-repeat="file in files track by $index">
+				<div class="file-header">
+					<a ng-click="removeFile($index)" class="close">&times;</a>
+					<div class="caption" title="{{file.name}}">{{file.name | truncate:25}}</div>
+				</div>
+			</div>
+		</div> <!-- /.doc-library -->
+	</div>
 	<div id="svn" class="svn" ng-include="'partials/svn.html'"></div>
 </div>
