@@ -54,7 +54,8 @@ angular.module('Clockdoc.Utils')
 				}, 0);
 			};
 
-			FileSystem.open(['json'])
+			FileSystem.openFile(['json'])
+			.then(FileSystem.read)
 			.then(function(result) {
 				if (!result) {
 					return reject();

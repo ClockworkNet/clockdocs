@@ -1,6 +1,6 @@
 angular.module('Clockdoc.Controllers')
-.controller('RdCtrl', ['$scope', '$location', 'FileSystem', 'Random', 'Svn', 'Scroll', 'Platform',
-function($scope, $location, FileSystem, Random, Svn, Scroll, Platform) {
+.controller('RdCtrl', ['$scope', '$location', 'FileSystem', 'Random', 'Svn', 'Scroll', 'Platform', 'Stylesheet',
+function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Stylesheet) {
 
 	var extension = 'cw'
 	$scope.version = '1.1';
@@ -29,6 +29,21 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform) {
 		"Out of Scope", 
 		"Future Phase"
 	];
+
+	function addFileStyle(result) {
+		Stylesheet.addRule(
+			'.' + result.id, 
+			'background-image: url(' + result.data + ')'
+		);
+	};
+
+	function loadDoc(doc) {
+		$scope.rd = doc;
+		for (var id in doc.files) {
+			if (!doc.files.hasOwnProperty(id)) continue;
+			addFileStyle(doc.files[id]);
+		}
+	};
 
 	function scrollTo(guid) {
 		Scroll.to(guid);
@@ -138,30 +153,13 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform) {
 		});
 	});
 
-	FileSystem.on('read', function(result) {
-		console.info('read file', result);
-		if (!result.content) {
-			return;
-		}
-		$scope.$apply(function() {
-			try {
-				$scope.rd = angular.fromJson(result.content);
-				$scope.result = result;
-			}
-			catch (e) {
-				console.error('file open error', e);
-				warn("Error opening file", "There is a problem with your file. " + e);
-			}
-		});
-	});
-
-	FileSystem.on('writing', function(result) {
+	FileSystem.on('writing reading', function(result) {
 		$scope.$apply(function() {
 			$scope.working = true;
 		});
 	});
 
-	FileSystem.on('write', function(result) {
+	FileSystem.on('write read', function(result) {
 		$scope.$apply(function() {
 			$scope.working = false;
 			$scope.result = result;
@@ -169,7 +167,7 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform) {
 	});
 
 	$scope.create = function() {
-		$scope.rd = {
+		loadDoc({
 			title: 'Untitled Requirements Document',
 			author: 'Anonymous',
 			created: new Date(),
@@ -183,12 +181,30 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform) {
 				createFeature('Security')
 			],
 			flags: []
-		};
+		});
 		$scope.result = {};
 	};
 
 	$scope.open = function() {
-		FileSystem.open([extension, 'json']);
+		var readResult = function(result) {
+			FileSystem.read(result)
+			.then(function(result) {
+				if (!result && !result.content) {
+					return;
+				}
+				try {
+					loadDoc(angular.fromJson(result.content));
+					$scope.result = result;
+				}
+				catch (e) {
+					console.error('file open error', e);
+					warn("Error opening file", "There is a problem with your file. " + e);
+				}
+			});
+		}
+
+		FileSystem.openFile([extension, 'json'])
+		.then(readResult);
 	};
 
 	/// SVN ///
@@ -219,7 +235,7 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform) {
 			$scope.working = false;
 			$scope.result = result;
 			try {
-				$scope.rd = angular.fromJson(result.content);
+				loadDoc(angular.fromJson(result.content));
 				unwarn();
 			}
 			catch (e) {
@@ -366,14 +382,16 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform) {
 	};
 
 	$scope.addFile = function(result) {
-		if (!$scope.files) {
-			$scope.files = [];
+		if (!$scope.rd.files) {
+			$scope.rd.files = {};
 		}
-		$scope.files.splice(0, 0, result);
+		result.id = Random.id();
+		$scope.rd.files[result.id] = result;
+		addFileStyle(result);
 	};
 
-	$scope.removeFile = function(index) {
-		if (!$scope.files) return;
-		$scope.files.splice(index, 1);
+	$scope.removeFile = function(id) {
+		if (!$scope.rd.files) return;
+		delete $scope.rd.files[id];
 	};
 }]);

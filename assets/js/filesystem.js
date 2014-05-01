@@ -2,9 +2,11 @@ angular.module('Clockdoc.Utils')
 .factory('FileSystem', ['$q', function($q) {
 
 var listeners = {
+	'info'   : [],
 	'error'  : [],
 	'cancel' : [],
 	'open'   : [],
+	'reading': [],
 	'read'   : [],
 	'writing': [],
 	'write'  : []
@@ -21,6 +23,7 @@ return {
 	fire: function(event) {
 		var args = Array.prototype.splice.call(arguments, 1);
 		var self = this;
+		console.trace('firing', event, args);
 		listeners[event].forEach(function(callback) {
 			// Wrapped in timeout to ensure asynchronous firing
 			setTimeout(function() {
@@ -29,11 +32,13 @@ return {
 		});
 	},
 
-	read: function(result) {
+	read: function(result, readMethod) {
 		var deferred = $q.defer();
+		var self = this;
 
-		if (!result.entry || !result.entry.file) {
-			deferred.reject(new Error("No entry file to tread"));
+		if (!result || !result.entry || !result.entry.isFile) {
+			self.fire('cancel', result);
+			deferred.resolve(result);
 			return deferred.promise;
 		}
 
@@ -46,12 +51,16 @@ return {
 
 		reader.onload = function(event) {
 			result.event   = event;
-			result.content = event.target && event.target.result;
+			result.content = reader.result;
+			self.fire('read', event);
 			return deferred.resolve(result);
 		};
 
+		readMethod = readMethod || 'readAsText';
+
 		result.entry.file(function(file) {
-			reader.readAsText(file);
+			self.fire('reading', file);
+			reader[readMethod](file);
 		}, function(e) {
 			self.fire('error', e);
 			return deferred.reject(e);
@@ -60,59 +69,83 @@ return {
 		return deferred.promise;
 	},
 
-	// Allows the user to open a file or directory. 
-	//
-	// If you specify extensions, the promise resolves with an object that
-	// contains the contents, file entry, entry id, and progress event
-	//
-	// If you leave out extensions, the promise resolves to an object
-	// with the entry and entry id
-	open: function(extensions) {
-		var self = this;
-		var deferred = $q.defer();
+	openFile: function(extensions, readOnly) {
+		var type = readOnly ? 'openFile' : 'openWritableFile';
+		var opts = {
+			type: type,
+			accepts: [{extensions: extensions}]
+		};
+		opts.accepts = [{extensions: extensions}];
+		return this.open(opts);
+	},
 
-		var onOpen = function(entry) {
-			if (!entry) {
-				self.fire('cancel');
+	openFiles: function(extensions, readOnly) {
+		var opts = {
+			type: 'openWritableFile',
+			accepts: [{extensions: extensions}],
+			acceptsMultiple: true
+		};
+		opts.accepts = [{extensions: extensions}];
+		return this.open(opts, true);
+	},
+
+	openDirectory: function() {
+		var opts = {
+			type: 'openDirectory'
+		};
+		return this.open(opts);
+	},
+
+	open: function(options, expectMultiple) {
+		var deferred = $q.defer();
+		var self = this;
+
+		options = options || {};
+
+		if (!options.type) {
+			options.type = 'openWritableFile';
+		}
+
+		var onOpen = function(entries) {
+			if (!entries || entries.length < 1) {
+				self.fire('cancel', entries);
 				return deferred.resolve(null);
 			}
 
-			var entryId = chrome.fileSystem.retainEntry(entry);
+			entries = Array.isArray(entries) ? entries : [entries];
+			var results = [];
 
-			var result = {
-				entry: entry,
-				entryId: entryId
-			};
-
-			chrome.fileSystem.getDisplayPath(entry, function(displayPath) {
-				result.displayPath = displayPath;
-
-				self.fire('open', result);
-
-				if (entry.isDirectory) {
-					return deferred.resolve(result);
-				}
-				else {
-					self.read(result)
-					.then(function(result) {
-						self.fire('read', result);
-						return deferred.resolve(result);
-					});
-				}
+			entries.forEach(function(entry, index) {
+				var entryId = chrome.fileSystem.retainEntry(entry);
+				var result = {
+					entry: entry,
+					entryId: entryId
+				};
+				self.getDisplayPath(entry)
+				.then(function(path) {
+					result.displayPath = path;
+				});
+				results.push(result);
 			});
+
+			if (!expectMultiple) {
+				results = results[0];
+			}
+
+			self.fire('open', results);
+			deferred.resolve(results);
 		};
 
-		var args = {}
-		if (extensions) {
-			args.type = 'openWritableFile';
-			args.accepts = [{extensions: extensions}];
-		}
-		// If extensions weren't specified, then we're getting a directory
-		else {
-			args.type = 'openDirectory';
-		}
-		chrome.fileSystem.chooseEntry(args, onOpen);
+		chrome.fileSystem.chooseEntry(options, onOpen);
 
+		return deferred.promise;
+	},
+
+	getDisplayPath: function(entry) {
+		var deferred = $q.defer();
+		chrome.fileSystem.getDisplayPath(entry, function(displayPath) {
+			deferred.resolve(displayPath);
+		});
 		return deferred.promise;
 	},
 

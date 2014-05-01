@@ -139,7 +139,7 @@ return {
 })
 
 // Create a drag-n-drop area for adding an image.
-.directive('cwFileDrop', ['$rootScope', function($rootScope) {
+.directive('cwFileDrop', ['$rootScope', 'FileSystem', function($rootScope, FileSystem) {
 return {
 	restrict: 'A',
 	scope: {
@@ -152,6 +152,17 @@ return {
 			console.info("File uploaded", result);
 		};
 
+		function Progress(target) {
+			this.target = target;
+			this.processed = 0;
+			this.done = function() {
+				return this.processed >= this.target;
+			};
+			this.update = function() {
+				this.processed++;
+			}
+		};
+
 		var read = function(file, progress) {
 			var reader = new FileReader();
 
@@ -161,6 +172,7 @@ return {
 
 			reader.onload = function(e) {
 				file.data = reader.result;
+
 				$rootScope.$apply(function() {
 					scope.dropped({file: file});
 				});
@@ -174,6 +186,21 @@ return {
 			console.log("Starting file read", file);
 			reader.readAsDataURL(file);
 		};
+
+		// Add click handling for manual upload
+		el.on('click', function(e) {
+			FileSystem.openFiles(['jpg', 'png', 'gif', 'svg'], true)
+			.then(function(results) {
+				if (!results) return;
+				var progress = new Progress(results.length);
+				results.forEach(function(result) {
+					result.entry.file(function(file) {
+						read(file, progress);
+					});
+				});
+			});
+			return false;
+		});
 
 		el.on('dragout', function(e) {
 			el.removeClass(scope.dragoverClass)
@@ -192,16 +219,7 @@ return {
 			if (!files || files.length == 0) {
 				return false;
 			}
-			var progress = {
-				count: files.length,
-				processed: 0,
-				done: function() {
-					return this.processed >= this.count;
-				},
-				update: function() {
-					this.processed += 1;
-						}
-			};
+			var progress = new Progress(files.length);
 			for (var i=0; i<files.length; i++) {
 				read(files[i], progress);
 			}

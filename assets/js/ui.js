@@ -29,7 +29,38 @@ angular.module('Clockdoc.Utils')
 
 		return false;
 	}
-});
+})
+.service('Stylesheet', function() {
+	this.get = function() {
+		if (!document.styleSheets) {
+			return this.create();
+		}
+		for (var i=0, stylesheet; stylesheet=document.styleSheets[i]; i++) {
+			if (stylesheet.disabled) {
+				continue;
+			}
+			var media = typeof(stylesheet.media) == 'object' 
+				? stylesheet.media.mediaText
+				: stylesheet.media;
+			if (media.indexOf('screen') >= 0) {
+				return stylesheet;
+			}
+		}
+		return this.create();
+	};
+
+	this.create = function() {
+		var sse = document.createElement('style');
+		sse.type = 'text/css';
+		document.getElementsByTagName('head')[0].appendChild(sse);
+		return document.styleSheets[document.styleSheets.length - 1];
+	};
+
+	this.addRule = function(selector, style) {
+		var stylesheet = this.get();
+		stylesheet.addRule(selector, style);
+	}
+})
 
 window.prompt = function(text, value, callback) {
 	var modal = $('#prompt');

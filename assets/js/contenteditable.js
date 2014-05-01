@@ -72,30 +72,58 @@ angular.module('textAngular')
 	}]);
 
 	// Updates some of the classes used for the buttons
-	$provide.decorator('taTools', ['$delegate', function(taTools) {
+	$provide.decorator('taTools', ['$delegate', '$q', function(taTools, $q) {
 
 		taTools.html.iconclass = 'fa fa-code';
 		delete taTools.html.buttontext;
 
+		function getSelectedNode() {
+			var selection = window.getSelection();
+			return selection && selection.focusNode;
+		};
+
+		function restoreSelectedNode(selectedNode) {
+			if (!selectedNode) return;
+			var currentSelection = window.getSelection();
+			var range = document.createRange();
+			range.selectNodeContents(selectedNode);
+			currentSelection.addRange(range);
+		};
+
 		function makeSelection(msg, cmd, placeholder) {
 			var self = this;
-			var selection = window.getSelection();
-			var selectedNode = selection && selection.focusNode;
+			var selectedNode = getSelectedNode();
 			placeholder = placeholder || '';
 			prompt(msg, placeholder, function(val) {
-
-				var currentSelection = window.getSelection();
-				var range = document.createRange();
-				range.selectNodeContents(selectedNode);
-				currentSelection.addRange(range);
-
+				restoreSelectedNode(selectedNode);
 				if (!val || !val.length || val == placeholder) return;
 				return self.$editor().wrapSelection(cmd, val);
 			});
 		};
 
 		taTools.insertImage.action = function() {
-			makeSelection.call(this, "Please enter an image URL", 'insertImage', 'http://');
+			var selectedNode = getSelectedNode();
+			var modal = $('#doc-library');
+			var self = this;
+
+			modal.modal('show');
+			modal.one('click', '.caption', function(e) {
+				var data = $(e.currentTarget).data();
+				if (!data) {
+					console.info('No data found', e);
+					return;
+				}
+
+				var img = new Image();
+				img.src = data.fileData;
+
+				restoreSelectedNode(selectedNode);
+				var selection = getSelectedNode();
+				var html = '<img width="' + img.width + '" height="' + img.height + '" class="image ' + data.fileId + '" src="assets/img/transparent.gif" />';
+				console.info(html);
+				return self.$editor().wrapSelection('insertHTML', html);
+			});
+			modal.show();
 		};
 
 		taTools.insertLink.action = function() {

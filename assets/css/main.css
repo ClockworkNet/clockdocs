@@ -430,73 +430,52 @@ color: #707070;
 
 
 /* Library */
-.doc-library {
-	position: fixed;
-	bottom: -150px;
-	left: 0;
-	margin: 0;
-	padding: 0;
-	width: 100%;
-	height: 190px;
-	background: transparent;
-}
-.doc-library.showing {
-	bottom: 0;
-}
-.doc-library-toggle {
-	width: 100%;
-	height: 30px;
-	text-align: right;
-	height: 30px;
-}
-.doc-library-toggle .library-handle {
-	padding-right: 1em;
-}
-.doc-library-toggle .library-handle a {
-	font-size: 1.5em;
-	text-decoration: none;
-}
-.doc-library-items {
+#doc-library-items {
 	overflow-y: scroll;
 	width: 100%;
 	height: 100%;
-	border-top: 1px solid #ccc;
-	background: #f0f0f0;
 }
-.doc-library .thumbnail {
+#doc-library .thumbnail {
 	float: left;
 	width: 200px;
-	height: 140px;
+	height: 200px;
 	margin: 5px;
 }
-.doc-library .file-drop {
+#doc-library .file-drop {
 	text-align: center;
-	padding: 50px 0;
+	padding: 90px 0;
 	border: 3px dashed #c0c0c0;
 	cursor: move;
 }
-.doc-library .file-drop.dragover {
+#doc-library .file-drop.dragover {
 	border-color: #c00;
 }
-.doc-library .file-drop.uploading .glyphicon {
+#doc-library .file-drop.uploading .glyphicon {
 	-webkit-animation: spin 3s linear infinite;
 }
-.doc-library .file-item {
+#doc-library .file-item {
 	padding: 0;
-	background: #fff;
+	width: 100%;
+	height: 100%;
+	background-color: #fff;
 	background-size: cover; 
 	border: 3px solid #ccc;
 	border-radius: 2px;
 }
-.doc-library .file-item .file-header {
+#doc-library .file-item .file-header {
 	margin: 0;
 	padding: 0;
 	background: white;
 	height: 40px;
 	opacity: 0.8;
 }
-.doc-library .file-item .file-header .caption {
+#doc-library .file-item .file-header .caption {
 	float: left;
+}
+
+.image {
+	background-size: 100%;
+	display: block;
 }
 
 
