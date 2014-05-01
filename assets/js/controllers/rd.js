@@ -277,12 +277,12 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 	};
 
 	$scope.save = function() {
-		if (!$scope.entryId) {
+		if (!$scope.result.entryId) {
 			$scope.saveAs();
 			return;
 		}
 		var content = angular.toJson($scope.rd, true);
-		FileSystem.save($scope.entryId, content);
+		FileSystem.save($scope.result.entryId, content);
 	};
 
 	$scope.saveAs = function() {
