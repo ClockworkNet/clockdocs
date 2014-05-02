@@ -17,13 +17,13 @@ function($scope, socket) {
 
 	var handlers = {
 		'say': function(o) {
-			socket.broadcast({
-				action: 'said',
-				message: o.message
-			});
+			console.info("Passing through message", o);
+			o.action = 'said';
+			socket.broadcast(o);
 		},
 		'said': function(o) {
-			$scope.messages.push(o.message);
+			console.info("Something was said", o);
+			$scope.messages.push(o);
 		}
 	};
 

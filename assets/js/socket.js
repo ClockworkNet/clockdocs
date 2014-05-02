@@ -22,7 +22,9 @@ function($q, Progress, Convert) {
 			'connection':   [],
 			'received':     [],
 			'sending':      [],
-			'sent':         []
+			'sent':         [],
+			'broadcasting': [],
+			'broadcasted':  []
 		};
 
 		this.on = function(event, callback) {
@@ -182,8 +184,13 @@ function($q, Progress, Convert) {
 		this.broadcast = function(msg, exceptSocketId) {
 			var deferred = $q.defer();
 			var self = this;
+			var done = function(progress) {
+				self.fire('broadcasted', progress);
+				deferred.resolve(progress);
+			};
 			var sendToSockets = function(socketIds) {
-				var progress = new Progress(socketIds.length, deferred.resolve);
+				self.fire('broadcasting', socketIds);
+				var progress = new Progress(socketIds.length, done);
 				for (var i=0, socketId; socketId=socketIds[i]; i++) {
 					self.send(msg, socketId)
 					.then(progress.update, progress.fail);
@@ -229,14 +236,14 @@ function($q, Progress, Convert) {
 			}
 			else {
 				// Otherwise, actually send this on the wire
-				tcp.send(socketId, buffer, function(data) {
-					if (data.resultCode < 0) {
-						self.fire('error', data);
-						deferred.reject(data);
+				tcp.send(socketId, buffer, function(result) {
+					if (result < 0) {
+						self.fire('error', result);
+						deferred.reject(result);
 					}
 					else {
-						self.fire('sent', data);
-						deferred.resolve(data);
+						self.fire('sent', msg);
+						deferred.resolve(msg);
 					}
 				});
 			}

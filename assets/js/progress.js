@@ -6,30 +6,32 @@ angular.module('Clockdoc.Utils')
 		this.failed  = 0;
 		this.skipped = 0;
 
+		var self = this;
+
+		this.checkComplete = function() {
+			if (onProgress) onProgress(self);
+			if (onComplete && self.done >= self.target) {
+				onComplete(self);
+			}
+		}
+
 		// Call this when you want to mark a successful step
 		this.update  = function() {
-			this.done++;
-			this.checkComplete();
+			self.done++;
+			self.checkComplete();
 		};
 
 		// Calls this when you want to mark a failure
 		this.fail = function() {
-			this.done++;
-			this.failed++;
-			this.checkComplete();
+			self.done++;
+			self.failed++;
+			self.checkComplete();
 		};
 
 		this.skip = function() {
-			this.done++;
-			this.skipped++;
-			this.checkComplete();
+			self.done++;
+			self.skipped++;
+			self.checkComplete();
 		};
-
-		this.checkComplete = function() {
-			if (onProgress) onProgress(this);
-			if (onComplete && this.done >= this.target) {
-				onComplete(this);
-			}
-		}
 	};
 }]);
