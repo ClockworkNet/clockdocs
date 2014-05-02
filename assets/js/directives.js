@@ -139,7 +139,7 @@ return {
 })
 
 // Create a drag-n-drop area for adding an image.
-.directive('cwFileDrop', ['$rootScope', 'FileSystem', function($rootScope, FileSystem) {
+.directive('cwFileDrop', ['$rootScope', 'FileSystem', 'Progress', function($rootScope, FileSystem, Progress) {
 return {
 	restrict: 'A',
 	scope: {
@@ -152,22 +152,12 @@ return {
 			console.info("File uploaded", result);
 		};
 
-		function Progress(target) {
-			this.target = target;
-			this.processed = 0;
-			this.done = function() {
-				return this.processed >= this.target;
-			};
-			this.update = function() {
-				this.processed++;
-			}
-		};
-
 		var read = function(file, progress) {
 			var reader = new FileReader();
 
 			reader.onerror = function(e) {
 				console.error("Error reading file", file, e);
+				progress.fail();
 			};
 
 			reader.onload = function(e) {
@@ -177,10 +167,6 @@ return {
 					scope.dropped({file: file});
 				});
 				progress.update();
-				if (progress.done()) {
-					el.removeClass(scope.uploadingClass)
-					.removeClass(scope.dragoverClass);
-				}
 			};
 
 			console.log("Starting file read", file);
@@ -192,7 +178,11 @@ return {
 			FileSystem.openFiles(['jpg', 'png', 'gif', 'svg'], true)
 			.then(function(results) {
 				if (!results) return;
-				var progress = new Progress(results.length);
+				var done = function(progress) {
+					el.removeClass(scope.uploadingClass)
+					.removeClass(scope.dragoverClass);
+				};
+				var progress = new Progress(results.length, done);
 				results.forEach(function(result) {
 					result.entry.file(function(file) {
 						read(file, progress);
@@ -219,7 +209,11 @@ return {
 			if (!files || files.length == 0) {
 				return false;
 			}
-			var progress = new Progress(files.length);
+			var done = function(progress) {
+				el.removeClass(scope.uploadingClass)
+				.removeClass(scope.dragoverClass);
+			};
+			var progress = new Progress(files.length, done);
 			for (var i=0; i<files.length; i++) {
 				read(files[i], progress);
 			}

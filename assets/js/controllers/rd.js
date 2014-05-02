@@ -187,9 +187,12 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 
 	$scope.open = function() {
 		var readResult = function(result) {
+			if (!result) {
+				return;
+			}
 			FileSystem.read(result)
 			.then(function(result) {
-				if (!result && !result.content) {
+				if (!result || !result.content) {
 					return;
 				}
 				try {

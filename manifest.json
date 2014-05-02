@@ -10,6 +10,14 @@
 	},
 	"icons": { "16": "assets/img/icon-16.png", "48": "assets/img/icon-48.png", "128": "assets/img/icon-128.png" },
 	"offline_enabled": true,
+	"sockets": {
+		"tcp": {
+			"connect": ""
+		},
+		"tcpServer": {
+			"listen": ""
+		}
+	},
 	"permissions": [
 		"nativeMessaging",
 		"clipboardRead",

@@ -1,42 +1,5 @@
 <div class="controller" ng-controller="RdCtrl">
-	<nav class="navbar navbar-default navbar-fixed-top">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<span class="navbar-brand">Clockdocs
-					<i ng-show="working" class="fa fa-spinner fa-spin"></i>
-					<i ng-hide="working" class="fa fa-book"></i>
-				</span>
-			</div> <!-- /.navbar-header -->
-			<div class="collapse navbar-collapse">
-				<ul class="nav navbar-nav">
-					<li><a ng-click="create()"><cw-icon type="plus-sign"></cw-icon> Create</a></li>
-					<li class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown"><cw-icon type="open"></cw-icon> Open<span class="caret"></span></a>
-						<ul class="dropdown-menu">
-							<li><a ng-click="open()"><cw-icon type="open"></cw-icon> Open File</a></li>
-							<li ng-hide="svnInstalled"><a data-toggle="modal" data-target="#svn-form-install"><cw-icon type="folder-close"></cw-icon> Install SVN Support</a></li>
-							<li ng-show="svnInstalled"><a data-toggle="modal" data-target="#svn-form"><cw-icon type="cloud-download"></cw-icon> Open from SVN</a></li>
-						</ul>
-					</li>
-					<li class="dropdown" ng-show="rd">
-						<a class="dropdown-toggle" data-toggle="dropdown"><cw-icon type="floppy-disk"></cw-icon> Save<span class="caret"></span></a>
-						<ul class="dropdown-menu">
-							<li ng-show="result.entry.name"><a ng-click="save()"><cw-icon type="save"></cw-icon> Save to <em>{{result.entry.name}}</em></a></li>
-							<li ng-show="rd"><a ng-click="saveAs()"><cw-icon type="export"></cw-icon> Save As ...</a></li>
-							<li ng-show="result.svn.Revision"><a data-toggle="modal" data-target="#svn-form-commit"><cw-icon type="cloud-upload"></cw-icon> Commit to SVN</a></li>
-						</ul>
-					</li>
-					<li ng-show="rd"><a ng-click="print()"><cw-icon type="print"></cw-icon> Print</a></li>
-					<li ng-if="alert.content">
-						<div class="alert alert-{{alert.type}} alert-dismissable">
-							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>	
-							<strong>{{alert.title}}</strong> {{alert.content}}
-						</div>
-					</li>
-				</ul>
-			</div> <!-- /.navbar-collapse -->
-		</div> <!-- /.container-fluid -->
-	</nav>
+	<nav class="navbar navbar-default navbar-fixed-top" ng-include="'partials/menu.html'"></nav>
 
 	<header class="row doc-header header-alt">
 		<div aria-hidden="true" class="cw_icon-cw_big logo"></div>
