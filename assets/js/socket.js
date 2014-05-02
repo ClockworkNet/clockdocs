@@ -83,8 +83,8 @@ function($q, Progress, Convert) {
 					deferred.reject(result);
 				}
 				else {
-					self.serverSocketId = serverSocketId;
 					self.fire('connected', result);
+					self.serverSocketId = socketInfo.serverSocketId;
 					deferred.resolve(self);
 				}
 			};
@@ -257,9 +257,8 @@ function($q, Progress, Convert) {
 
 			var fireError = function(msg) {
 				return function(data) {
-					var e = new Error(msg);
-					e.data = data;
-					self.fire('error', e);
+					data.message = msg;
+					self.fire('error', data);
 				};
 			};
 
@@ -291,10 +290,11 @@ function($q, Progress, Convert) {
 
 		this.onAccepted = function(data) {
 			if (data.socketId != this.serverSocketId) {
+				console.info("Message to wrong server received", data);
 				return;
 			}
-			tcp.setPaused(data.clientSocketId, false);
 			this.fire('connection', data);
+			tcp.setPaused(data.clientSocketId, false);
 		};
 	}
 }
