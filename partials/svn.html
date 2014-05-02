@@ -56,13 +56,13 @@
 				</div>
 				<div ng-show="svnInstallStep == 1">
 					<h2>Step 2</h2>
-					<p>Give me permission to modify the permissions file. Select the directory located here:
+					<p>Give me permission to modify the permissions file. You can find the file here:
 						<pre class="copyable" ng-show="platform.linux">~/.config/google-chrome/NativeMessagingHosts/com.clockwork.svn.json</pre>
 						<pre class="copyable" ng-show="platform.mac">~/Library/Application Support/Google/Chrome/NativeMessagingHosts/com.clockwork.svn.json</pre>
 						<em ng-show="platform.mac"><strong>Mac Hint!</strong> Hit <kbd>Cmd+Shift+G</kbd> and paste the path</em>
 					</p>
 					<button type="button" class="btn btn-link btn-action" ng-click="svnInstallStep = 0"><cw-icon type="arrow-left"></cw-icon> Back</button>
-					<button type="button" class="btn btn-primary btn-action" ng-click="installSvn(); svnInstallStep = 2"><cw-icon type="folder-close"></cw-icon> Find directory</button>
+					<button type="button" class="btn btn-primary btn-action" ng-click="installSvn(); svnInstallStep = 2"><cw-icon type="folder-close"></cw-icon> Find <em>com.clockwork.svn.json</em></button>
 				</div>
 				<div ng-show="svnInstallStep == 2">
 					<h2>Step 3</h3>

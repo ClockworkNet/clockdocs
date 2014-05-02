@@ -426,6 +426,11 @@ color: #707070;
   .doc-toc .nav > li > a {
   	padding-left: 0;
   }
+
+  /* force background colour printing in chrome browser */
+  body, span, div, table, tr, tbody, tfoot, td, hr, img { 
+  	-webkit-print-color-adjust: exact;
+  }
 }
 
 

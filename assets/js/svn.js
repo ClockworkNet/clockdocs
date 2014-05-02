@@ -18,22 +18,6 @@ angular.module('Clockdoc.Utils')
 	};
 
 	return {
-		manifest: function(installDir) {
-			var deferred = $q.defer();
-			var appId = chrome.runtime.id;
-			var clientPath = installDir + clientApp;
-
-			deferred.resolve({
-				name: nativeSvnApp,
-				description: "Subversion",
-				path: clientPath,
-				type: "stdio",
-				allowed_origins: ["chrome-extension://" + appId + "/"]
-			});
-
-			return deferred.promise;
-		},
-
 		install: function() {
 			var deferred = $q.defer();
 			var text = '';
@@ -54,19 +38,26 @@ angular.module('Clockdoc.Utils')
 				}, 0);
 			};
 
-			FileSystem.openFile(['json'])
-			.then(FileSystem.read)
+			var opts = {
+				type: 'openWritableFile',
+				accepts: [{extensions: ['json']}],
+				suggestedName: filename
+			};
+			FileSystem.open(opts)
 			.then(function(result) {
-				if (!result) {
-					return reject();
-				}
-				var manifest = angular.fromJson(result.content);
-				if (!manifest.allowed_origins) {
-					mainifest.allowed_origins = [];
-				}
-				manifest.allowed_origins.push(chrome.runtime.getURL('.'));
-				var manifestText = angular.toJson(manifest, true);
-				FileSystem.write(result.entry, manifestText).then(resolve, reject);
+				FileSystem.read(result)
+				.then(function(result) {
+					if (!result) {
+						return reject();
+					}
+					var manifest = angular.fromJson(result.content);
+					if (!manifest.allowed_origins) {
+						mainifest.allowed_origins = [];
+					}
+					manifest.allowed_origins.push(chrome.runtime.getURL(''));
+					var manifestText = angular.toJson(manifest, true);
+					FileSystem.write(result.entry, manifestText).then(resolve, reject);
+				});
 			});
 
 			return deferred.promise;
