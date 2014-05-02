@@ -6,11 +6,12 @@ angular.module('Clockdoc.Controllers', ['Clockdoc.Utils', 'Clockdoc.Net']);
 
 angular.module('ClockdocApp', [
 	'textAngular', 
-	'Clockdoc.Utils', 
 	'Clockdoc.Directives', 
 	'Clockdoc.Filters', 
 	'Clockdoc.Controllers'
 ])
+
+// This socket is shared across multiple controllers
 .factory('socket', ['Socket', function(Socket) {
 	return new Socket('Clockdoc');
 }])

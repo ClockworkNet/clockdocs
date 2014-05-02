@@ -1,6 +1,6 @@
 angular.module('Clockdoc.Utils')
 .service('Convert', function() {
-	this.arrayBuffertoString = function(buffer) {
+	this.arrayBufferToString = function(buffer) {
 		return String.fromCharCode.apply(null, new Uint16Array(buffer));
 	};
 

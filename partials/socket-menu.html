@@ -1,12 +1,20 @@
 <ul class="nav navbar-nav navbar-right">
-	<li ng-show="socket.role == 'host'"><a ng-click="stop()"><cw-icon type="fire"></cw-icon> Stop Meeting</a></li>
-	<li ng-show="socket.role == 'client'"><a ng-click="leave()"><cw-icon type="log-out"></cw-icon> Leave Meeting</a></li>
-	<li ng-show="socket.active()"><a data-toggle="modal" data-target="#socket-info"><cw-icon type="link"></cw-icon> Meeting Info</a></li>
+	<li ng-show="socket.active()"><a data-toggle="modal" data-target="#socket-info"><cw-icon type="info-sign"></cw-icon> Room Info</a></li>
 	<li ng-hide="socket.active()" class="dropdown">
-		<a class="dropdown-toggle" data-toggle="dropdown"><cw-icon type="globe"></cw-icon> Share<span class="caret"></span></a>
+		<a class="dropdown-toggle" data-toggle="dropdown"><cw-icon type="globe"></cw-icon> Meetings<span class="caret"></span></a>
 		<ul class="dropdown-menu">
-			<li><a ng-click="host()"><cw-icon type="home"></cw-icon> Host a Meeting</a></li>
-			<li><a data-toggle="modal" data-target="#socket-info"><cw-icon type="log-in"></cw-icon> Join a Meeting</a></li>
+			<li><a ng-click="host()"><cw-icon type="home"></cw-icon> Host Meeting</a></li>
+			<li><a data-toggle="modal" data-target="#socket-info"><cw-icon type="log-in"></cw-icon> Join Meeting</a></li>
 		</ul>
 	</li>
+	<li class="divider"></li>
+	<li ng-show="socket.role == 'host'"><a ng-click="stop()"><cw-icon type="fire"></cw-icon> Stop Meeting</a></li>
+	<li ng-show="socket.role == 'client'"><a ng-click="leave()"><cw-icon type="log-out"></cw-icon> Leave Meeting</a></li>
 </ul>
+
+<form class="navbar-form navbar-right" ng-show="socket.active()">
+	<div class="form-group">
+		<input ng-model="socket.message" placeholder="Type your message here..." class="form-control"/>
+	</div>
+	<button class="btn btn-default" ng-click="say()"><cw-icon type="comment"></cw-icon></button>
+</form>

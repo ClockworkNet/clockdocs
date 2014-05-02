@@ -21,6 +21,7 @@ function($q, Progress, Convert) {
 			'disconnected': [],
 			'connection':   [],
 			'received':     [],
+			'sending':      [],
 			'sent':         []
 		};
 
@@ -69,7 +70,11 @@ function($q, Progress, Convert) {
 			var created = function(info) {
 				self.clientSocketId = info.socketId;
 				self.fire('connecting', socketInfo);
-				tcp.connect(socketInfo.socketId, socketInfo.localAddress, socketInfo.localPort, connected);
+				tcp.connect(
+					socketInfo.socketId, 
+					socketInfo.localAddress, 
+					socketInfo.localPort, 
+					connected);
 			};
 
 			var connected = function(result) {
@@ -86,7 +91,11 @@ function($q, Progress, Convert) {
 
 			this.init()
 			.then(function() {
-				tcp.create({name: this.name, persistent: this.persistent}, created);
+				var settings = {
+					name: this.name,
+					persistent: this.persistent
+				};
+				tcp.create(settings, created);
 			});
 
 			return deferred.promise;
@@ -197,22 +206,41 @@ function($q, Progress, Convert) {
 		this.send = function(msg, socketId) {
 			var deferred = $q.defer();
 
-			// If no socket is specified, send to the connected server.
-			socketId = socketId || this.serverSocketId;
+			if (!socketId && this.clientSocketId) {
+				// If no socket is specified, send to the connected server.
+				socketId = this.serverSocketId;
+			}
 
-			var buffer = Convert.stringToArrayBuffer(msg);
+			var json = typeof(msg) == 'string' ? msg : angular.toJson(msg);
+			var buffer = Convert.stringToArrayBuffer(json);
 			var self = this;
 
-			tcp.send(socketId, buffer, function(data) {
-				if (data.resultCode < 0) {
-					self.fire('error', data);
-					deferred.reject(data);
-				}
-				else {
-					self.fire('sent', data);
-					deferred.resolve(data);
-				}
-			});
+			var info = {
+				data: buffer,
+				socketId: socketId
+			};
+			self.fire('sending', info);
+
+			if (!socketId) {
+				// If we still don't have a target socket, assume this is a local message
+				self.fire('sent', info);
+				this.onReceived(info);
+				deferred.resolve(info);
+			}
+			else {
+				// Otherwise, actually send this on the wire
+				tcp.send(socketId, buffer, function(data) {
+					if (data.resultCode < 0) {
+						self.fire('error', data);
+						deferred.reject(data);
+					}
+					else {
+						self.fire('sent', data);
+						deferred.resolve(data);
+					}
+				});
+			}
+
 			return deferred.promise;
 		};
 
@@ -258,7 +286,7 @@ function($q, Progress, Convert) {
 
 		this.onReceived = function(info) {
 			info.message = Convert.arrayBufferToString(info.data);
-			self.fire('received', info);
+			this.fire('received', info);
 		};
 
 		this.onAccepted = function(data) {
