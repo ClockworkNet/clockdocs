@@ -1,9 +1,9 @@
 angular.module('Clockdoc.Utils')
 .factory('Progress', [function() {
 	return function Progress(target, onComplete, onProgress) {
-		this.target  = target;
-		this.done    = 0;
-		this.failed  = 0;
+		this.target = target;
+		this.done = 0;
+		this.failed = 0;
 		this.skipped = 0;
 
 		var self = this;

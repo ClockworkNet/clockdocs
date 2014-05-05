@@ -1,7 +1,4 @@
 <div ng-controller="SocketInfoCtrl">
-	<ul>
-		<li ng-repeat="m in socket.messages">{{m}}</li>
-	</ul>
 	<div class="modal" id="socket-info">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -11,8 +8,8 @@
 				</div>
 				<div class="modal-body">
 					<div ng-show="socket.active()">
-						<p ng-show="socket.role == 'host'">You are hosting a meeting. Share this connection string to invite participants.</p>
-						<p ng-show="socket.role == 'client'">You are connected to a meeting. Share this connection string to invite participants.</p>
+						<p ng-show="socket.role == 'host'">You are <strong>hosting</strong>. Share this to invite participants.</p>
+						<p ng-show="socket.role == 'client'">You are connected to a meeting. Share this to invite participants.</p>
 						<pre class="copyable">{{socket.hostInfo.connectionString}}</pre>
 					</div>
 					<form role="form" ng-hide="socket.active()">

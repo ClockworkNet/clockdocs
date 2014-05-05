@@ -47,7 +47,7 @@ function($scope, socket) {
 
 	$scope.host = function() {
 		socket.startHosting()
-		.then(function(s) {
+		.then(function() {
 			socket.getHostInfo()
 			.then(function(info) {
 				console.info("You're a nice host.");
@@ -55,7 +55,7 @@ function($scope, socket) {
 				socket.hostInfo = info;
 
 				socket.connectToHost(info)
-				.then(function(s) {
+				.then(function() {
 					console.info("You're connected to yourself.");
 				});
 			});
