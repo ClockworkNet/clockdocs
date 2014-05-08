@@ -17,12 +17,13 @@ function($scope, socket) {
 
 	var handlers = {
 		'say': function(o) {
-			console.info("Passing through message", o);
+			console.debug("Passing through message", o);
 			o.action = 'said';
 			socket.broadcast(o);
 		},
 		'said': function(o) {
-			console.info("Something was said", o);
+			console.debug("Something was said", o);
+			if (!$scope.messages) $scope.messages = [];
 			$scope.messages.push(o);
 		}
 	};
@@ -34,14 +35,14 @@ function($scope, socket) {
 	});
 
 	socket.on('received', function(info) {
-		console.info('Received message', info);
+		console.debug('Received message', info);
 		var data = angular.fromJson(info.message);
 		var handler = handlers[data.action];
 		if (handler) {
 			handler(data);
 		}
 		else {
-			console.info("No handler for action", data);
+			console.warn("No handler for action", data);
 		}
 	});
 
@@ -50,13 +51,13 @@ function($scope, socket) {
 		.then(function() {
 			socket.getHostInfo()
 			.then(function(info) {
-				console.info("You're a nice host.");
+				console.debug("You're a nice host.", socket);
 				socket.role = 'host';
 				socket.hostInfo = info;
 
 				socket.connectToHost(info)
 				.then(function() {
-					console.info("You're connected to yourself.");
+					console.debug("You're connected to yourself.", socket);
 				});
 			});
 		});
@@ -80,7 +81,7 @@ function($scope, socket) {
 	};
 
 	$scope.stop = function() {
-		socket.stopHosting()
+		socket.closeAll()
 		.then(function() {
 			socket.role = null;
 			socket.hostInfo = {};

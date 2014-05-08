@@ -13,7 +13,10 @@
 	</li>
 </ul>
 
-<form class="navbar-form navbar-right" ng-show="socket.active()">
+<form class="navbar-form navbar-right inline-form" ng-show="socket.active()">
+	<div class="form-group">
+		<p ng-repeat="m in messages">{{m.message}}</p>
+	</div>
 	<div class="form-group">
 		<input ng-model="socket.message" placeholder="Type your message here..." class="form-control"/>
 	</div>
