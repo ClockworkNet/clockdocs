@@ -2,7 +2,7 @@ angular.module('Clockdoc.Utils')
 .factory('Progress', [function() {
 	function Progress(target, onComplete, onProgress) {
 		this.target = target || 0;
-		this.done = 0;
+		this.current = 0;
 		this.failed = 0;
 		this.skipped = 0;
 		this.onComplete = onComplete;
@@ -13,7 +13,7 @@ angular.module('Clockdoc.Utils')
 	Progress.prototype = {
 		checkComplete: function() {
 			if (this.onProgress) this.onProgress(this);
-			if (this.done >= this.target) {
+			if (this.current >= this.target) {
 				this.complete();
 			}
 		},
@@ -24,19 +24,19 @@ angular.module('Clockdoc.Utils')
 
 		// Call this when you want to mark a successful step
 		update: function() {
-			this.done++;
+			this.current++;
 			this.checkComplete();
 		},
 
 		// Calls this when you want to mark a failure
 		fail: function() {
-			this.done++;
+			this.current++;
 			this.failed++;
 			this.checkComplete();
 		},
 
 		skip: function() {
-			this.done++;
+			this.current++;
 			this.skipped++;
 			this.checkComplete();
 		}

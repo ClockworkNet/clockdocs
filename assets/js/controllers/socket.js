@@ -5,7 +5,7 @@ function($scope, socket) {
 	$scope.socket = socket;
 
 	$scope.join = function() {
-		socket.connectToHost(socket.hostInfo.connectionString)
+		socket.connectToHost(socket.client.host.connectionString)
 		.then(function(s) {
 			socket.role = 'client';
 		});
@@ -24,7 +24,7 @@ function($scope, socket) {
 		'said': function(o) {
 			console.debug("Something was said", o);
 			if (!$scope.messages) $scope.messages = [];
-			$scope.messages.push(o);
+			$scope.messages.unshift(o);
 		}
 	};
 
@@ -48,18 +48,8 @@ function($scope, socket) {
 
 	$scope.host = function() {
 		socket.startHosting()
-		.then(function() {
-			socket.getHostInfo()
-			.then(function(info) {
-				console.debug("You're a nice host.", socket);
-				socket.role = 'host';
-				socket.hostInfo = info;
-
-				socket.connectToHost(info)
-				.then(function() {
-					console.debug("You're connected to yourself.", socket);
-				});
-			});
+		.then(function(info) {
+			socket.role = 'host';
 		});
 	};
 
@@ -76,15 +66,13 @@ function($scope, socket) {
 		socket.disconnectFromHost()
 		.then(function() {
 			socket.role = null;
-			socket.hostInfo = {};
 		});
 	};
 
 	$scope.stop = function() {
-		socket.closeAll()
+		socket.stop()
 		.then(function() {
 			socket.role = null;
-			socket.hostInfo = {};
 		});
 	}
 

@@ -490,3 +490,14 @@ color: #707070;
 		-webkit-transform: rotate(360deg);
 	}
 }
+
+
+/* Chat */
+.socket-messages {
+	height: 1em;
+	overflow-y: scroll;
+}
+.socket-message {
+	font-family: Courier, serif;
+	font-size: 0.8em;
+}

@@ -7,20 +7,20 @@
 					<h4 class="modal-title">Meeting Information</h4>
 				</div>
 				<div class="modal-body">
-					<div ng-show="socket.active()">
+					<div ng-show="socket.active">
 						<p ng-show="socket.role == 'host'">You are <strong>hosting</strong>. Share this to invite participants.</p>
 						<p ng-show="socket.role == 'client'">You are connected to a meeting. Share this to invite participants.</p>
-						<pre class="copyable">{{socket.hostInfo.connectionString}}</pre>
+						<pre class="copyable">{{socket.client.host.connectionString}}</pre>
 					</div>
-					<form role="form" ng-hide="socket.active()">
+					<form role="form" ng-hide="socket.active">
 						<p>Enter a connection string to join.</p>
-						<input ng-model="socket.hostInfo.connectionString" class="form-control" placeholder="Connection string" />
+						<input ng-model="socket.client.host.connectionString" class="form-control" placeholder="Connection string" />
 					</form>
 				</div>
-				<div class="modal-footer" ng-show="socket.active()">
+				<div class="modal-footer" ng-show="socket.active">
 					<button type="button" class="btn btn-primary btn-action" data-dismiss="modal">Okay</button>
 				</div>
-				<div class="modal-footer" ng-hide="socket.active()">
+				<div class="modal-footer" ng-hide="socket.active">
 					<button type="button" class="btn btn-default btn-action" data-dismiss="modal">Cancel</button>
 					<button type="button" class="btn btn-primary btn-action" data-dismiss="modal" ng-click="join()"><cw-icon type="log-in"></cw-icon> Connect</button>
 				</div>

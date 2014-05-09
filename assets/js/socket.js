@@ -4,13 +4,13 @@ function($q, Progress, Convert) {
 	var tcpServer = chrome.sockets.tcpServer;
 	var tcp = chrome.sockets.tcp;
 	var net = chrome.system.network;
-	var win = chrome.app.window;
+	var runtime = chrome.runtime;
 
-	var Socket = function(name, persistent) {
+	var Socket = function(name) {
 		this.name = name;
-		this.persistent = !!persistent;
+		this.persistent = false;
 		this.address = "127.0.0.1";
-		this.port = 8888;
+		this.port = 8080;
 
 		this.listeners = {
 			'initializing': [],
@@ -29,8 +29,9 @@ function($q, Progress, Convert) {
 		};
 
 		this.initialized = false;
-		this.serverSocketId = null;
-		this.clientSocketId = null;
+		this.active = false;
+		this.server = {};
+		this.client = {};
 	}
 
 	Socket.prototype = {
@@ -40,16 +41,10 @@ function($q, Progress, Convert) {
 		},
 
 		fire: function(event, data) {
-			if (event == 'error') {
-				console.error(data);
-			}
+			console.trace(event, data);
 			this.listeners[event].forEach(function(callback) {
 				callback(data);
 			});
-		},
-
-		active: function() {
-			return this.clientSocketId || this.serverSocketId;
 		},
 
 		parseConnectionString: function(str) {
@@ -60,9 +55,13 @@ function($q, Progress, Convert) {
 			}
 			info.connectionString = str;
 			info.localAddress = match[1];
-			info.localPort = match[2];
-			info.socketId = match[3];
+			info.localPort = parseInt(match[2]);
+			info.socketId = parseInt(match[3]);
 			return info;
+		},
+
+		createConnectionString: function(info) {
+			return info.localAddress + ':' + info.localPort + '@' + info.socketId;
 		},
 
 		connectToHost: function(socketInfo) {
@@ -74,7 +73,7 @@ function($q, Progress, Convert) {
 			var deferred = $q.defer();
 
 			var created = function(info) {
-				this.clientSocketId = info.socketId;
+				this.client = info;
 				this.fire('connecting', socketInfo);
 				tcp.connect(
 					socketInfo.socketId, 
@@ -90,8 +89,9 @@ function($q, Progress, Convert) {
 				}
 				else {
 					this.fire('connected', result);
-					this.serverSocketId = socketInfo.socketId;
-					deferred.resolve(this);
+					this.client.host = socketInfo;
+					this.active = true;
+					deferred.resolve(socketInfo);
 				}
 			};
 
@@ -104,66 +104,88 @@ function($q, Progress, Convert) {
 				tcp.create(settings, created.bind(this));
 			};
 
-			this.init().then(create.bind(this));
+			if (this.client && this.client.socketId) {
+				created.call(this, this.client);
+			}
+			else {
+				this.init().then(create.bind(this));
+			}
 
 			return deferred.promise;
 		},
 
-		closeAll: function(owner) {
-			// If an owner isn't specified, close both tcp and tcpServer sockets
-			if (!owner) {
-
-				var clearSocketIds = function() {
-					this.serverSocketId = null;
-					this.clientSocketId = null;
-				};
-
-				return this.closeAll(tcp)
-				.then(this.closeAll.bind(this, tcpServer))
-				.then(clearSocketIds.bind(this));
-			}
-
+		disconnect: function(type) {
 			var deferred = $q.defer();
-
-			var closeSockets = function(sockets) {
-				var progress = new Progress(sockets.length, deferred.resolve);
-				progress.name = "Closing sockets";
-
-				if (!sockets || sockets.length == 0) {
-					deferred.resolve();
-				} 
-				else {
-					sockets.forEach(function(socket) {
-						owner.close(socket.socketId, function() {
-							progress.update();
-						});
-					});
-				}
-			};
-
-			owner.getSockets(closeSockets.bind(this));
+			var owner = type == 'server' ? tcpServer : tcp;
+			var sock = this[type];
+			console.info('disconnecting', type, sock);
+			if (!sock || !sock.socketId) {
+				deferred.resolve();
+			}
+			else {
+				delete sock.host;
+				owner.disconnect(sock.socketId, deferred.resolve);
+			}
 			return deferred.promise;
+		},
+
+		stop: function() {
+			var server = this.server;
+			var client = this.client;
+			this.active = false;
+
+			// close all clients first
+			// in this case, we can set and forget
+			if (server && server.socketId) {
+				tcpServer.getSockets(function(sockets) {
+					sockets.forEach(function(socket) {
+						tcpServer.close(socket.socketId);
+					});
+				});
+				return this.disconnect('server');
+			}
+			else {
+				// If we're just a client, kill it
+				return this.disconnect('client');
+			}
 		},
 
 		startHosting: function() {
 			var deferred = $q.defer();
 
-			var listening = function(result) {
+			var checkError = function(result) {
 				if (result < 0) {
 					this.fire('error', result);
 					deferred.reject(result);
+					return true;
 				}
-				else {
-					this.fire('hosting', this);
-					deferred.resolve(this);
-				}
+				return false;
 			};
 
 			var started = function(info) {
-				console.debug("Started hosting", info);
-				this.serverSocketId = info.socketId;
-				console.info("Listening on port", this.port, this);
-				tcpServer.listen(this.serverSocketId, this.address, this.port, listening.bind(this));
+				info.localAddress = this.address;
+				info.localPort = this.port;
+				info.connectionString = this.createConnectionString(info);
+
+				this.server = info;
+
+				var done = function(info) {
+					this.fire('hosting', this);
+					deferred.resolve(info);
+				};
+
+				var listening = function(result) {
+					if (checkError(result)) return;
+					this.connectToHost(info)
+					.then(done.bind(this), deferred.reject);
+				};
+
+				tcpServer.listen(
+					this.server.socketId, 
+					this.address, 
+					this.port, 
+					listening.bind(this)
+				);
 			};
 
 			var settings = {
@@ -175,7 +197,13 @@ function($q, Progress, Convert) {
 				tcpServer.create(settings, started.bind(this));
 			};
 
-			this.init().then(create.bind(this));
+			// Reuse the socket!
+			if (this.server && this.server.socketId) {
+				started.call(this, this.server);
+			}
+			else {
+				this.init().then(create.bind(this));
+			}
 
 			return deferred.promise;
 		},
@@ -189,16 +217,17 @@ function($q, Progress, Convert) {
 			}
 
 			var method = method || tcp.getInfo;
+			var tocs = this.createConnectionString;
 
 			method(socketId, function(info) {
-				info.connectionString = info.localAddress + ':' + info.localPort + '@' + info.socketId;
+				info.connectionString = tocs(info);
 				deferred.resolve(info);
 			});
 			return deferred.promise;
 		},
 
 		getHostInfo: function() {
-			return this.getSocketInfo(this.serverSocketId, tcpServer.getInfo);
+			return this.getSocketInfo(this.server.socketId, tcpServer.getInfo);
 		},
 
 		getClients: function() {
@@ -246,9 +275,9 @@ function($q, Progress, Convert) {
 		send: function(msg, socketId) {
 			var deferred = $q.defer();
 
-			if (!socketId && this.clientSocketId) {
+			if (!socketId && this.client && this.client.host && this.client.host.socketId) {
 				// If no socket is specified, send to the connected server.
-				socketId = this.serverSocketId;
+				socketId = this.client.host.socketId;
 			}
 
 			var json = typeof(msg) == 'string' ? msg : angular.toJson(msg);
@@ -287,15 +316,13 @@ function($q, Progress, Convert) {
 		init: function() {
 			var deferred = $q.defer();
 
-			this.serverSocketId = null;
-			this.clientSocketId = null;
-
 			if (this.initialized) {
 				deferred.resolve();
 				return deferred.promise;
 			}
 
 			this.fire('initializing', this);
+			this.active = false;
 
 			tcp.onReceive.addListener(this.onReceived.bind(this));
 			tcp.onReceiveError.addListener(this.onReceivedError.bind(this));
@@ -303,7 +330,7 @@ function($q, Progress, Convert) {
 			tcpServer.onAccept.addListener(this.onAccepted.bind(this));
 			tcpServer.onAcceptError.addListener(this.onAcceptedError.bind(this));
 
-			win.onClosed.addListener(this.closeAll.bind(this));
+			runtime.onSuspend.addListener(this.stop.bind(this));
 
 			// Look for a better IP address than "localhost"
 			var setNet = function(nets) {
@@ -321,7 +348,7 @@ function($q, Progress, Convert) {
 				net.getNetworkInterfaces(setNet.bind(this));
 			};
 
-			this.closeAll()
+			this.stop()
 			.then(getNets.bind(this));
 
 			return deferred.promise;
@@ -329,17 +356,16 @@ function($q, Progress, Convert) {
 
 		onReceived: function(info) {
 			info.message = Convert.arrayBufferToString(info.data);
-			console.debug('RECEIVED', this, info);
 			this.fire('received', info);
 		},
 
 		onReceivedError: function(info) {
+			console.error("onReceiveError", info);
 			this.fire('error', info);
 		},
 
 		onAccepted: function(info) {
-			console.debug('ACCEPTED', this, info);
-			if (info.socketId != this.serverSocketId) {
+			if (info.socketId != this.server.socketId) {
 				console.info("Message to wrong server received", info, this);
 				return;
 			}
@@ -348,6 +374,7 @@ function($q, Progress, Convert) {
 		},
 
 		onAcceptedError: function(info) {
+			console.error("onAcceptError", info);
 			this.fire('error', info);
 		}
 	}
