@@ -8,7 +8,7 @@
 			<li ng-show="socket.active"><a data-toggle="modal" data-target="#socket-info"><cw-icon type="info-sign"></cw-icon> Room Info</a></li>
 			<li class="divider"></li>
 			<li ng-show="socket.role == 'host'"><a ng-click="stop()"><cw-icon type="fire"></cw-icon> Stop Meeting</a></li>
-			<li ng-show="socket.role == 'client'"><a ng-click="leave()"><cw-icon type="log-out"></cw-icon> Leave Meeting</a></li>
+			<li ng-show="socket.role == 'client'"><a ng-click="stop()"><cw-icon type="log-out"></cw-icon> Leave Meeting</a></li>
 		</ul>
 	</li>
 </ul>

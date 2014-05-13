@@ -62,13 +62,6 @@ function($scope, socket) {
 		socket.send(message);
 	};
 
-	$scope.leave = function() {
-		socket.disconnectFromHost()
-		.then(function() {
-			socket.role = null;
-		});
-	};
-
 	$scope.stop = function() {
 		socket.stop()
 		.then(function() {
