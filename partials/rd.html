@@ -1,9 +1,9 @@
 <div class="controller" ng-controller="RdCtrl">
 	<nav class="navbar navbar-default navbar-fixed-top" ng-include="'partials/menu.html'"></nav>
 
-	<header class="row doc-header header-alt">
+	<header class="row doc-header header-alt" ng-show="rd">
 		<div aria-hidden="true" class="cw_icon-cw_big logo"></div>
-		<h1 class="copyable">Project Requirements Definition <span class="version-num">v.{{version}}</span></h1>
+		<h1><span ng-model="rd.title" cw-editable>{{rd.title}}</span> <span class="version-num">v.<span ng-model="rd.version" cw-editable></span></h1>
 	</header>
 
 
@@ -11,10 +11,10 @@
 		<div class="col-md-3 doc-toc">
 			<div class="nav-fixed box-emp">
 				<h2>Table of Contents</h2>
-				<ul class="nav toc sortable" sort-on-update="sortItems(rd.sections, guids)">
+				<ul class="nav toc cw-sortable" cw-sort-on-update="sortItems(rd.sections, guids)">
 					<li ng-repeat="section in rd.sections" data-guid="{{section.guid}}">
 						<a class="toc-section" cw-scroller="section.guid"><cw-icon type="move" class="draggable"></cw-icon> {{section.title}}</a>
-						<ol class="nav nav-stacked sortable counted" sort-on-update="sortItems(section.features, guids)">
+						<ol class="nav nav-stacked cw-sortable cw-counted" cw-sort-on-update="sortItems(section.features, guids)">
 							<li ng-repeat="feature in section.features" ng-include="'partials/toc.html'" data-guid="{{feature.guid}}" ng-init="$label = ($index + 1) + '.'"></li>
 						</ol>
 					</li>
@@ -22,7 +22,6 @@
 			</div> <!-- /.fixed-nav -->
 		</div> <!-- /.doc-toc -->
 		<div class="col-md-8 doc-content">
-			<h1 ng-model="rd.title" cw-editable></h1>
 			<div class="well slideout animated">
 				<a ng-click="insertSection(0)"><cw-icon type="th-large"></cw-icon> New Section</a>
 			</div>
@@ -42,7 +41,7 @@
 				<div class="section-title" cw-editable id="{{section.guid}}" ng-model="section.title"></div>
 				<div class="section-content" text-angular ng-model="section.content"></div>
 				<div class="flags" ng-include="'partials/flags.html'" ng-init="flags = section.flags" />
-				<div class="features counted">
+				<div class="features cw-counted">
 					<div class="feature level_0" ng-repeat="feature in section.features" ng-include="'partials/feature.html'" ng-init="$level = 0"></div>
 				</div>
 				<hr />
