@@ -43,11 +43,12 @@ body {
    ========================================================================== */
 
 h1, h2, h3, h4, h5, h6, .navbar-brand {
-    font-family: 'BrandonGrotesqueBlack', Helvetica, sans-serif;
-    text-transform: uppercase;
-    color: #1E1E1E;
-    line-height: 1em;
-    font-weight: normal;
+	font-family: 'BrandonGrotesqueBlack', Helvetica, sans-serif;
+	text-transform: uppercase;
+	font-variant: small-caps;
+	color: #1E1E1E;
+	line-height: 1em;
+	font-weight: normal;
 }
 
 .navbar-default .navbar-brand {
@@ -151,10 +152,10 @@ h3 {
 .doc-container {
 	margin-top: 110px; /* Make room for the nav */
 }
-.counted {
+.cw-counted {
 	counter-reset: item;
 }
-.counted-item:before {
+.cw-counted-item:before {
 	content: counters(item, '.'); 
 	counter-increment: item;
 	color: rgb(201, 197, 197);
@@ -193,7 +194,7 @@ h3 {
 	margin: 0;
 	padding: 0;
 }
-ul.sortable li a .draggable {
+ul.cw-sortable li a .draggable {
 	opacity: 0;
 	position: absolute;
 	right: 2px;
@@ -202,8 +203,8 @@ ul.sortable li a .draggable {
 	top: 5px;
 	color: #DBDBDB;
 }
-ul.sortable li a:hover .draggable,
-ul.sortable li a:active .draggable {
+ul.cw-sortable li a:hover .draggable,
+ul.cw-sortable li a:active .draggable {
 	-webkit-transition: all 0.2s ease-in;
 	opacity: 1.0;
 }
@@ -364,15 +365,18 @@ section {
 }
 
 .doc-header .version-num {
-font-family: 'BrandonGrotesqueRegular', Helvetica, sans-serif;
-font-size: .75em;
-color: #707070;
+	font-family: 'BrandonGrotesqueRegular', Helvetica, sans-serif;
+	font-size: .75em;
+	color: #707070;
 }
 
 .doc-header .logo {
     font-size: 35px; 
     margin: 3px 10px 10px 10px; color: #707070; position: absolute; top: 8px; 
     left: 20px;
+}
+.doc-header [cw-editable] {
+	border: solid 1px rgba(0, 0, 0, 0);
 }
 
 

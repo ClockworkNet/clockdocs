@@ -3,7 +3,6 @@ angular.module('Clockdoc.Controllers')
 function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Stylesheet) {
 
 	var extension = 'cw'
-	$scope.version = '1.1';
 
 	Platform.load($scope, 'platform');
 
@@ -38,6 +37,9 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 	};
 
 	function loadDoc(doc) {
+		if (!doc.version) {
+			doc.version = "0.1";
+		}
 		$scope.rd = doc;
 		for (var id in doc.files) {
 			if (!doc.files.hasOwnProperty(id)) continue;

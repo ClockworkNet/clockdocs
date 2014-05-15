@@ -74,17 +74,17 @@ return {
 }})
 
 // Makes an element sortable
-.directive('sortable', function() {
+.directive('cwSortable', function() {
 return {
 	restrict: 'C',
 	scope: {
-		key: '@sortKey'
-		, axis: '@sortAxis'
-		, handle: '@sortHandle'
-		, items: '@sortItems'
-		, onStart: '&sortOnStart'
-		, onUpdate: '&sortOnUpdate'
-		, onStop: '&sortOnStop'
+		key: '@cwSortKey'
+		, axis: '@cwSortAxis'
+		, handle: '@cwSortHandle'
+		, items: '@cwSortItems'
+		, onStart: '&cwSortOnStart'
+		, onUpdate: '&cwSortOnUpdate'
+		, onStop: '&cwSortOnStop'
 	},
 	link: function(scope, el, attrs) {
 		var itemSelector = scope.items || '> *';
