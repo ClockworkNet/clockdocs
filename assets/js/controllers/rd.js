@@ -67,7 +67,7 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 
 	function createFeature(title) {
 		title = title || 'Untitled';
-		return {
+		var feature = {
 			'title': title,
 			'guid': Random.id(),
 			'content': '',
@@ -75,6 +75,7 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 			'flags': [],
 			'tags': []
 		};
+		return feature;
 	};
 
 	function createFlag(type) {
@@ -96,36 +97,53 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 	var cache = {};
 
 	// Finds an item by the specified GUID in an array.
-	// If childKey is specified, this will recursive check
-	// child arrays
+	// This will also recursively check child arrays.
 	function findById(a, id, childKey) {
 		if (cache[id]) return cache[id];
-		if (!a || !a.some) {
+		if (!a) {
 			return null;
 		}
-		var item = null;
-		a.some(function(o) {
+		for (var i=0, o; o = a[i]; i++) {
 			if (o.guid == id) {
-				item = o;
-				return true;
+				return o;
+			}
+			if (!childKey && o['features']) {
+				childKey = 'features';
+			}
+			if (!childKey && o['sections']) {
+				childKey = 'sections';
 			}
 			if (childKey && o[childKey]) {
-				item = findById(o[childKey], id, childKey);
-				return !!item;
+				var item = findById(o[childKey], id, childKey);
+				if (item) {
+					return item;
+				}
 			}
-		});
+		}
 		cache[id] = item;
-		return item;
+		return null;
 	}
 
-	// Sorts a collection by GUID
-	function sortById(a, ids) {
-		if (!ids) return;
-		a.sort(function(x, y) {
-			var xix = ids.indexOf(x.guid);
-			var yix = ids.indexOf(y.guid);
-			return xix - yix;
-		});
+	// Sorts a tree by GUIDs
+	function sortById(owner, name, tree, container) {
+		if (!tree) return;
+		var copy = [];
+		var level = level || 0;
+		container = container || owner[name];
+
+		for (var i=0, branch; branch = tree[i]; i++) {
+			item = findById(container, branch.id, name);
+			if (!item) {
+				console.error("No item found with id", branch.id, container, name)
+				continue;
+			}
+			copy.push(item);
+			if (branch.children && branch.children.length) {
+				sortById(item, name, branch.children, container);
+			}
+		}
+
+		owner[name] = copy;
 	}
 
 	// Recursively access each feature in a section;
@@ -169,7 +187,7 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 	});
 
 	$scope.create = function() {
-		loadDoc({
+		var doc = {
 			title: 'Untitled Requirements Document',
 			author: 'Anonymous',
 			created: new Date(),
@@ -183,7 +201,13 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 				createFeature('Security')
 			],
 			flags: []
-		});
+		};
+		doc.sections[1].features.push(createFeature('Test 1'));
+		doc.sections[1].features[0].features.push(createFeature('Test 1.1'));
+		doc.sections[1].features[0].features.push(createFeature('Test 1.2'));
+		doc.sections[1].features.push(createFeature('Test 2'));
+		doc.sections[1].features.push(createFeature('Test 3'));
+		loadDoc(doc);
 		$scope.result = {};
 	};
 
@@ -373,9 +397,9 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 		});
 	};
 
-	$scope.sortItems = function(collection, guids) {
+	$scope.sortItems = function(owner, name, tree) {
 		$scope.$apply(function() {
-			sortById(collection, guids);
+			sortById(owner, name, tree);
 		});
 	};
 

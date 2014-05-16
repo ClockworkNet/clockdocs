@@ -87,17 +87,33 @@ return {
 		, onStop: '&cwSortOnStop'
 	},
 	link: function(scope, el, attrs) {
-		var itemSelector = scope.items || '> *';
+		var itemSelector = scope.items || '.cw-sorted';
 		var itemKey      = scope.key   || 'guid';
 		var axis         = scope.axis  || 'y';
 
+		// Creates a hierarchical view of the ids being sorted
+		var crawl = function(branch, tree) {
+			tree = tree || [];
+
+			var id = branch.data(itemKey);
+			if (id) {
+				var node = {'id': id, children: []};
+				tree.push(node);
+				tree = node.children;
+			}
+
+			branch.children().each(function() {
+				var child = $(this);
+				crawl(child, tree);
+			});
+
+			return tree;
+		};
+
 		var wrap = function(msg, func) {
 			return function(e, ui) {
-				var els = el.find(itemSelector);
-				var ids = els.map(function(i, o) {
-					return $(o).data(itemKey)
-				}).get();
-				func({guids: ids});
+				var tree = crawl(el);
+				func({tree: tree});
 			}
 		};
 
@@ -108,7 +124,9 @@ return {
 			, forcePlaceholderSize : true
 			, placeholder          : attrs.sortPlaceholder || 'placeholder'
 
-			, items  : itemSelector
+			, items       : itemSelector
+			, connectWith : '.cw-sortable' 
+
 			, scroll : true
 			, handle : scope.handle
 

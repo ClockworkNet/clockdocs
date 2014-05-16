@@ -175,7 +175,6 @@ return {
 		};
 
 		var onWrite = function(w) {
-			this.truncate(this.position); // Trim off the excess
 			var entryId = chrome.fileSystem.retainEntry(entry);
 			var result = {
 				writer: w,
@@ -186,10 +185,15 @@ return {
 			deferred.resolve(result);
 		};
 
+		var onTruncated = function() {
+			this.onerror = onWrite;
+			this.write(new Blob([data], {type: type}));
+		};
+
 		entry.createWriter(function(writer) {
 			writer.onerror    = onError;
-			writer.onwriteend = onWrite;
-			writer.write(new Blob([data], {type: type}));
+			writer.onwriteend = onTruncated;
+			writer.truncate(0);
 		}, onError);
 
 		return deferred.promise;
