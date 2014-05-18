@@ -83,7 +83,10 @@ return {
 		, handle: '@cwSortHandle'
 		, items: '@cwSortItems'
 		, nested: '@cwSortNested'
+		, keepOnUpdate: '@cwSortKeepOnUpdate'
 		, onUpdate: '&cwSortOnUpdate'
+		, onStart: '&cwSortOnStart'
+		, onSop: '&cwSortOnStop'
 	},
 	link: function(scope, el, attrs) {
 		var itemSelector = scope.items || '.cw-sorted';
@@ -112,18 +115,35 @@ return {
 			return tree;
 		};
 
-		var treed = function(msg, func) {
+		var treed = function(func) {
 			if (!func) {
 				console.warn("No update function defined");
 				return function(e, ui) {}
 			}
 			return function(e, ui) {
 				var args = {};
-				args.guid = $(ui.item).data(itemKey);
-				args.tree = crawl(el);
-				console.info("Sortable updated", func, args);
+				var dropped = $(ui.item);
+				var parent = dropped.parent();
+				args.guid = dropped.data(itemKey);
+				while (parent.length) {
+					var parentGuid = parent.data(itemKey);
+					if (parentGuid) {
+						args.parentGuid = parentGuid;
+						break;
+					}
+					parent = parent.parent();
+				}
+				args.index = dropped.prevAll().length;
+
+				if (!scope.keepOnUpdate) {
+					dropped.remove();
+				}
 				func.call(null, args);
 			}
+		};
+
+		var wrap = function(func) {
+			return func || function(e, ui) {};
 		};
 
 		var connection = scope.nested ? '.cw-sortable' : '';
@@ -138,7 +158,9 @@ return {
 			, scroll : true
 			, handle : scope.handle
 
-			, update : treed('drag update', scope.onUpdate)
+			, start: wrap(scope.onStart)
+			, stop: wrap(scope.onStop)
+			, update : treed(scope.onUpdate)
 		});
 	}
 }})

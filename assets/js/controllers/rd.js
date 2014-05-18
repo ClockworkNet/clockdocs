@@ -4,6 +4,9 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 
 	var extension = 'cw'
 
+	$scope.rd = null;
+	$scope.sorting = false;
+
 	Platform.load($scope, 'platform');
 
 	var flagTypes = $scope.flagTypes = [
@@ -109,20 +112,23 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 		var checkChildren = function(a, type) {
 			if (!a) return null;
 			for (var i=0, o; o=a[i]; i++) {
-				var childItem = findItem(id, o);
-				if (childItem) {
-					childItem.index = i;
-					childItem.parent = {
-						item: parent,
-						type: type
+				if (o.guid == id) {
+					return {
+						index: i,
+						item: o,
+						parent: {
+							item: parent,
+							type: type
+						}
 					};
-					return childItem;
 				}
+				var childItem = findItem(id, o);
+				if (childItem) return childItem;
 			}
 			return null;
 		};
 
-		var childTypes = ['children', 'features', 'sections'];
+		var childTypes = ['features', 'sections'];
 
 		for (var i=0, ct; ct = childTypes[i]; i++) {
 			var item = checkChildren(parent[ct], ct);
@@ -387,43 +393,32 @@ doc.sections[1].features.push(createFeature('Banana'));
 		});
 	};
 
-	$scope.moveItem = function(guid, tree) {
-		console.info("Starting move", guid, tree);
+	$scope.moveItem = function(parentGuid, guid, index) {
+		console.info("Starting move", arguments);
 
 		// Find the item being moved
 		var moved = findItem(guid);
+		console.debug("Moving", moved);
 		if (!moved) {
 			console.error("Invalid moved item id", guid);
 			return;
 		}
 
-		// Find where the moved item was dropped in the new tree
-		var fullTree = {
-			guid: $scope.rd.guid,
-			children: tree
-		};
-		var dropped = findItem(guid, fullTree);
-		if (!dropped) {
-			console.error("Invalid target id", guid, tree);
-			return;
-		}
-
 		// Get the containing object where the item was dropped
-		var targetId = dropped.parent.item.guid;
-		var target = findItem(targetId);
-		if (!target) {
-			console.error("Could not find drop parent in rd", dropped);
+		var parent = findItem(parentGuid || $scope.rd.guid);
+		console.debug("Into", index, parent);
+		if (!parent) {
+			console.error("Could not find drop parent in rd", parentGuid);
 			return;
 		}
-		var targetType = target.item.guid == $scope.rd.guid ? 'sections' : 'features';
+		var targetType = parent.item.guid == $scope.rd.guid ? 'sections' : 'features';
 
-		console.debug("Moving", moved, "to", targetType, "in", target);
 		$scope.$apply(function() {
 			// Out with the old
 			moved.parent.item[moved.parent.type].splice(moved.index, 1);
 
 			// In with the new
-			target.item[targetType].splice(dropped.index, 0, moved.item);
+			parent.item[targetType].splice(index, 0, moved.item);
 		});
 	};
 
