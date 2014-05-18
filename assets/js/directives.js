@@ -82,9 +82,8 @@ return {
 		, axis: '@cwSortAxis'
 		, handle: '@cwSortHandle'
 		, items: '@cwSortItems'
-		, onStart: '&cwSortOnStart'
+		, nested: '@cwSortNested'
 		, onUpdate: '&cwSortOnUpdate'
-		, onStop: '&cwSortOnStop'
 	},
 	link: function(scope, el, attrs) {
 		var itemSelector = scope.items || '.cw-sorted';
@@ -97,7 +96,10 @@ return {
 
 			var id = branch.data(itemKey);
 			if (id) {
-				var node = {'id': id, children: []};
+				var node = {
+					'guid': id, 
+					children: []
+				};
 				tree.push(node);
 				tree = node.children;
 			}
@@ -110,29 +112,33 @@ return {
 			return tree;
 		};
 
-		var wrap = function(msg, func) {
+		var treed = function(msg, func) {
+			if (!func) {
+				console.warn("No update function defined");
+				return function(e, ui) {}
+			}
 			return function(e, ui) {
-				var tree = crawl(el);
-				func({tree: tree});
+				var args = {};
+				args.guid = $(ui.item).data(itemKey);
+				args.tree = crawl(el);
+				console.info("Sortable updated", func, args);
+				func.call(null, args);
 			}
 		};
+
+		var connection = scope.nested ? '.cw-sortable' : '';
 
 		$(el).sortable({
 			axis       : axis 
 			, distance : 5
 
-			, forcePlaceholderSize : true
-			, placeholder          : attrs.sortPlaceholder || 'placeholder'
-
 			, items       : itemSelector
-			, connectWith : '.cw-sortable' 
+			, connectWith : connection
 
 			, scroll : true
 			, handle : scope.handle
 
-			, start  : wrap('drag start', scope.onStart)
-			, update : wrap('drag update', scope.onUpdate)
-			, stop   : wrap('drag stop', scope.onStop)
+			, update : treed('drag update', scope.onUpdate)
 		});
 	}
 }})

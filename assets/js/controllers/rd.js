@@ -94,56 +94,42 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 		};
 	}
 
-	var cache = {};
+	// Creates a cache lookup to be used for getting 
+	function findItem(id, parent) {
+		if (!id) return null;
+		parent = parent || $scope.rd;
 
-	// Finds an item by the specified GUID in an array.
-	// This will also recursively check child arrays.
-	function findById(a, id, childKey) {
-		if (cache[id]) return cache[id];
-		if (!a) {
-			return null;
+		if (parent.guid == id) {
+			return {
+				index: 0,
+				item: parent
+			};
 		}
-		for (var i=0, o; o = a[i]; i++) {
-			if (o.guid == id) {
-				return o;
-			}
-			if (!childKey && o['features']) {
-				childKey = 'features';
-			}
-			if (!childKey && o['sections']) {
-				childKey = 'sections';
-			}
-			if (childKey && o[childKey]) {
-				var item = findById(o[childKey], id, childKey);
-				if (item) {
-					return item;
+
+		var checkChildren = function(a, type) {
+			if (!a) return null;
+			for (var i=0, o; o=a[i]; i++) {
+				var childItem = findItem(id, o);
+				if (childItem) {
+					childItem.index = i;
+					childItem.parent = {
+						item: parent,
+						type: type
+					};
+					return childItem;
 				}
 			}
+			return null;
+		};
+
+		var childTypes = ['children', 'features', 'sections'];
+
+		for (var i=0, ct; ct = childTypes[i]; i++) {
+			var item = checkChildren(parent[ct], ct);
+			if (item) return item;
 		}
-		cache[id] = item;
+
 		return null;
-	}
-
-	// Sorts a tree by GUIDs
-	function sortById(owner, name, tree, container) {
-		if (!tree) return;
-		var copy = [];
-		var level = level || 0;
-		container = container || owner[name];
-
-		for (var i=0, branch; branch = tree[i]; i++) {
-			item = findById(container, branch.id, name);
-			if (!item) {
-				console.error("No item found with id", branch.id, container, name)
-				continue;
-			}
-			copy.push(item);
-			if (branch.children && branch.children.length) {
-				sortById(item, name, branch.children, container);
-			}
-		}
-
-		owner[name] = copy;
 	}
 
 	// Recursively access each feature in a section;
@@ -202,11 +188,15 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 			],
 			flags: []
 		};
-		doc.sections[1].features.push(createFeature('Test 1'));
-		doc.sections[1].features[0].features.push(createFeature('Test 1.1'));
-		doc.sections[1].features[0].features.push(createFeature('Test 1.2'));
-		doc.sections[1].features.push(createFeature('Test 2'));
-		doc.sections[1].features.push(createFeature('Test 3'));
+doc.sections[1].features.push(createFeature('Apple'));
+doc.sections[1].features[0].features.push(createFeature('Red Apple'));
+doc.sections[1].features[0].features.push(createFeature('Green Apple'));
+doc.sections[1].features.push(createFeature('Orange'));
+doc.sections[1].features[1].features.push(createFeature('Blue Orange'));
+doc.sections[1].features[1].features.push(createFeature('Orangatang'));
+doc.sections[1].features[1].features[0].features.push(createFeature('Tang'));
+doc.sections[1].features[1].features[0].features.push(createFeature('Nectarine'));
+doc.sections[1].features.push(createFeature('Banana'));
 		loadDoc(doc);
 		$scope.result = {};
 	};
@@ -397,9 +387,43 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 		});
 	};
 
-	$scope.sortItems = function(owner, name, tree) {
+	$scope.moveItem = function(guid, tree) {
+		console.info("Starting move", guid, tree);
+
+		// Find the item being moved
+		var moved = findItem(guid);
+		if (!moved) {
+			console.error("Invalid moved item id", guid);
+			return;
+		}
+
+		// Find where the moved item was dropped in the new tree
+		var fullTree = {
+			guid: $scope.rd.guid,
+			children: tree
+		};
+		var dropped = findItem(guid, fullTree);
+		if (!dropped) {
+			console.error("Invalid target id", guid, tree);
+			return;
+		}
+
+		// Get the containing object where the item was dropped
+		var targetId = dropped.parent.item.guid;
+		var target = findItem(targetId);
+		if (!target) {
+			console.error("Could not find drop parent in rd", dropped);
+			return;
+		}
+		var targetType = target.item.guid == $scope.rd.guid ? 'sections' : 'features';
+
+		console.debug("Moving", moved, "to", targetType, "in", target);
 		$scope.$apply(function() {
-			sortById(owner, name, tree);
+			// Out with the old
+			moved.parent.item[moved.parent.type].splice(moved.index, 1);
+
+			// In with the new
+			target.item[targetType].splice(dropped.index, 0, moved.item);
 		});
 	};
 

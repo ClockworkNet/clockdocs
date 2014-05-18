@@ -48,10 +48,10 @@
 		<div class="col-md-3 doc-toc">
 			<div class="nav-fixed box-emp">
 				<h2>Table of Contents</h2>
-				<ul class="nav toc cw-sortable" cw-sort-on-update="sortItems(rd, 'sections', tree)" cw-sort-items=".cw-sorted-section">
+				<ul class="nav toc cw-sortable" cw-sort-on-update="moveItem(guid, tree)" cw-sort-nested="true">
 					<li class="cw-sorted cw-sorted-section" ng-repeat="section in rd.sections" data-guid="{{section.guid}}">
 						<a class="toc-section" cw-scroller="section.guid"><cw-icon type="move" class="draggable"></cw-icon> {{section.title}}</a>
-						<ol class="nav nav-stacked cw-sortable cw-counted" cw-sort-items=".cw-sorted-feature" cw-sort-on-update="sortItems(section, 'features', tree)">
+						<ol class="nav nav-stacked cw-sortable cw-counted">
 							<li class="cw-sorted cw-sorted-feature" ng-repeat="feature in section.features" ng-include="'partials/toc.html'" data-guid="{{feature.guid}}" ng-init="$label = ($index + 1) + '.'"></li>
 						</ol>
 					</li>
