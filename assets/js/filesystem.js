@@ -174,22 +174,25 @@ return {
 			deferred.reject(e);
 		};
 
-		var onWrite = function(w) {
-			this.truncate(this.position); // Trim off the excess
-			var entryId = chrome.fileSystem.retainEntry(entry);
-			var result = {
-				writer: w,
-				content: data,
-				entry: entry,
-				entryId: entryId
+		var startWrite = function(e) {
+			var writer = this;
+			writer.onwriteend = function(e) {
+				var entryId = chrome.fileSystem.retainEntry(entry);
+				var result = {
+					writer: writer,
+					content: data,
+					entry: entry,
+					entryId: entryId
+				};
+				deferred.resolve(result);
 			};
-			deferred.resolve(result);
+			writer.write(new Blob([data], {type: type}));
 		};
 
 		entry.createWriter(function(writer) {
 			writer.onerror    = onError;
-			writer.onwriteend = onWrite;
-			writer.write(new Blob([data], {type: type}));
+			writer.onwriteend = startWrite;
+			writer.truncate(0);
 		}, onError);
 
 		return deferred.promise;
