@@ -194,10 +194,13 @@ h3 {
 	margin: 0;
 	padding: 0;
 }
+.toc li.cw-sorted-feature {
+	padding-left: 0.5em;
+}
 .cw-sortable-placeholder {
-	border-top: 2px dotted red;
+	border: 1px dotted red;
 	padding: 10px 20px 5px 20px;
-	background: #fff;
+	background: #d0d0d0;
 }
 ul.cw-sortable li a .draggable {
 	opacity: 0;

@@ -79,11 +79,9 @@ return {
 	restrict: 'C',
 	scope: {
 		key: '@cwSortKey'
-		, axis: '@cwSortAxis'
 		, handle: '@cwSortHandle'
 		, items: '@cwSortItems'
 		, nested: '@cwSortNested'
-		, keepOnUpdate: '@cwSortKeepOnUpdate'
 		, onUpdate: '&cwSortOnUpdate'
 		, onStart: '&cwSortOnStart'
 		, onSop: '&cwSortOnStop'
@@ -91,7 +89,6 @@ return {
 	link: function(scope, el, attrs) {
 		var itemSelector = scope.items || '.cw-sorted';
 		var itemKey      = scope.key   || 'guid';
-		var axis         = scope.axis  || 'y';
 
 		// Creates a hierarchical view of the ids being sorted
 		var crawl = function(branch, tree) {
@@ -135,9 +132,7 @@ return {
 				}
 				args.index = dropped.prevAll().length;
 
-				if (!scope.keepOnUpdate) {
-					dropped.remove();
-				}
+				dropped.remove();
 				func.call(null, args);
 			}
 		};
@@ -149,11 +144,13 @@ return {
 		var connection = scope.nested ? '.cw-sortable' : '';
 
 		$(el).sortable({
-			axis        : axis 
-			, distance  : 5
+			distance  : 5
 			, delay     : 250
 			, opacity   : 0.5
 			, helper    : 'clone'
+
+			, tolerance        : 'intersect'
+			, toleranceElement : '> a'
 
 			, placeholder          : 'cw-sortable-placeholder'
 			, forcePlaceholderSize : true

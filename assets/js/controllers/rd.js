@@ -393,7 +393,7 @@ doc.sections[1].features.push(createFeature('Banana'));
 		});
 	};
 
-	$scope.moveItem = function(parentGuid, guid, index) {
+	$scope.moveItem = function(parentGuid, guid, newIndex) {
 		// Find the item being moved
 		var moved = findItem(guid);
 		if (!moved) {
@@ -414,7 +414,7 @@ doc.sections[1].features.push(createFeature('Banana'));
 			moved.parent.item[moved.parent.type].splice(moved.index, 1);
 
 			// In with the new
-			parent.item[targetType].splice(index, 0, moved.item);
+			parent.item[targetType].splice(newIndex, 0, moved.item);
 		});
 	};
 
