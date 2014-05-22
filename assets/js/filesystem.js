@@ -174,25 +174,24 @@ return {
 			deferred.reject(e);
 		};
 
-		var onWrite = function(w) {
-			var entryId = chrome.fileSystem.retainEntry(entry);
-			var result = {
-				writer: w,
-				content: data,
-				entry: entry,
-				entryId: entryId
+		var startWrite = function(e) {
+			var writer = this;
+			writer.onwriteend = function(e) {
+				var entryId = chrome.fileSystem.retainEntry(entry);
+				var result = {
+					writer: writer,
+					content: data,
+					entry: entry,
+					entryId: entryId
+				};
+				deferred.resolve(result);
 			};
-			deferred.resolve(result);
-		};
-
-		var onTruncated = function() {
-			this.onerror = onWrite;
-			this.write(new Blob([data], {type: type}));
+			writer.write(new Blob([data], {type: type}));
 		};
 
 		entry.createWriter(function(writer) {
 			writer.onerror    = onError;
-			writer.onwriteend = onTruncated;
+			writer.onwriteend = startWrite;
 			writer.truncate(0);
 		}, onError);
 
