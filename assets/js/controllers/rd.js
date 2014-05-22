@@ -394,11 +394,8 @@ doc.sections[1].features.push(createFeature('Banana'));
 	};
 
 	$scope.moveItem = function(parentGuid, guid, index) {
-		console.info("Starting move", arguments);
-
 		// Find the item being moved
 		var moved = findItem(guid);
-		console.debug("Moving", moved);
 		if (!moved) {
 			console.error("Invalid moved item id", guid);
 			return;
@@ -406,7 +403,6 @@ doc.sections[1].features.push(createFeature('Banana'));
 
 		// Get the containing object where the item was dropped
 		var parent = findItem(parentGuid || $scope.rd.guid);
-		console.debug("Into", index, parent);
 		if (!parent) {
 			console.error("Could not find drop parent in rd", parentGuid);
 			return;

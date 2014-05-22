@@ -149,8 +149,14 @@ return {
 		var connection = scope.nested ? '.cw-sortable' : '';
 
 		$(el).sortable({
-			axis       : axis 
-			, distance : 5
+			axis        : axis 
+			, distance  : 5
+			, delay     : 250
+			, opacity   : 0.5
+			, helper    : 'clone'
+
+			, placeholder          : 'cw-sortable-placeholder'
+			, forcePlaceholderSize : true
 
 			, items       : itemSelector
 			, connectWith : connection
