@@ -440,6 +440,18 @@ doc.sections[1].features.push(createFeature('Banana'));
 		});
 	};
 
+	$scope.sortStart = function() {
+		$scope.$apply(function() {
+			$scope.sorting = true;
+		});
+	};
+
+	$scope.sortStop = function() {
+		$scope.$apply(function() {
+			$scope.sorting = false;
+		});
+	};
+
 	$scope.print = function() {
 		window.print();
 	};

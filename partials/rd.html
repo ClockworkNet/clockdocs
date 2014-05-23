@@ -47,8 +47,8 @@
 	<div class="row doc-container" ng-show="rd">
 		<div class="col-md-3 doc-toc">
 			<div class="nav-fixed box-emp">
-				<h2>Table of Contents</h2>
-				<ul class="nav toc cw-sortable" cw-sort-on-start="sorting = true" cw-sort-on-stop="sorting = false" cw-sort-on-update="moveItem(parentGuid, guid, index)" cw-sort-nested="true" cw-sort-tolerance-element="> a">
+				<h2>Table of Contents <span class="glyphicon glyphicon-random" ng-show="sorting"></span></h2>
+				<ul class="nav toc cw-sortable" ng-class="{'cw-sorting': sorting}" cw-sort-on-started="sortStart()" cw-sort-on-stopped="sortStop()" cw-sort-on-updated="moveItem(parentGuid, guid, index)" cw-sort-nested="true" cw-sort-tolerance-element="> a">
 					<li class="cw-sorted cw-sorted-section" ng-repeat="section in rd.sections" data-guid="{{section.guid}}">
 						<a class="toc-section" cw-scroller="section.guid"><cw-icon type="move" class="draggable"></cw-icon> {{section.title}}</a>
 						<ol class="nav nav-stacked cw-counted">

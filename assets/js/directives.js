@@ -83,9 +83,9 @@ return {
 		, items: '@cwSortItems'
 		, nested: '@cwSortNested'
 		, toleranceElement: '@cwSortToleranceElement'
-		, onUpdate: '&cwSortOnUpdate'
-		, onStart: '&cwSortOnStart'
-		, onSop: '&cwSortOnStop'
+		, onUpdate: '&cwSortOnUpdated'
+		, onStart: '&cwSortOnStarted'
+		, onStop: '&cwSortOnStopped'
 	},
 	link: function(scope, el, attrs) {
 		var itemKey = scope.key || 'guid';
@@ -105,7 +105,7 @@ return {
 			return null;
 		};
 
-		var onUpdate = function(e, ui) {
+		var updated = function(e, ui) {
 			var dropped = $(ui.item);
 			var args = {};
 
@@ -119,24 +119,18 @@ return {
 				dropped.remove();
 			}
 
-			if (scope.onUpdate) {
-				scope.onUpdate.call(self, args);
-			}
+			scope.onUpdate(args);
 		};
 
-		var onStart = function(e, ui) {
+		var started = function(e, ui) {
 			var item = $(ui.item);
 			dragParentGuid = getParentGuid(item);
-			if (scope.onStart) {
-				scope.onStart.call(self, e, ui);
-			}
+			scope.onStart();
 		};
 
-		var onStop = function(e, ui) {
+		var stopped = function(e, ui) {
 			dragParentGuid = null;
-			if (scope.onStop) {
-				scope.onStop.call(self, e, ui);
-			}
+			scope.onStop();
 		};
 
 		var itemSelector = scope.items || '.cw-sorted';
@@ -150,9 +144,9 @@ return {
 			, items: itemSelector
 			, scroll: true
 			, handle: scope.handle
-			, start: onStart
-			, stop: onStop
-			, update: onUpdate
+			, start: started
+			, stop: stopped
+			, update: updated 
 		};
 
 		if (scope.nested) {

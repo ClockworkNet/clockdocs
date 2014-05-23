@@ -200,6 +200,12 @@ h3 {
 .toc li.cw-sorted-feature {
 	padding-left: 0.5em;
 }
+ul.cw-sortable .cw-sorted-empty {
+	height: 0px;
+}
+ul.cw-sortable.cw-sorting .cw-sorted-empty:hover {
+	height: 1em;
+}
 .cw-sortable-placeholder {
 	border: 1px dotted red;
 	padding: 10px 20px 5px 20px;
