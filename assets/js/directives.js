@@ -88,7 +88,7 @@ return {
 		, onSop: '&cwSortOnStop'
 	},
 	link: function(scope, el, attrs) {
-		var itemKey = scope.key   || 'guid';
+		var itemKey = scope.key || 'guid';
 		var self = this;
 
 		var dragParentGuid = null;
