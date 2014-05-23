@@ -418,6 +418,26 @@ doc.sections[1].features.push(createFeature('Banana'));
 		});
 	};
 
+	$scope.moveFlag = function(flags, parentGuid, guid, newIndex) {
+		var currentIndex = -1;
+		var flag = null;
+		for (var i=0; i<flags.length; i++) {
+			if (flags[i].guid == guid) {
+				flag = flags[i];
+				currentIndex = i;
+				break;
+			}
+		}
+		if (currentIndex < 0) {
+			console.error("Invalid flag guid", guid);
+			return;
+		}
+		$scope.$apply(function() {
+			flags.splice(currentIndex, 1);
+			flags.splice(newIndex, 0, flag);
+		});
+	};
+
 	$scope.print = function() {
 		window.print();
 	};

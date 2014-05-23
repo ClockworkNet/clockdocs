@@ -48,7 +48,7 @@
 		<div class="col-md-3 doc-toc">
 			<div class="nav-fixed box-emp">
 				<h2>Table of Contents</h2>
-				<ul class="nav toc cw-sortable" cw-sort-on-start="sorting = true" cw-sort-on-stop="sorting = false" cw-sort-on-update="moveItem(parentGuid, guid, index)" cw-sort-nested="true">
+				<ul class="nav toc cw-sortable" cw-sort-on-start="sorting = true" cw-sort-on-stop="sorting = false" cw-sort-on-update="moveItem(parentGuid, guid, index)" cw-sort-nested="true" cw-sort-tolerance-element="> a">
 					<li class="cw-sorted cw-sorted-section" ng-repeat="section in rd.sections" data-guid="{{section.guid}}">
 						<a class="toc-section" cw-scroller="section.guid"><cw-icon type="move" class="draggable"></cw-icon> {{section.title}}</a>
 						<ol class="nav nav-stacked cw-counted">

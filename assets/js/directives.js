@@ -82,12 +82,12 @@ return {
 		, handle: '@cwSortHandle'
 		, items: '@cwSortItems'
 		, nested: '@cwSortNested'
+		, toleranceElement: '@cwSortToleranceElement'
 		, onUpdate: '&cwSortOnUpdate'
 		, onStart: '&cwSortOnStart'
 		, onSop: '&cwSortOnStop'
 	},
 	link: function(scope, el, attrs) {
-		var itemSelector = scope.items || '.cw-sorted';
 		var itemKey      = scope.key   || 'guid';
 
 		// Creates a hierarchical view of the ids being sorted
@@ -140,29 +140,29 @@ return {
 			return func || function(e, ui) {};
 		};
 
-		var connection = scope.nested ? '.cw-sortable' : '';
-
-		$(el).sortable({
-			distance  : 5
-			, delay     : 250
-			, opacity   : 0.5
-
-			, tolerance        : 'intersect'
-			, toleranceElement : '> a'
-
-			, placeholder          : 'cw-sortable-placeholder'
-			, forcePlaceholderSize : true
-
-			, items       : itemSelector
-			, connectWith : connection
-
-			, scroll : true
-			, handle : scope.handle
-
+		var itemSelector = scope.items || '.cw-sorted';
+		var options = {
+			distance: 5
+			, delay: 250
+			, opacity: 0.5
+			, tolerance: 'intersect'
+			, placeholder: 'cw-sortable-placeholder'
+			, forcePlaceholderSize: true
+			, items: itemSelector
+			, scroll: true
+			, handle: scope.handle
 			, start: wrap(scope.onStart)
 			, stop: wrap(scope.onStop)
-			, update : treed(scope.onUpdate)
-		});
+			, update: treed(scope.onUpdate)
+		};
+
+		if (scope.nested) {
+			options.connectWith = '.cw-sortable';
+		}
+
+		options.toleranceElement = scope.toleranceElement || false;
+
+		$(el).sortable(options);
 	}
 }})
 
