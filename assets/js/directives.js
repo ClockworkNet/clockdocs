@@ -132,7 +132,6 @@ return {
 				}
 				args.index = dropped.prevAll().length;
 
-				dropped.remove();
 				func.call(null, args);
 			}
 		};
@@ -147,7 +146,6 @@ return {
 			distance  : 5
 			, delay     : 250
 			, opacity   : 0.5
-			, helper    : 'clone'
 
 			, tolerance        : 'intersect'
 			, toleranceElement : '> a'
