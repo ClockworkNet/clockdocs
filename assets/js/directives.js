@@ -88,56 +88,55 @@ return {
 		, onSop: '&cwSortOnStop'
 	},
 	link: function(scope, el, attrs) {
-		var itemKey      = scope.key   || 'guid';
+		var itemKey = scope.key   || 'guid';
+		var self = this;
 
-		// Creates a hierarchical view of the ids being sorted
-		var crawl = function(branch, tree) {
-			tree = tree || [];
+		var dragParentGuid = null;
 
-			var id = branch.data(itemKey);
-			if (id) {
-				var node = {
-					'guid': id, 
-					children: []
-				};
-				tree.push(node);
-				tree = node.children;
-			}
-
-			branch.children().each(function() {
-				var child = $(this);
-				crawl(child, tree);
-			});
-
-			return tree;
-		};
-
-		var treed = function(func) {
-			if (!func) {
-				console.warn("No update function defined");
-				return function(e, ui) {}
-			}
-			return function(e, ui) {
-				var args = {};
-				var dropped = $(ui.item);
-				var parent = dropped.parent();
-				args.guid = dropped.data(itemKey);
-				while (parent.length) {
-					var parentGuid = parent.data(itemKey);
-					if (parentGuid) {
-						args.parentGuid = parentGuid;
-						break;
-					}
-					parent = parent.parent();
+		var getParentGuid = function(item) {
+			parent = item.parent();
+			while (parent.length) {
+				var parentGuid = parent.data(itemKey);
+				if (parentGuid) {
+					return parentGuid;
 				}
-				args.index = dropped.prevAll().length;
+				parent = parent.parent();
+			}
+			return null;
+		};
 
-				func.call(null, args);
+		var onUpdate = function(e, ui) {
+			var dropped = $(ui.item);
+			var args = {};
+
+			args.guid = dropped.data(itemKey);
+			args.parentGuid = getParentGuid(dropped);
+			args.index = dropped.prevAll().length;
+
+			// When the node moved is placed outside its current parent,
+			// remove it from the DOM. Otherwise, it will get cloned.
+			if (args.parentGuid != dragParentGuid) {
+				dropped.remove();
+			}
+
+			if (scope.onUpdate) {
+				scope.onUpdate.call(self, args);
 			}
 		};
 
-		var wrap = function(func) {
-			return func || function(e, ui) {};
+		var onStart = function(e, ui) {
+			var item = $(ui.item);
+			dragParentGuid = getParentGuid(item);
+			if (scope.onStart) {
+				scope.onStart.call(self, e, ui);
+			}
+		};
+
+		var onStop = function(e, ui) {
+			dragParentGuid = null;
+			if (scope.onStop) {
+				scope.onStop.call(self, e, ui);
+			}
 		};
 
 		var itemSelector = scope.items || '.cw-sorted';
@@ -151,9 +150,9 @@ return {
 			, items: itemSelector
 			, scroll: true
 			, handle: scope.handle
-			, start: wrap(scope.onStart)
-			, stop: wrap(scope.onStop)
-			, update: treed(scope.onUpdate)
+			, start: onStart
+			, stop: onStop
+			, update: onUpdate
 		};
 
 		if (scope.nested) {

@@ -409,13 +409,15 @@ doc.sections[1].features.push(createFeature('Banana'));
 		}
 		var targetType = parent.item.guid == $scope.rd.guid ? 'sections' : 'features';
 
-		$scope.$apply(function() {
+		var swap = function() {
 			// Out with the old
 			moved.parent.item[moved.parent.type].splice(moved.index, 1);
 
 			// In with the new
 			parent.item[targetType].splice(newIndex, 0, moved.item);
-		});
+		};
+
+		$scope.$apply(swap);
 	};
 
 	$scope.moveFlag = function(flags, parentGuid, guid, newIndex) {
