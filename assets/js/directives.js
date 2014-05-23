@@ -93,17 +93,28 @@ return {
 
 		var wrap = function(msg, func) {
 			return function(e, ui) {
-				var els = el.find(itemSelector);
-				var ids = els.map(function(i, o) {
-					return $(o).data(itemKey)
-				}).get();
-				func({guids: ids});
+				var args = {};
+				var dropped = $(ui.item);
+				var parent = dropped.parent();
+				args.guid = dropped.data(itemKey);
+				while (parent.length) {
+					var parentGuid = parent.data(itemKey);
+					if (parentGuid) {
+						args.parentGuid = parentGuid;
+						break;
+					}
+					parent = parent.parent();
+				}
+				args.index = dropped.prevAll().length;
+
+				func.call(null, args);
 			}
 		};
 
 		$(el).sortable({
-			axis       : axis 
-			, distance : 5
+			distance  : 5
+			, delay     : 250
+			, opacity   : 0.5
 
 			, forcePlaceholderSize : true
 			, placeholder          : attrs.sortPlaceholder || 'placeholder'

@@ -10,4 +10,17 @@ angular.module('Clockdoc.Filters', ['Clockdoc.Utils'])
 	return function(input) {
 		return input.replace(/[^a-z0-9]/gi, '-').toLowerCase();
 	};
-});
+})
+.filter('unique', function() {
+	return function(arr, key) {
+		var seen = [];
+		return arr.filter(function(o, i, a) {
+			if (!key in o) return true;
+			var val = o[key];
+			if (seen.indexOf(val) >=0) return false;
+			seen.push(val);
+			return true;
+		});
+	};
+})
+;

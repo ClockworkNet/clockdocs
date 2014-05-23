@@ -58,15 +58,15 @@ angular.module('textAngular')
 
 		taOptions.toolbar = [
 			['redo', 'undo', 'clear'],
-			['p', 'pre', 'quote', 'subscript', 'superscript'],
+			['pre', 'quote', 'subscript', 'superscript'],
 			['bold', 'italics', 'underline', 'strikethrough'],
 			['ul', 'ol'],
 			['justifyLeft','justifyCenter','justifyRight', 'indent', 'outdent'],
 			['html', 'insertImage', 'insertLink', 'unlink']
 		];
 
-		taOptions.classes.htmlEditor = 'form-content';
-		taOptions.classes.textEditor = 'form-content';
+		taOptions.classes.htmlEditor = 'form-control';
+		taOptions.classes.textEditor = 'form-control';
 
 		return taOptions;
 	}]);
