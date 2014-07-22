@@ -246,7 +246,8 @@ module.exports = function (grunt) {
         // Copies remaining files to places other tasks can use
         copy: {
             dist: {
-                files: [{
+                files: [
+                {
                     expand: true,
                     dot: true,
                     cwd: '<%= config.app %>',
@@ -255,10 +256,21 @@ module.exports = function (grunt) {
                         '*.{ico,png,txt}',
                         'images/{,*/}*.{webp,gif}',
                         '{,*/}*.html',
-                        'styles/fonts/{,*/}*.*',
+                        'styles/fonts/**/*.*',
                         '_locales/{,*/}*.json',
                     ]
-                }]
+                },
+                // for fontawesome
+                {
+                    expand: true,
+                    cwd: '<%= config.app %>',
+                    dest: '<%= config.dist %>/fonts',
+                    flatten: true,
+                    src: [
+                        'bower_components/**/fonts/*.*'
+                    ]
+                }
+                ]
             },
             styles: {
                 expand: true,
