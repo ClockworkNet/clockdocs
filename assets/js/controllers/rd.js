@@ -39,6 +39,34 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 		);
 	};
 
+	function getSampleDoc(type) {
+		if (type == 'rd') {
+			return {
+				title: 'Untitled Requirements Document',
+				author: 'Anonymous',
+				created: new Date(),
+				guid: Random.id(),
+				revisions: [],
+				sections: [
+					createFeature('Definitions and Conventions'),
+					createFeature('Features'),
+					createFeature('Production'),
+					createFeature('Technology'),
+					createFeature('Security')
+				],
+				flags: []
+			};
+		}
+		return {
+			title: 'Untitled Requirements Document',
+			author: 'Anonymous',
+			created: new Date(),
+			guid: Random.id(),
+			revisions: [],
+			sections: []
+		};
+	};
+
 	function loadDoc(doc) {
 		if (!doc.version) {
 			doc.version = "0.1";
@@ -48,10 +76,6 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 			if (!doc.files.hasOwnProperty(id)) continue;
 			addFileStyle(doc.files[id]);
 		}
-	};
-
-	function scrollTo(guid) {
-		Scroll.to(guid);
 	};
 
 	function unwarn() {
@@ -179,30 +203,7 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 	});
 
 	$scope.create = function() {
-		var doc = {
-			title: 'Untitled Requirements Document',
-			author: 'Anonymous',
-			created: new Date(),
-			guid: Random.id(),
-			revisions: [],
-			sections: [
-				createFeature('Definitions and Conventions'),
-				createFeature('Features'),
-				createFeature('Production'),
-				createFeature('Technology'),
-				createFeature('Security')
-			],
-			flags: []
-		};
-doc.sections[1].features.push(createFeature('Apple'));
-doc.sections[1].features[0].features.push(createFeature('Red Apple'));
-doc.sections[1].features[0].features.push(createFeature('Green Apple'));
-doc.sections[1].features.push(createFeature('Orange'));
-doc.sections[1].features[1].features.push(createFeature('Blue Orange'));
-doc.sections[1].features[1].features.push(createFeature('Orangatang'));
-doc.sections[1].features[1].features[0].features.push(createFeature('Tang'));
-doc.sections[1].features[1].features[0].features.push(createFeature('Nectarine'));
-doc.sections[1].features.push(createFeature('Banana'));
+		var doc = getSampleDoc('rd');
 		loadDoc(doc);
 		$scope.result = {};
 	};
@@ -316,7 +317,7 @@ doc.sections[1].features.push(createFeature('Banana'));
 	$scope.insertSection = function(sectionIndex) {
 		var section = createFeature('Untitled Section');
 		$scope.rd.sections.splice(sectionIndex, 0, section);
-		scrollTo(section.guid);
+		Scroll.to(section.guid);
 	};
 
 	$scope.deleteSection = function(index) {
@@ -347,7 +348,7 @@ doc.sections[1].features.push(createFeature('Banana'));
 		featureIndex = featureIndex || features.length + 1;
 		features.splice(featureIndex, 0, feature);
 
-		scrollTo(feature.guid);
+		Scroll.to(feature.guid);
 	};
 
 	/// Tag methods ///
@@ -384,7 +385,7 @@ doc.sections[1].features.push(createFeature('Banana'));
 		}
 		var flag = createFlag(type);
 		flags.push(flag);
-		scrollTo(flag.guid);
+		Scroll.to(flag.guid);
 	};
 
 	$scope.deleteFlag = function(flags, index) {

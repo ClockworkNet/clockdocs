@@ -62,7 +62,7 @@ angular.module('textAngular')
 			['bold', 'italics', 'underline', 'strikethrough'],
 			['ul', 'ol'],
 			['justifyLeft','justifyCenter','justifyRight', 'indent', 'outdent'],
-			['html', 'insertImage', 'insertLink', 'unlink']
+			['html', 'insertImage', 'insertLink', 'removeLink']
 		];
 
 		taOptions.classes.htmlEditor = 'form-control';
@@ -73,6 +73,8 @@ angular.module('textAngular')
 
 	// Updates some of the classes used for the buttons
 	$provide.decorator('taTools', ['$delegate', '$q', function(taTools, $q) {
+
+		console.debug(taTools);
 
 		taTools.html.iconclass = 'fa fa-code';
 		delete taTools.html.buttontext;
