@@ -5,13 +5,12 @@
 		"Barrett Alexander <barrett@clockwork.net>"
 	],
 	"description": "Write all sorts of Clockwork Client documents",
-	"main": "app.html",
+	"main": "dist/index.html",
 	"license": "MIT",
 	"homepage": "clockwork.net",
 	"private": true,
 	"ignore": [
 		"**/.*",
-		"bowery",
 		"test"
 	],
 	"dependencies": {
@@ -22,5 +21,14 @@
 		"bootstrap": "3.1.x",
 		"fontawesome": "4.1.x",
 		"textAngular": "1.2.x"
+	},
+	"overrides": {
+		"textAngular": {
+			"main": [
+				"src/textAngularSetup.js",
+				"src/textAngular.js",
+				"src/textAngular-sanitize.js"
+			]
+		}
 	}
 }

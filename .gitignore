@@ -1,6 +1,13 @@
 *.vim
 .DS_Store
 .svn
-/bowery
-/host/build
-/host/*.json
+app/host/build
+app/host/*.json
+node_modules
+temp
+.tmp
+dist
+package
+.sass-cache
+app/bower_components
+test/bower_components

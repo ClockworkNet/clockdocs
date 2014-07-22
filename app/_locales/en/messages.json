@@ -1,0 +1,10 @@
+{
+    "appName": {
+        "message": "Clockdocs",
+        "description": "The name of the application"
+    },
+    "appDescription": {
+        "message": "Write client documents like Clockwork.",
+        "description": "The description of the application"
+    }
+}

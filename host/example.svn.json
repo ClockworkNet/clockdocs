@@ -1,9 +1,0 @@
-{
-	"name": "com.example.svn",
-	"description": "A description of the repository",
-	"path": "$HOST_DIR/native_messaging_client.py",
-	"type": "stdio",
-	"allowed_origins": [
-		"chrome-extension://$APP_ID/"
-	]
-}

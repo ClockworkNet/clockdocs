@@ -1,0 +1,75 @@
+<html ng-csp ng-app="ClockdocApp">
+<head>
+	<title>Clockdocs</title>
+
+	<!-- build:js scripts/lib.js -->
+	<!-- bower:js -->
+	<script src="bower_components/jquery/dist/jquery.js"></script>
+	<script src="bower_components/jquery-ui/ui/jquery-ui.js"></script>
+	<script src="bower_components/angular/angular.js"></script>
+	<script src="bower_components/angular-route/angular-route.js"></script>
+	<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+	<script src="bower_components/textAngular/src/textAngularSetup.js"></script>
+	<script src="bower_components/textAngular/src/textAngular.js"></script>
+	<script src="bower_components/textAngular/src/textAngular-sanitize.js"></script>
+	<!-- endbower -->
+	<!-- endbuild -->
+
+	<!-- build:css styles/lib.css -->
+	<!-- bower:css -->
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+	<link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css" />
+	<!-- endbower -->
+	<!-- endbuild -->
+
+	<!-- build:css styles/app.css -->
+	<link rel="stylesheet" href="bower_components/angular/angular-csp.css" />
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css" />
+	<link rel="stylesheet" href="bower_components/jquery-ui/themes/base/jquery-ui.css" />
+
+	<link rel="stylesheet" href="styles/fonts.css" />
+	<link rel="stylesheet" href="styles/main.css" />
+	<!-- endbuild -->
+
+	<!-- build:js scripts/app.js -->
+	<script src="scripts/app.js"></script>
+
+	<script src="scripts/platform.js"></script>
+	<script src="scripts/ui.js"></script>
+	<script src="scripts/random.js"></script>
+	<script src="scripts/filesystem.js"></script>
+	<script src="scripts/contenteditable.js"></script>
+	<script src="scripts/svn.js"></script>
+
+	<script src="scripts/filters.js"></script>
+	<script src="scripts/directives.js"></script>
+
+	<script src="scripts/controllers/rd.js"></script>
+	<!-- endbuild -->
+</head>
+
+<body>
+	<div class="container">
+		<ng-include src="'partials/rd.html'"></ng-include>
+	</div>
+
+	<div class="modal" id="prompt">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title"></h4>
+				</div>
+				<div class="modal-body">
+					<input class="modal-value form-control" />
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default btn-cancel" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-primary btn-action" data-dismiss="modal">Okay</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+</body>
+
+</html>
