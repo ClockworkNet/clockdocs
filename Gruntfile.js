@@ -273,12 +273,7 @@ module.exports = function (grunt) {
                     expand: true, 
                     cwd: '<%= config.app %>',
                     dest: '<%= config.dist %>',
-                    src: [
-                        'scripts/**/*.*',
-                        'styles/**/*.*',
-                        'bower_components/**/*.*',
-                        'manifest.json'
-                    ]
+                    src: '**'
                 }]
             },
             styles: {
@@ -375,8 +370,6 @@ module.exports = function (grunt) {
     grunt.registerTask('dev', [
         'clean:dist',
         'bowerInstall',
-        'concurrent:dist',
-        'copy:dist',
         'copy:dev'
     ]);
 
