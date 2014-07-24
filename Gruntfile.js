@@ -227,18 +227,13 @@ module.exports = function (grunt) {
                 }
             }
         },
+
         uglify: {
             options: {
                 mangle: false
-            },
-            dist: {
-                files: {
-                    '<%= config.dist %>/scripts/scripts.js': [
-                        '<%= config.dist %>/scripts/scripts.js'
-                    ]
-                }
             }
         },
+
         concat: {
             dist: {}
         },
@@ -271,6 +266,20 @@ module.exports = function (grunt) {
                     ]
                 }
                 ]
+            },
+            dev: {
+                // Include script and css files for development
+                files: [{
+                    expand: true, 
+                    cwd: '<%= config.app %>',
+                    dest: '<%= config.dist %>',
+                    src: [
+                        'scripts/**/*.*',
+                        'styles/**/*.*',
+                        'bower_components/**/*.*',
+                        'manifest.json'
+                    ]
+                }]
             },
             styles: {
                 expand: true,
@@ -363,6 +372,14 @@ module.exports = function (grunt) {
         'mocha'
     ]);
 
+    grunt.registerTask('dev', [
+        'clean:dist',
+        'bowerInstall',
+        'concurrent:dist',
+        'copy:dist',
+        'copy:dev'
+    ]);
+
     grunt.registerTask('build', [
         'clean:dist',
         'bowerInstall',
@@ -372,7 +389,7 @@ module.exports = function (grunt) {
         'concat',
         'cssmin',
         'uglify',
-        'copy',
+        'copy:dist',
         'usemin',
         'htmlmin',
         'compress'
