@@ -11,6 +11,14 @@
       "content": "",
       "features": [
         {
+          "title": "Tables",
+          "guid": "rllyebkopsau9yqp",
+          "content": "<p>Include support for a table of version updates at the beginning of the document.</p>",
+          "features": [],
+          "flags": [],
+          "tags": []
+        },
+        {
           "title": "Style",
           "guid": "ksns2wfski2mqltc",
           "content": "",
@@ -49,14 +57,6 @@
               "tags": []
             }
           ],
-          "flags": [],
-          "tags": []
-        },
-        {
-          "title": "Version Support",
-          "guid": "o4b1ahjw2o610qu1q",
-          "content": "",
-          "features": [],
           "flags": [],
           "tags": []
         },

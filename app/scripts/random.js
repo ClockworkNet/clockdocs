@@ -6,7 +6,7 @@ angular.module('Clockdoc.Utils')
 	};
 
 	// Returns a random letter or number in [0-9a-z]
-	this.char = function() {
+	this.character = function() {
 		return ((1 + Math.random() * 36) | 0).toString(36);
 	};
 
@@ -17,7 +17,7 @@ angular.module('Clockdoc.Utils')
 		// The first character should be limited to a letter
 		s.push(this.letter());
 		for (var i=1; i<len; i++) {
-			s.push(this.char());
+			s.push(this.character());
 		}
 		return s.join('');
 	};

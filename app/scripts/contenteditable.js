@@ -62,7 +62,7 @@ angular.module('textAngular')
 			['bold', 'italics', 'underline', 'strikethrough'],
 			['ul', 'ol'],
 			['justifyLeft','justifyCenter','justifyRight', 'indent', 'outdent'],
-			['html', 'insertImage', 'insertLink', 'removeLink']
+			['html', 'insertImage', 'insertLink']
 		];
 
 		taOptions.classes.htmlEditor = 'form-control';
@@ -96,7 +96,7 @@ angular.module('textAngular')
 			var self = this;
 			var selectedNode = getSelectedNode();
 			placeholder = placeholder || '';
-			prompt(msg, placeholder, function(val) {
+			window.prompt(msg, placeholder, function(val) {
 				restoreSelectedNode(selectedNode);
 				if (!val || !val.length || val == placeholder) return;
 				return self.$editor().wrapSelection(cmd, val);
@@ -130,6 +130,7 @@ angular.module('textAngular')
 
 		taTools.insertLink.action = function() {
 			makeSelection.call(this, "Please enter a URL to insert", 'createLink', 'http://');
+			return false;
 		};
 
 		return taTools;

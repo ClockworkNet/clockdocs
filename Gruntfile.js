@@ -231,6 +231,8 @@ module.exports = function (grunt) {
         uglify: {
             options: {
                 mangle: false
+                ,sourceMap: true 
+                ,sourceMapIncludeSources: true
             }
         },
 
@@ -384,7 +386,6 @@ module.exports = function (grunt) {
         'uglify',
         'copy:dist',
         'usemin',
-        'htmlmin',
         'compress'
     ]);
 
