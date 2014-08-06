@@ -1,3 +1,6 @@
+/*global $:false, angular:false */
+'use strict';
+
 // Utility methods for UI interactions
 angular.module('Clockdoc.Utils')
 .service('Scroll', function() {
@@ -13,7 +16,7 @@ angular.module('Clockdoc.Utils')
 			var offset   = targetEl && targetEl.offset();
 
 			if (!offset) {
-				console.error("Invalid scroller target id", targetId);
+				console.error('Invalid scroller target id', targetId);
 				return;
 			}
 
@@ -28,20 +31,22 @@ angular.module('Clockdoc.Utils')
 		}, delay);
 
 		return false;
-	}
+	};
 })
 .service('Stylesheet', function() {
 	this.get = function() {
 		if (!document.styleSheets) {
 			return this.create();
 		}
-		for (var i=0, stylesheet; stylesheet=document.styleSheets[i]; i++) {
+		for (var i=0; i<document.styleSheets.length; i++) {
+			var stylesheet = document.styleSheets[i];
 			if (stylesheet.disabled) {
 				continue;
 			}
-			var media = typeof(stylesheet.media) == 'object' 
-				? stylesheet.media.mediaText
-				: stylesheet.media;
+			var media = stylesheet.media;
+			if (typeof(media) === 'object') {
+				media = media.mediaText;
+			}
 			if (media.indexOf('screen') >= 0) {
 				return stylesheet;
 			}
@@ -59,8 +64,8 @@ angular.module('Clockdoc.Utils')
 	this.addRule = function(selector, style) {
 		var stylesheet = this.get();
 		stylesheet.addRule(selector, style);
-	}
-})
+	};
+});
 
 angular.module('Clockdoc.Utils')
 .factory('Prompt', ['$q', function($q) {
@@ -89,7 +94,7 @@ angular.module('Clockdoc.Utils')
 
 		this.dialog.on('shown.bs.modal', this._shown.bind(this));
 		this.dialog.on('hidden.bs.modal', this._hidden.bind(this));
-	};
+	}
 
 	Prompt.prototype.addField = function(key, title, placeholder) {
 		var id = 'prompt-' + key;
@@ -126,11 +131,11 @@ angular.module('Clockdoc.Utils')
 		}
 	};
 
-	Prompt.prototype._shown = function(e) {
+	Prompt.prototype._shown = function() {
 		this.values = {};
-	}
+	};
 
-	Prompt.prototype._hidden = function(e) {
+	Prompt.prototype._hidden = function() {
 		if (this.deferred) {
 			this.deferred.resolve(this.values);
 		}
@@ -140,7 +145,7 @@ angular.module('Clockdoc.Utils')
 		this.bodyElement.empty();
 		this.values = {};
 		var form = $('<form>');
-		this.fields.forEach(function(el, index) {
+		this.fields.forEach(function(el) {
 			var holder = $('<div>');
 			holder.addClass('form-group');
 			holder.append(el.label);
@@ -180,7 +185,7 @@ angular.module('Clockdoc.Utils')
 .factory('SelectedRange', ['$window', function($window) {
 	function SelectedRange() {
 		this.save();
-	};
+	}
 
 	SelectedRange.prototype.save = function() {
 		this.selection = $window.getSelection();
@@ -193,13 +198,15 @@ angular.module('Clockdoc.Utils')
 	};
 
 	SelectedRange.prototype.wrap = function(o) {
-		if (!this.range) return;
+		if (!this.range) {return;}
 		this.range.surroundContents(o);
+		this.restore();
 	};
 
 	SelectedRange.prototype.insert = function(el) {
-		if (!this.range) return;
+		if (!this.range) {return;}
 		this.range.insertNode(el);
+		this.restore();
 	};
 
 	SelectedRange.prototype.restore = function() {

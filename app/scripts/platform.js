@@ -1,3 +1,6 @@
+/*global angular:false */
+'use strict';
+
 angular.module('Clockdoc.Utils')
 .service('Platform', function() {
 	this.load = function(scope, key) {

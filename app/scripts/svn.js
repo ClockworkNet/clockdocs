@@ -1,9 +1,11 @@
+/*global angular:false */
+'use strict';
+
 angular.module('Clockdoc.Utils')
 .factory('Svn', ['$q', 'FileSystem', function($q, FileSystem) {
 
 	// svn+ssh://svn.pozitronic.com/svnroot/templates/rd-rd.json
 	var nativeSvnApp = 'com.clockwork.svn';
-	var clientApp = '/bin/native_messaging_client.py';
 	var svnRoot = 'svn+ssh://svn.pozitronic.com/svnroot';
 
 	var listeners = {
@@ -20,18 +22,17 @@ angular.module('Clockdoc.Utils')
 	return {
 		install: function() {
 			var deferred = $q.defer();
-			var text = '';
 			var filename = nativeSvnApp + '.json';
 			var self = this;
 
 			var resolve = function() {
 				setTimeout(function() {
-					console.log("Wrote manifest file", filename);
+					console.log('Wrote manifest file', filename);
 					deferred.resolve(true);
 				}, 0);
 			};
 
-			var reject = function() {
+			var reject = function(e) {
 				self.fire('error', e);
 				setTimeout(function() {
 					deferred.reject(false);
@@ -51,10 +52,12 @@ angular.module('Clockdoc.Utils')
 						return reject();
 					}
 					var manifest = angular.fromJson(result.content);
+					/*jshint camelcase: false */
 					if (!manifest.allowed_origins) {
-						mainifest.allowed_origins = [];
+						manifest.allowed_origins = [];
 					}
 					manifest.allowed_origins.push(chrome.runtime.getURL(''));
+					/*jshint camelcase: true */
 					var manifestText = angular.toJson(manifest, true);
 					FileSystem.write(result.entry, manifestText).then(resolve, reject);
 				});
@@ -70,14 +73,14 @@ angular.module('Clockdoc.Utils')
 				try {
 					var args = ['pwd'];
 					chrome.runtime.sendNativeMessage(
-						nativeSvnApp, 
+						nativeSvnApp,
 						{ command: args },
 						function(response) {
 							if (response) {
 								deferred.resolve(response);
 							}
 							else {
-								deferred.reject(e);
+								deferred.reject(response);
 							}
 						}
 					);
@@ -93,7 +96,7 @@ angular.module('Clockdoc.Utils')
 		},
 
 		on: function(events, callback) {
-			var events = events.split(' ');
+			events = events.split(' ');
 			events.forEach(function(event) {
 				listeners[event].push(callback);
 			});
@@ -187,22 +190,22 @@ angular.module('Clockdoc.Utils')
 			return FileSystem.open()
 			.then(function(localDir) {
 
-				console.log("Selected directory", localDir);
+				console.log('Selected directory', localDir);
 				if (!localDir || !localDir.entry) {
 					return self.fire('cancel');
 				}
 
 				var run = function(args) {
-					return function(response) {
+					return function() {
 						return self.exec(args);
-					}
-				}
+					};
+				};
 
 				// The display path typically has a "~" indication 
 				// for the home directory. We need to get the real home
 				// first and replace it
 				var localDirPath = localDir.displayPath + '/';
-				if (localDirPath[0] == '~') {
+				if (localDirPath[0] === '~') {
 					localDirPath = '.' + localDirPath.substring(1);
 				}
 
@@ -237,6 +240,7 @@ angular.module('Clockdoc.Utils')
 		// Commits changes made to a checkout. Uses the 'result' object
 		// returned by a checkout
 		commit: function(result) {
+			var self = this;
 			if (!result.svn || !result.svn.Message) {
 				self.fire('error', new Error('Commits require a message'));
 				return;
@@ -245,13 +249,12 @@ angular.module('Clockdoc.Utils')
 				self.fire('error', new Error('Local path not found'));
 				return;
 			}
-			var self = this;
 			return FileSystem.write(result.entry, result.content)
-			.then(function(rsp) {
+			.then(function(result) {
 				var message = result.svn.Message;
 				self.exec(['svn', 'ci', result.localPath, '-m', message])
 				.then(function(response) {
-					console.log("committed!", response);
+					console.log('committed!', response);
 					self.fireWithInfo('commit', result);
 				}).
 				catch(function(e) {
@@ -276,7 +279,7 @@ angular.module('Clockdoc.Utils')
 
 			console.log('Svn.exec:', args);
 			chrome.runtime.sendNativeMessage(
-				nativeSvnApp, 
+				nativeSvnApp,
 				{ command: args },
 				resolveResponse
 			);

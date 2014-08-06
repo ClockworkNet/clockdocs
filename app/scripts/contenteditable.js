@@ -1,3 +1,6 @@
+/*global $:false, angular:false */
+'use strict';
+
 angular.module('Clockdoc.Directives')
 // Adds angular binding to contenteditable elements
 .directive('cwEditable', function() {
@@ -6,18 +9,18 @@ angular.module('Clockdoc.Directives')
 		require: '?ngModel',
 		link: function($scope, el, attrs, ngModel) {
 			el.attr('contenteditable', true);
-			if (!ngModel) return;
+			if (!ngModel) {return;}
 			ngModel.$render = function() {
 				el.html(ngModel.$viewValue || '');
 			};
-			var update = function(e) {
+			var update = function() {
 				$scope.$apply(function() {
 					ngModel.$setViewValue(el.html());
 				});
 			};
 			el.on('blur keyup change', update);
 		}
-	}
+	};
 });
 
 // Configure the text-angular directive
@@ -28,8 +31,8 @@ angular.module('textAngular')
 		var wrap = function(cmd) {
 			return function() {
 				this.$editor().wrapSelection(cmd);
-			}
-		}
+			};
+		};
 
 		taRegisterTool('subscript', {
 			iconclass: 'fa fa-subscript',
@@ -93,20 +96,19 @@ angular.module('textAngular')
 		};
 
 		taTools.insertLink.action = function() {
-			var self = this;
 			var selected = new SelectedRange();
 			var p = new Prompt();
 			p.title = 'Create a link';
 			p.addField('text', 'Link Text', '...');
-			p.addField('url', 'Url', 'http://');
+			p.addField('url', 'Url', 'http://clockwork.net');
 
 			p.show().then(function(vals) {
-				if (!vals.url) return;
+				if (!vals.url) {return;}
 
 				var url = vals.url;
 				var title = vals.text;
 
-				if (title.length == 0) {
+				if (title.length === 0) {
 					title = url;
 				}
 
@@ -115,7 +117,6 @@ angular.module('textAngular')
 				a.attr('href', url);
 
 				selected.insert(a.get(0));
-				selected.restore();
 			});
 		};
 

@@ -1,8 +1,11 @@
+/*global $:false, angular:false */
+'use strict';
+
 angular.module('Clockdoc.Controllers')
 .controller('RdCtrl', ['$scope', '$location', 'FileSystem', 'Random', 'Svn', 'Scroll', 'Platform', 'Stylesheet',
 function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Stylesheet) {
 
-	var extension = 'cw'
+	var extension = 'cw';
 
 	$scope.rd = null;
 	$scope.sorting = false;
@@ -27,20 +30,20 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 		}
 	];
 
-	var availableTags = $scope.availableTags = [
-		"Out of Scope", 
-		"Future Phase"
+	$scope.availableTags = [
+		'Out of Scope',
+		'Future Phase'
 	];
 
 	function addFileStyle(result) {
 		Stylesheet.addRule(
-			'.' + result.id, 
+			'.' + result.id,
 			'background-image: url(' + result.data + ')'
 		);
-	};
+	}
 
 	function getSampleDoc(type) {
-		if (type == 'rd') {
+		if (type === 'rd') {
 			return {
 				title: 'Untitled Requirements Document',
 				author: 'Anonymous',
@@ -65,22 +68,22 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 			revisions: [],
 			sections: []
 		};
-	};
+	}
 
 	function loadDoc(doc) {
 		if (!doc.version) {
-			doc.version = "0.1";
+			doc.version = '0.1';
 		}
 		$scope.rd = doc;
 		for (var id in doc.files) {
-			if (!doc.files.hasOwnProperty(id)) continue;
+			if (!doc.files.hasOwnProperty(id)) {continue;}
 			addFileStyle(doc.files[id]);
 		}
-	};
+	}
 
 	function unwarn() {
 		$scope.alert = {};
-	};
+	}
 
 	function warn(title, msg, type) {
 		type = type || 'danger';
@@ -90,7 +93,7 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 			content: msg
 		};
 		$('.alert').alert();
-	};
+	}
 
 	function createFeature(title) {
 		title = title || 'Untitled';
@@ -103,12 +106,12 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 			'tags': []
 		};
 		return feature;
-	};
+	}
 
 	function createFlag(type) {
 		var flag = {};
 		flagTypes.some(function(f) {
-			if (f.type == type) {
+			if (f.type === type) {
 				flag = f;
 				return true;
 			}
@@ -123,10 +126,10 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 
 	// Creates a cache lookup to be used for getting 
 	function findItem(id, parent) {
-		if (!id) return null;
+		if (!id) {return null;}
 		parent = parent || $scope.rd;
 
-		if (parent.guid == id) {
+		if (parent.guid === id) {
 			return {
 				index: 0,
 				item: parent
@@ -134,9 +137,10 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 		}
 
 		var checkChildren = function(a, type) {
-			if (!a) return null;
-			for (var i=0, o; o=a[i]; i++) {
-				if (o.guid == id) {
+			if (!a) {return null;}
+			for (var i=0; i<a.length; i++) {
+				var o = a[i];
+				if (o.guid === id) {
 					return {
 						index: i,
 						item: o,
@@ -147,16 +151,17 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 					};
 				}
 				var childItem = findItem(id, o);
-				if (childItem) return childItem;
+				if (childItem) {return childItem;}
 			}
 			return null;
 		};
 
 		var childTypes = ['features', 'sections'];
 
-		for (var i=0, ct; ct = childTypes[i]; i++) {
+		for (var i=0; i<childTypes.length; i++) {
+			var ct = childTypes[i];
 			var item = checkChildren(parent[ct], ct);
-			if (item) return item;
+			if (item) {return item;}
 		}
 
 		return null;
@@ -165,7 +170,7 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 	// Recursively access each feature in a section;
 	// Until the callback returns false
 	function eachItem(section, key, callback, level) {
-		if (!section[key] || !section[key].some) return;
+		if (!section[key] || !section[key].some) {return;}
 		level = level || 0;
 		section[key].some(function(f, i) {
 			var go = callback(f, i, section[key], level);
@@ -183,13 +188,13 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 	$scope.result = {};
 
 	/// Filesystem Methods ///
-	FileSystem.on('error', function(e) {
+	FileSystem.on('error', function() {
 		$scope.$apply(function() {
-			return warn("Filesystem Error", "There was an error accessing the file system.");
+			return warn('Filesystem Error', 'There was an error accessing the file system.');
 		});
 	});
 
-	FileSystem.on('writing reading', function(result) {
+	FileSystem.on('writing reading', function() {
 		$scope.$apply(function() {
 			$scope.working = true;
 		});
@@ -221,10 +226,10 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 				}
 				catch (e) {
 					console.error('file open error', e);
-					warn("Error opening file", "There is a problem with your file. " + e);
+					warn('Error opening file', 'There is a problem with your file. ' + e);
 				}
 			});
-		}
+		};
 
 		FileSystem.openFile([extension, 'json'])
 		.then(readResult);
@@ -233,26 +238,26 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 	/// SVN ///
 	$scope.svnInstalled = false;
 
-	Svn.test().then(function(rsp) {
+	Svn.test().then(function() {
 		$scope.svnInstalled = true;
 	});
 
 	Svn.on('error', function(e) {
 		$scope.$apply(function() {
 			console.error('SVN error', e);
-			warn("A SVN error occurred.", "Check the console log for details.");
+			warn('A SVN error occurred.', 'Check the console log for details.');
 		});
 	});
 
 	Svn.on('executing', function(args) {
 		$scope.$apply(function() {
 			$scope.working = true;
-			warn("Running", args.join(' '), "info");
+			warn('Running', args.join(' '), 'info');
 		});
 	});
 
 	Svn.on('read checkout', function(result) {
-		console.info("Read from SVN", result);
+		console.info('Read from SVN', result);
 
 		$scope.$apply(function() {
 			$scope.working = false;
@@ -262,8 +267,8 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 				unwarn();
 			}
 			catch (e) {
-				console.error("Error reading file", e, result);
-				warn("File error", "There was an error reading the SVN file. Check the console log for details");
+				console.error('Error reading file', e, result);
+				warn('File error', 'There was an error reading the SVN file. Check the console log for details');
 			}
 		});
 	});
@@ -272,7 +277,7 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 		$scope.$apply(function() {
 			$scope.working = false;
 			$scope.result = result;
-			warn("Committed", "changes committed to SVN", "success");
+			warn('Committed', 'changes committed to SVN', 'success');
 		});
 	});
 
@@ -329,7 +334,7 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 	/// Feature methods ///
 	$scope.deleteFeature = function(section, feature) {
 		eachItem(section, 'features', function(f, i, a) {
-			if (f.guid != feature.guid) {
+			if (f.guid !== feature.guid) {
 				return true;
 			}
 			$scope.$apply(function() {
@@ -341,8 +346,8 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 
 	$scope.insertFeature = function(features, featureIndex) {
 		if (!features) {
-			console.trace("Invalid features collection", arguments);
-			return warn("Error adding feature", "The 'features' collection was empty. You may have an invalid file.");
+			console.trace('Invalid features collection', arguments);
+			return warn('Error adding feature', 'The \'features\' collection was empty. You may have an invalid file.');
 		}
 		var feature = createFeature();
 		featureIndex = featureIndex || features.length + 1;
@@ -374,14 +379,14 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 
 	var removeTag = $scope.removeTag = function(feature, tag) {
 		feature.tags = feature.tags.filter(function(t) {
-			return tag != t;
+			return tag !== t;
 		});
 	};
 
 	/// Flag methods ///
 	$scope.insertFlag = function(flags, type) {
 		if (!flags) {
-			return warn("Error adding flag", "The 'flags' colleciton was empty.");
+			return warn('Error adding flag', 'The \'flags\' colleciton was empty.');
 		}
 		var flag = createFlag(type);
 		flags.push(flag);
@@ -398,17 +403,17 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 		// Find the item being moved
 		var moved = findItem(guid);
 		if (!moved) {
-			console.error("Invalid moved item id", guid);
+			console.error('Invalid moved item id', guid);
 			return;
 		}
 
 		// Get the containing object where the item was dropped
 		var parent = findItem(parentGuid || $scope.rd.guid);
 		if (!parent) {
-			console.error("Could not find drop parent in rd", parentGuid);
+			console.error('Could not find drop parent in rd', parentGuid);
 			return;
 		}
-		var targetType = parent.item.guid == $scope.rd.guid ? 'sections' : 'features';
+		var targetType = parent.item.guid === $scope.rd.guid ? 'sections' : 'features';
 
 		var swap = function() {
 			// Out with the old
@@ -425,14 +430,14 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 		var currentIndex = -1;
 		var flag = null;
 		for (var i=0; i<flags.length; i++) {
-			if (flags[i].guid == guid) {
+			if (flags[i].guid === guid) {
 				flag = flags[i];
 				currentIndex = i;
 				break;
 			}
 		}
 		if (currentIndex < 0) {
-			console.error("Invalid flag guid", guid);
+			console.error('Invalid flag guid', guid);
 			return;
 		}
 		$scope.$apply(function() {
@@ -467,7 +472,7 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 	};
 
 	$scope.removeFile = function(id) {
-		if (!$scope.rd.files) return;
+		if (!$scope.rd.files) {return;}
 		delete $scope.rd.files[id];
 	};
 }]);

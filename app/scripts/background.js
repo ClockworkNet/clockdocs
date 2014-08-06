@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Listens for the app launching then creates the window
  *
