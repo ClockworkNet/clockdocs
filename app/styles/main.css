@@ -136,6 +136,7 @@ h3 {
 	min-height: 2em;
 }
 .ta-root .ta-editor {
+	min-height: 2em;
 	height: auto;
 	overflow: auto;
 }
