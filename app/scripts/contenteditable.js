@@ -46,23 +46,13 @@ angular.module('textAngular')
 			action: wrap('strikethrough')
 		});
 
-		taRegisterTool('indent', {
-			iconclass: 'fa fa-indent',
-			action: wrap('indent')
-		});
-
-		taRegisterTool('outdent', {
-			iconclass: 'fa fa-outdent',
-			action: wrap('outdent')
-		});
-
 		taOptions.toolbar = [
 			['redo', 'undo', 'clear'],
 			['pre', 'quote', 'subscript', 'superscript'],
 			['bold', 'italics', 'underline', 'strikethrough'],
 			['ul', 'ol'],
 			['justifyLeft','justifyCenter','justifyRight', 'indent', 'outdent'],
-			['html', 'insertImage', 'insertLink']
+			['insertImage', 'insertLink', 'html']
 		];
 
 		taOptions.classes.htmlEditor = 'form-control';
@@ -72,39 +62,15 @@ angular.module('textAngular')
 	}]);
 
 	// Updates some of the classes used for the buttons
-	$provide.decorator('taTools', ['$delegate', '$q', function(taTools, $q) {
+	$provide.decorator('taTools', ['$delegate', '$q', 'Prompt', 'SelectedRange', function(taTools, $q, Prompt, SelectedRange) {
 
 		console.debug(taTools);
 
 		taTools.html.iconclass = 'fa fa-code';
 		delete taTools.html.buttontext;
 
-		function getSelectedNode() {
-			var selection = window.getSelection();
-			return selection && selection.focusNode;
-		};
-
-		function restoreSelectedNode(selectedNode) {
-			if (!selectedNode) return;
-			var currentSelection = window.getSelection();
-			var range = document.createRange();
-			range.selectNodeContents(selectedNode);
-			currentSelection.addRange(range);
-		};
-
-		function makeSelection(msg, cmd, placeholder) {
-			var self = this;
-			var selectedNode = getSelectedNode();
-			placeholder = placeholder || '';
-			window.prompt(msg, placeholder, function(val) {
-				restoreSelectedNode(selectedNode);
-				if (!val || !val.length || val == placeholder) return;
-				return self.$editor().wrapSelection(cmd, val);
-			});
-		};
-
 		taTools.insertImage.action = function() {
-			var selectedNode = getSelectedNode();
+			var selected = new SelectedRange();
 			var modal = $('#doc-library');
 			var self = this;
 
@@ -119,18 +85,38 @@ angular.module('textAngular')
 				var img = new Image();
 				img.src = data.fileData;
 
-				restoreSelectedNode(selectedNode);
-				var selection = getSelectedNode();
-				var html = '<img width="' + img.width + '" height="' + img.height + '" class="image ' + data.fileId + '" src="assets/img/transparent.gif" />';
-				console.info(html);
+				selected.restore();
+				var html = '<img width="' + img.width + '" height="' + img.height + '" class="image ' + data.fileId + '" src="images/transparent.gif" />';
 				return self.$editor().wrapSelection('insertHTML', html);
 			});
 			modal.show();
 		};
 
 		taTools.insertLink.action = function() {
-			makeSelection.call(this, "Please enter a URL to insert", 'createLink', 'http://');
-			return false;
+			var self = this;
+			var selected = new SelectedRange();
+			var p = new Prompt();
+			p.title = 'Create a link';
+			p.addField('text', 'Link Text', '...');
+			p.addField('url', 'Url', 'http://');
+
+			p.show().then(function(vals) {
+				if (!vals.url) return;
+
+				var url = vals.url;
+				var title = vals.text;
+
+				if (title.length == 0) {
+					title = url;
+				}
+
+				var a = $('<a>');
+				a.html(title);
+				a.attr('href', url);
+
+				selected.insert(a.get(0));
+				selected.restore();
+			});
 		};
 
 		return taTools;

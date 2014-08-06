@@ -15,7 +15,7 @@
 	],
 	"dependencies": {
 		"jquery": "2.1.x",
-		"jquery-ui": "1.10.x",
+		"jquery-ui": "1.11.x",
 		"angular": "1.2.x",
 		"angular-route": "1.2.x",
 		"bootstrap": "3.1.x",
@@ -25,9 +25,9 @@
 	"overrides": {
 		"textAngular": {
 			"main": [
+				"src/textAngular-sanitize.js",
 				"src/textAngularSetup.js",
-				"src/textAngular.js",
-				"src/textAngular-sanitize.js"
+				"src/textAngular.js"
 			]
 		}
 	}
