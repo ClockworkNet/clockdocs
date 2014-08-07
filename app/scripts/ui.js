@@ -182,39 +182,78 @@ angular.module('Clockdoc.Utils')
 }]);
 
 angular.module('Clockdoc.Utils')
-.factory('SelectedRange', ['$window', function($window) {
-	function SelectedRange() {
-		this.save();
-	}
+.service('Ranger', ['$window', 'Random', function($window, Random) {
+	this.insertMarker = function(range, atStart) {
+		var bound = range.cloneRange();
+		bound.collapse(atStart);
 
-	SelectedRange.prototype.save = function() {
-		this.selection = $window.getSelection();
-		if (this.selection.rangeCount < 1) {
-			this.range = null;
-		}
-		else {
-			this.range = this.selection.getRangeAt(0).cloneRange();
-		}
+		var span = $window.document.createElement('span');
+		span.id = Random.id();
+		span.className = 'selectedRangeMarker';
+
+		bound.insertNode(span);
+		return span.id;
 	};
 
-	SelectedRange.prototype.wrap = function(o) {
-		if (!this.range) {return;}
-		this.range.surroundContents(o);
-		this.restore();
+	this.wrapRangeWithMarkers = function(range) {
+		var startId = this.insertMarker(range, true);
+		var endId = this.insertMarker(range, false);
+		return {
+			startId: startId,
+			endId: endId
+		};
 	};
 
-	SelectedRange.prototype.insert = function(el) {
-		if (!this.range) {return;}
-		this.range.insertNode(el);
-		this.restore();
-	};
-
-	SelectedRange.prototype.restore = function() {
-		this.selection.removeAllRanges();
-		if (this.range) {
-			this.selection.addRange(this.range);
+	this.removeElement = function(id) {
+		var el = $window.document.getElementById(id);
+		if (el && el.parentNode) {
+			el.parentNode.removeChild(el);
 		}
 	};
 
-	return SelectedRange;
+	this.unwrapMarkers = function(token) {
+		if (!token || !token.markers) {
+			return;
+		}
+		this.removeElement(token.markers.startId);
+		this.removeElement(token.markers.endId);
+	};
+
+	this.getRange = function() {
+		var selection = $window.getSelection();
+		if (selection.rangeCount === 0) {
+			return null;
+		}
+		return selection.getRangeAt(0);
+	};
+
+	this.save = function() {
+		var range = this.getRange();
+		if (!range) {
+			return null;
+		}
+		var text = range.toString();
+		var markers = this.wrapRangeWithMarkers(range);
+		return {
+			markers: markers,
+			text: text
+		};
+	};
+
+	this.restore = function(token) {
+		if (!token) {return;}
+		var range = $window.document.createRange();
+
+		var start = $window.document.getElementById(token.markers.startId);
+		range.setStartBefore(start);
+
+		var end = $window.document.getElementById(token.markers.endId);
+		range.setEndBefore(end);
+
+		this.unwrapMarkers(token);
+
+		var selection = $window.getSelection();
+		selection.removeAllRanges();
+		selection.addRange(range);
+	};
 }]);

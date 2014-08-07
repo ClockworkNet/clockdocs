@@ -32,11 +32,11 @@ module.exports = function (grunt) {
         watch: {
             bower: {
                 files: ['bower.json'],
-                tasks: ['bowerInstall']
+                tasks: ['bowerInstall', 'copy:dev']
             },
             js: {
                 files: ['<%= config.app %>/scripts/**/*.js'],
-                tasks: ['jshint'],
+                tasks: ['jshint', 'copy:dev'],
                 options: {
                     livereload: true
                 }
@@ -46,7 +46,7 @@ module.exports = function (grunt) {
             },
             styles: {
                 files: ['<%= config.app %>/styles/{,*/}*.css'],
-                tasks: [],
+                tasks: ['copy:dev'],
                 options: {
                     livereload: true
                 }
@@ -243,8 +243,7 @@ module.exports = function (grunt) {
         // Copies remaining files to places other tasks can use
         copy: {
             dist: {
-                files: [
-                {
+                files: [{
                     expand: true,
                     dot: true,
                     cwd: '<%= config.app %>',
@@ -266,13 +265,12 @@ module.exports = function (grunt) {
                     src: [
                         'bower_components/**/fonts/*.*'
                     ]
-                }
-                ]
+                }]
             },
             dev: {
                 // Include script and css files for development
                 files: [{
-                    expand: true, 
+                    expand: true,
                     cwd: '<%= config.app %>',
                     dest: '<%= config.dist %>',
                     src: '**'
@@ -372,7 +370,8 @@ module.exports = function (grunt) {
     grunt.registerTask('dev', [
         'clean:dist',
         'bowerInstall',
-        'copy:dev'
+        'copy:dev',
+        'watch'
     ]);
 
     grunt.registerTask('build', [

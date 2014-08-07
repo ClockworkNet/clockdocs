@@ -65,15 +65,13 @@ angular.module('textAngular')
 	}]);
 
 	// Updates some of the classes used for the buttons
-	$provide.decorator('taTools', ['$delegate', '$q', 'Prompt', 'SelectedRange', function(taTools, $q, Prompt, SelectedRange) {
-
-		console.debug(taTools);
+	$provide.decorator('taTools', ['$delegate', '$q', 'Prompt', 'Ranger', function(taTools, $q, Prompt, Ranger) {
 
 		taTools.html.iconclass = 'fa fa-code';
 		delete taTools.html.buttontext;
 
 		taTools.insertImage.action = function() {
-			var selected = new SelectedRange();
+			var selected = Ranger.save();
 			var modal = $('#doc-library');
 			var self = this;
 
@@ -88,7 +86,7 @@ angular.module('textAngular')
 				var img = new Image();
 				img.src = data.fileData;
 
-				selected.restore();
+				Ranger.restore(selected);
 				var html = '<img width="' + img.width + '" height="' + img.height + '" class="image ' + data.fileId + '" src="images/transparent.gif" />';
 				return self.$editor().wrapSelection('insertHTML', html);
 			});
@@ -96,27 +94,18 @@ angular.module('textAngular')
 		};
 
 		taTools.insertLink.action = function() {
-			var selected = new SelectedRange();
+			var self = this;
+			var selected = Ranger.save();
 			var p = new Prompt();
+
 			p.title = 'Create a link';
-			p.addField('text', 'Link Text', '...');
 			p.addField('url', 'Url', 'http://clockwork.net');
-
 			p.show().then(function(vals) {
-				if (!vals.url) {return;}
-
-				var url = vals.url;
-				var title = vals.text;
-
-				if (title.length === 0) {
-					title = url;
+				Ranger.restore(selected);
+				if (vals.url) {
+					return self.$editor().wrapSelection('createLink', vals.url);
 				}
-
-				var a = $('<a>');
-				a.html(title);
-				a.attr('href', url);
-
-				selected.insert(a.get(0));
+				return false;
 			});
 		};
 
