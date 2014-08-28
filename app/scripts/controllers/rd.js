@@ -214,7 +214,7 @@ function($scope, $filter, FileSystem, Random, Svn, Scroll, Platform, Stylesheet)
 		var readResult = function(result) {
 			FileSystem.read(result)
 			.then(function(result) {
-				if (!result && !result.content) {
+				if (!result || !result.content) {
 					return;
 				}
 				try {
