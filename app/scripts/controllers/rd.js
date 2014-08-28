@@ -71,9 +71,6 @@ function($scope, $filter, FileSystem, Random, Svn, Scroll, Platform, Stylesheet)
 	}
 
 	function loadDoc(doc) {
-		if (!doc.version) {
-			doc.version = '0.1';
-		}
 		$scope.rd = doc;
 		for (var id in doc.files) {
 			if (!doc.files.hasOwnProperty(id)) {continue;}
@@ -478,6 +475,14 @@ function($scope, $filter, FileSystem, Random, Svn, Scroll, Platform, Stylesheet)
 
 	$scope.formatDate = function(d) {
 		return $filter('date')(d, 'yyyy-MM-dd');
+	};
+
+	$scope.getRevision = function() {
+		var revs = $scope.rd && $scope.rd.revisions;
+		if (!revs) {
+			return 0.0;
+		}
+		return revs[revs.length - 1].revision;
 	};
 
 	$scope.exampleRevision = function() {

@@ -31,6 +31,7 @@ body {
 
 .doc-content {
 	margin-top: 20px;
+	background: rgb(255, 255, 255);
 }
 
 .controller {
