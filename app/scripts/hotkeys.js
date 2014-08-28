@@ -15,7 +15,6 @@ angular.module('Clockdoc.Directives')
 	function keyed(e) {
 		var commands = body.data(COMMANDS),
 			keyCode = e.keyCode;
-		console.log(e, commands);
 		if (!commands || !commands[keyCode]) {
 			return;
 		}
