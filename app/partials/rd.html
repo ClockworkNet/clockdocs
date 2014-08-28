@@ -46,7 +46,7 @@
 
 	<div class="row doc-container" ng-show="rd">
 		<div class="col-md-3 doc-toc">
-			<div class="nav-fixed box-emp">
+			<div data-spy="affix" class="box-emp">
 				<h2>Table of Contents <span class="glyphicon glyphicon-random" ng-show="sorting"></span></h2>
 				<ul class="nav toc cw-sortable" ng-class="{'cw-sorting': sorting}" cw-sort-on-started="sortStart()" cw-sort-on-stopped="sortStop()" cw-sort-on-updated="moveItem(parentGuid, guid, index)" cw-sort-nested="true" cw-sort-tolerance-element="> a">
 					<li class="cw-sorted cw-sorted-section" ng-repeat="section in rd.sections" data-guid="{{section.guid}}">
@@ -59,6 +59,34 @@
 			</div> <!-- /.fixed-nav -->
 		</div> <!-- /.doc-toc -->
 		<div class="col-md-8 doc-content">
+			<div class="well slideout animated">
+				<a ng-click="editingRevisions = !editingRevisions"><i class="glyphicon glyphicon-list"></i> Revisions</a>
+			</div>
+			<div ng-show="editingRevisions" >
+				<table class="table table-striped">
+					<thead>
+						<th></th>
+						<th width="10%">Revision</th>
+						<th width="20%">Date</th>
+						<th width="60%">Notes</th>
+						<th width="10%">Author</th>
+					</thead>
+					<tbody>
+						<tr ng-repeat="rev in rd.revisions track by rev.id">
+							<td style="vertical-align: middle"><a ng-click="removeRevision($index)"><i class="glyphicon glyphicon-trash"></i></a></td>
+							<td><input class="form-control" ng-model="rev.revision" /></td>
+							<td><input class="form-control" ng-model="rev.date" /></td>
+							<td><input class="form-control" ng-model="rev.notes" /></td>
+							<td><input class="form-control" ng-model="rev.author" /></td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<td colspan="100%">
+							<a class="btn btn-default" ng-click="addRevision()">New Revision</a> </td>
+					</tfoot>
+				</table>
+			</div>
+			<hr />
 			<div class="well slideout animated">
 				<a ng-click="insertSection(0)"><cw-icon type="th-large"></cw-icon> New Section</a>
 			</div>

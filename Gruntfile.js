@@ -41,6 +41,13 @@ module.exports = function (grunt) {
                     livereload: true
                 }
             },
+            html: {
+                files: ['<%= config.app %>/index.html', '<%= config.app %>/partials/*.html'],
+                tasks: ['copy:dev'],
+                options: {
+                    livereload: true
+                }
+            },
             gruntfile: {
                 files: ['Gruntfile.js']
             },

@@ -2,8 +2,8 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('RdCtrl', ['$scope', '$location', 'FileSystem', 'Random', 'Svn', 'Scroll', 'Platform', 'Stylesheet',
-function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Stylesheet) {
+.controller('RdCtrl', ['$scope', '$filter', 'FileSystem', 'Random', 'Svn', 'Scroll', 'Platform', 'Stylesheet',
+function($scope, $filter, FileSystem, Random, Svn, Scroll, Platform, Stylesheet) {
 
 	var extension = 'cw';
 
@@ -49,7 +49,7 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 				author: 'Anonymous',
 				created: new Date(),
 				guid: Random.id(),
-				revisions: [],
+				revisions: [$scope.exampleRevision()],
 				sections: [
 					createFeature('Definitions and Conventions'),
 					createFeature('Features'),
@@ -474,5 +474,37 @@ function($scope, $location, FileSystem, Random, Svn, Scroll, Platform, Styleshee
 	$scope.removeFile = function(id) {
 		if (!$scope.rd.files) {return;}
 		delete $scope.rd.files[id];
+	};
+
+	$scope.formatDate = function(d) {
+		return $filter('date')(d, 'yyyy-MM-dd');
+	};
+
+	$scope.exampleRevision = function() {
+		var version = 1, revision = 0.1;
+		if ($scope.rd && $scope.rd.revisions) {
+			version = $scope.rd.revisions.length + 1;
+			revision = version / 10;
+		}
+		return {
+			'id': Random.id(),
+			'version': version,
+			'revision': revision,
+			'date': $scope.formatDate(new Date()),
+			'notes': '',
+			'author': ''
+		};
+	};
+
+	$scope.addRevision = function() {
+		if (!$scope.rd.revisions) {
+			$scope.rd.revisions = [];
+		}
+		$scope.rd.revisions.push($scope.exampleRevision());
+	};
+
+	$scope.removeRevision = function(i) {
+		if (!$scope.rd.revisions) {return;}
+		$scope.rd.revisions.splice(i, 1);
 	};
 }]);
