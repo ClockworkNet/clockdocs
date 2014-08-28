@@ -27,4 +27,9 @@
 </div>
 <div class="feature-content" id="{{feature.guid}}-content" text-angular ng-model="feature.content"></div>
 <div class="flags" id="{{feature.guid}}-flags" ng-include="'partials/flags.html'" ng-init="flags = feature.flags" />
-<div class="feature level_{{$level}} cw-counted" ng-repeat="feature in feature.features" ng-include="'partials/feature.html'" ng-init="$level = $level + 1;"></div>
+
+<!-- "{{feature.title}}" Child Features -->
+<div class="cw-counted">
+	<div class="feature level_{{$level}}" ng-repeat="feature in feature.features" ng-include="'partials/feature.html'" ng-init="$level = $level + 1;"></div>
+</div>
+<!-- /"{{feature.title}}" Child Features -->
