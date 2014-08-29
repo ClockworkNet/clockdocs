@@ -37,6 +37,11 @@
 							<li><a ng-click="open()"><cw-icon type="open"></cw-icon> Open File</a></li>
 							<li ng-hide="svnInstalled"><a data-toggle="modal" data-target="#svn-form-install"><cw-icon type="folder-close"></cw-icon> Install SVN Support</a></li>
 							<li ng-show="svnInstalled"><a data-toggle="modal" data-target="#svn-form"><cw-icon type="cloud-download"></cw-icon> Open from SVN</a></li>
+							<li ng-show="recentEntries" class="divider"></li>
+							<li ng-show="recentEntries" class="dropdown-header">Recent Files</li>
+							<li ng-repeat="re in recentEntries track by re.entryId">
+								<a ng-click="open(re.entryId)"><cw-icon type="document"></cw-icon> {{re.name}}</a>
+							</li>
 						</ul>
 					</li>
 					<li class="dropdown" ng-show="rd">

@@ -2,16 +2,74 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('RdCtrl', ['$scope', '$filter', '$timeout', 'FileSystem', 'Random', 'Svn', 'Scroll', 'Platform', 'Stylesheet',
-function($scope, $filter, $timeout, FileSystem, Random, Svn, Scroll, Platform, Stylesheet) {
+.controller('RdCtrl', ['$scope', '$filter', '$timeout', 'FileSystem', 'Storage', 'Random', 'Svn', 'Scroll', 'Platform', 'Stylesheet', function($scope, $filter, $timeout, FileSystem, Storage, Random, Svn, Scroll, Platform, Stylesheet) {
 
 	var EXTENSION = 'cw';
 	var ALERT_TIME = 5000;
 
+	var RECENT_ENTRIES = 'recent_entries';
+	var RECENT_ENTRIES_MAX = 5;
+
 	$scope.rd = null;
 	$scope.sorting = false;
+	$scope.recentEntries = [];
 
 	Platform.load($scope, 'platform');
+
+	var storage = new Storage();
+
+	function unique(a, key) {
+		var seen = {}, u = [];
+		a.forEach(function(item) {
+			var value = item[key];
+			if (seen[value]) {
+				return;
+			}
+			seen[value] = 1;
+			u.push(item);
+		});
+		return u;
+	}
+
+	// Load up the initial set of recent entries
+	storage.get(RECENT_ENTRIES)
+	.then(function(results) {
+		$scope.recentEntries = unique(results, 'entryId');
+	});
+
+	/**
+	 * Remembers a recent entry into storage¬
+	**/
+	function rememberEntry(hideMsg) {
+		if (!$scope.result || !$scope.result.entryId) {
+			return;
+		}
+		if (!hideMsg) {
+			warn('Saved', $scope.result.entry.name, 'info');
+		}
+
+		var entries = $scope.recentEntries;
+
+		if (!entries) {
+			entries = [];
+		}
+
+		var newEntry = {
+			entryId: $scope.result.entryId,
+			name: $scope.result.entry.name
+		};
+
+		// Add the entry to the top
+		entries.splice(0, 0, newEntry);
+
+		// Trim the array of entries
+		entries = unique(entries, 'entryId').slice(0, RECENT_ENTRIES_MAX);
+
+		storage.set(RECENT_ENTRIES, entries)
+			.then(function() {
+				$scope.recentEntries = entries;
+			});
+	}
 
 	var flagTypes = $scope.flagTypes = [
 		{
@@ -212,7 +270,7 @@ function($scope, $filter, $timeout, FileSystem, Random, Svn, Scroll, Platform, S
 		$scope.result = {};
 	};
 
-	$scope.open = function() {
+	$scope.open = function(entryId) {
 		var readResult = function(result) {
 			FileSystem.read(result)
 			.then(function(result) {
@@ -222,16 +280,32 @@ function($scope, $filter, $timeout, FileSystem, Random, Svn, Scroll, Platform, S
 				try {
 					loadDoc(angular.fromJson(result.content));
 					$scope.result = result;
+					rememberEntry(true);
 				}
 				catch (e) {
 					console.error('file open error', e);
-					warn('Error opening file', 'There is a problem with your file. ' + e);
+					warn('Error', 'There is a problem with your file.');
 				}
 			});
 		};
 
-		FileSystem.openFile([EXTENSION, 'json'])
-		.then(readResult);
+		var removeEntryId = function(e) {
+			$scope.recentEntries = $scope.recentEntries.filter(function(r) {
+				return r.entryId !== entryId;
+			});
+			storage.set(RECENT_ENTRIES, $scope.recentEntries);
+			console.error('file restore error', e);
+			warn('Error', 'There was a problem opening your file.');
+		};
+
+		if (entryId) {
+			FileSystem.restore(entryId)
+			.then(readResult, removeEntryId);
+		}
+		else {
+			FileSystem.openFile([EXTENSION, 'json'])
+			.then(readResult);
+		}
 	};
 
 	/// SVN ///
@@ -310,14 +384,13 @@ function($scope, $filter, $timeout, FileSystem, Random, Svn, Scroll, Platform, S
 		}
 		var content = angular.toJson($scope.rd, true);
 		FileSystem.save($scope.result.entryId, content)
-			.then(function() {
-				warn('Saved', $scope.result.entry.name, 'info');
-			});
+			.then(rememberEntry);
 	};
 
 	$scope.saveAs = function() {
 		var rd = $scope.rd;
-		FileSystem.saveAs(rd.title, EXTENSION, angular.toJson(rd, true));
+		FileSystem.saveAs(rd.title, EXTENSION, angular.toJson(rd, true))
+			.then(rememberEntry);
 	};
 
 	/// Section methods ///

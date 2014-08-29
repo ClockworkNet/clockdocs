@@ -110,6 +110,11 @@ angular.module('Clockdoc.Utils')
 			}
 
 			var onOpen = function(entries) {
+				if (chrome.runtime.lastError) {
+					self.fire('error', chrome.runtime.lastError);
+					return deferred.reject(chrome.runtime.lastError);
+				}
+
 				if (!entries || entries.length < 1) {
 					self.fire('cancel', entries);
 					return deferred.resolve(null);
@@ -140,6 +145,33 @@ angular.module('Clockdoc.Utils')
 			};
 
 			chrome.fileSystem.chooseEntry(options, onOpen);
+
+			return deferred.promise;
+		},
+
+		restore: function(entryId) {
+			var deferred = $q.defer();
+			var self = this;
+			var onRestore = function(entry) {
+				if (chrome.runtime.lastError) {
+					self.fire('error', chrome.runtime.lastError);
+					return deferred.reject(chrome.runtime.lastError);
+				}
+
+				var result = {
+					entry: entry,
+					entryId: entryId
+				};
+				self.getDisplayPath(entry)
+				.then(function(path) {
+					result.displayPath = path;
+				});
+
+				self.fire('open', result);
+				deferred.resolve(result);
+			};
+
+			chrome.fileSystem.restoreEntry(entryId, onRestore);
 
 			return deferred.promise;
 		},

@@ -1,7 +1,7 @@
 {
     "name": "Clockdocs",
     "description": "Write client documents like Clockwork.",
-    "version": "0.64",
+    "version": "0.66",
     "manifest_version": 2,
     "default_locale": "en",
     "permissions": [
