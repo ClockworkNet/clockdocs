@@ -2,10 +2,11 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('RdCtrl', ['$scope', '$filter', 'FileSystem', 'Random', 'Svn', 'Scroll', 'Platform', 'Stylesheet',
-function($scope, $filter, FileSystem, Random, Svn, Scroll, Platform, Stylesheet) {
+.controller('RdCtrl', ['$scope', '$filter', '$timeout', 'FileSystem', 'Random', 'Svn', 'Scroll', 'Platform', 'Stylesheet',
+function($scope, $filter, $timeout, FileSystem, Random, Svn, Scroll, Platform, Stylesheet) {
 
-	var extension = 'cw';
+	var EXTENSION = 'cw';
+	var ALERT_TIME = 5000;
 
 	$scope.rd = null;
 	$scope.sorting = false;
@@ -90,6 +91,7 @@ function($scope, $filter, FileSystem, Random, Svn, Scroll, Platform, Stylesheet)
 			content: msg
 		};
 		$('.alert').alert();
+		$timeout(unwarn, ALERT_TIME);
 	}
 
 	function createFeature(title) {
@@ -228,7 +230,7 @@ function($scope, $filter, FileSystem, Random, Svn, Scroll, Platform, Stylesheet)
 			});
 		};
 
-		FileSystem.openFile([extension, 'json'])
+		FileSystem.openFile([EXTENSION, 'json'])
 		.then(readResult);
 	};
 
@@ -307,12 +309,15 @@ function($scope, $filter, FileSystem, Random, Svn, Scroll, Platform, Stylesheet)
 			return;
 		}
 		var content = angular.toJson($scope.rd, true);
-		FileSystem.save($scope.result.entryId, content);
+		FileSystem.save($scope.result.entryId, content)
+			.then(function() {
+				warn('Saved', $scope.result.entry.name, 'info');
+			});
 	};
 
 	$scope.saveAs = function() {
 		var rd = $scope.rd;
-		FileSystem.saveAs(rd.title, extension, angular.toJson(rd, true));
+		FileSystem.saveAs(rd.title, EXTENSION, angular.toJson(rd, true));
 	};
 
 	/// Section methods ///

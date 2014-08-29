@@ -29,16 +29,18 @@ angular.module('Clockdoc.Directives')
 			if (cmd.meta && !e.metaKey) {
 				continue;
 			}
-			cmd.action();
+			var action = cmd.action.bind(cmd.$parent);
+			cmd.$apply(action);
 		}
 	}
 
-	function register(data) {
+	function register(scope) {
 		var commands = body.data(COMMANDS) || {};
-		if (!commands[data.code]) {
-			commands[data.code] = [];
+		var code = scope.code || scope.key.charCodeAt(0);
+		if (!commands[code]) {
+			commands[code] = [];
 		}
-		commands[data.code].push(data);
+		commands[code].push(scope);
 		body.data(COMMANDS, commands);
 	}
 
@@ -65,6 +67,7 @@ angular.module('Clockdoc.Directives')
 		restrict: 'E',
 		scope: {
 			code: '@code',
+			key: '@key',
 			ctrl: '@ctrl',
 			meta: '@meta',
 			alt: '@alt',
