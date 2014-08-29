@@ -40,7 +40,7 @@
 							<li ng-show="recentEntries" class="divider"></li>
 							<li ng-show="recentEntries" class="dropdown-header">Recent Files</li>
 							<li ng-repeat="re in recentEntries track by re.entryId">
-								<a ng-click="open(re.entryId)"><cw-icon type="document"></cw-icon> {{re.name}}</a>
+								<a ng-click="open(re.entryId)"><cw-icon type="file"></cw-icon> {{re.name}}</a>
 							</li>
 						</ul>
 					</li>
@@ -102,9 +102,6 @@
 				</tfoot>
 			</table>
 			<hr />
-			<div class="well slideout animated">
-				<a ng-click="insertSection(0)"><cw-icon type="th-large"></cw-icon> New Section</a>
-			</div>
 			<section ng-repeat="section in rd.sections">
 				<div class="dropdown pull-left">
 					<a class="btn dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></a>
@@ -113,7 +110,8 @@
 						<li class="divider"></li>
 						<li ng-repeat="ft in flagTypes"><a ng-click="insertFlag(section.flags, ft.type)"><cw-icon type="flag"></cw-icon> New {{ft.name}}</a></li>
 						<li class="divider"></li>
-						<li><a ng-click="insertSection($index + 1)"><cw-icon type="th-large"></cw-icon> New Section</a></li>
+						<li><a ng-click="insertSection($index)"><cw-icon type="arrow-up"></cw-icon> New Section Above</a></li>
+						<li><a ng-click="insertSection($index + 1)"><cw-icon type="arrow-down"></cw-icon> New Section Below</a></li>
 						<li class="divider"></li>
 						<li modal modal-click="deleteSection($index)" modal-title="Delete '{{section.title}}'?" modal-body="Are you sure you want to delete '{{section.title}}'?"><cw-icon type="trash"></cw-icon> Delete Section</li>
 					</ul>
@@ -126,6 +124,9 @@
 				</div>
 				<hr />
 			</section>
+			<div class="well slideout animated">
+				<a ng-click="insertSection(rd.sections.length)"><cw-icon type="th-large"></cw-icon> New Section</a>
+			</div>
 		</div> <!-- /.doc-content -->
 		<div class="col-md-1 doc-gutter"></div>
 	</div>

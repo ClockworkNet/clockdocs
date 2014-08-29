@@ -40,12 +40,9 @@ angular.module('Clockdoc.Controllers')
 	/**
 	 * Remembers a recent entry into storage¬
 	**/
-	function rememberEntry(hideMsg) {
+	function rememberEntry() {
 		if (!$scope.result || !$scope.result.entryId) {
 			return;
-		}
-		if (!hideMsg) {
-			warn('Saved', $scope.result.entry.name, 'info');
 		}
 
 		var entries = $scope.recentEntries;
@@ -382,15 +379,19 @@ angular.module('Clockdoc.Controllers')
 			$scope.saveAs();
 			return;
 		}
+		var showMsg = warn.bind(this, 'Saved', $scope.result.entry.name, 'info');
 		var content = angular.toJson($scope.rd, true);
 		FileSystem.save($scope.result.entryId, content)
-			.then(rememberEntry);
+			.then(rememberEntry)
+			.then(showMsg);
 	};
 
 	$scope.saveAs = function() {
 		var rd = $scope.rd;
+		var showMsg = warn.bind(this, 'Saved', $scope.result.entry.name, 'info');
 		FileSystem.saveAs(rd.title, EXTENSION, angular.toJson(rd, true))
-			.then(rememberEntry);
+			.then(rememberEntry)
+			.then(showMsg);
 	};
 
 	/// Section methods ///
