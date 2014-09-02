@@ -1,0 +1,60 @@
+/* =============================================================================
+   Print styles
+   ========================================================================== */
+
+
+@media print {
+	.dropdown,
+	.well,
+	.glyphicon,
+	.btn,
+	.no-print,
+	.navbar-fixed-top  {
+		display: none;
+	}
+
+	.form-control,
+	[cw-editable],
+	.ta-editor {
+		border: 0;
+		background-color: transparent;
+		box-shadow: none;
+		-webkit-box-shadow: none;
+	}
+
+	.doc-toc,
+	.doc-content,
+	.doc-header,
+	.nav-fixed {
+		position: relative;
+		float: none;
+		width: 100%;
+		height: auto;
+	}
+
+	.doc-container {
+		margin-top: 0;
+	}
+
+	.toc-section {
+		margin-top: .25em;
+		line-height: 1em;
+	}
+
+	.toc-feature {
+		color: #9E9E9E !important
+	}
+
+	.doc-toc .nav > li > a {
+		padding-left: 0;
+	}
+
+	.flag-title {
+		text-align: left;
+	}
+
+	/* force background colour printing in chrome browser */
+	body, span, div, table, tr, tbody, tfoot, td, hr, img { 
+		-webkit-print-color-adjust: exact;
+	}
+}

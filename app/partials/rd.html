@@ -66,7 +66,7 @@
 
 	<div class="row doc-container" ng-show="rd">
 		<div class="col-md-3 doc-toc">
-			<div data-spy="affix" class="box-emp">
+			<div class="box-emp">
 				<h2>Table of Contents <span class="glyphicon glyphicon-random" ng-show="sorting"></span></h2>
 				<ul class="nav toc cw-sortable" ng-class="{'cw-sorting': sorting}" cw-sort-on-started="sortStart()" cw-sort-on-stopped="sortStop()" cw-sort-on-updated="moveItem(parentGuid, guid, index)" cw-sort-nested="true" cw-sort-tolerance-element="> a">
 					<li class="cw-sorted cw-sorted-section" ng-repeat="section in rd.sections" data-guid="{{section.guid}}">
@@ -76,7 +76,7 @@
 						</ol>
 					</li>
 				</ul>
-			</div> <!-- /.fixed-nav -->
+			</div> <!-- /.box-emp -->
 		</div> <!-- /.doc-toc -->
 		<div class="col-md-8 doc-content">
 			<table class="table table-striped">
@@ -98,10 +98,11 @@
 				</tbody>
 				<tfoot>
 					<td colspan="100%">
-						<a class="btn btn-link" ng-click="addRevision()"><cw-icon type="plus"></cw-icon> New Revision</a> </td>
+						<a class="btn btn-link" ng-click="addRevision()"><cw-icon type="plus"></cw-icon> New Revision</a> 
+					</td>
 				</tfoot>
 			</table>
-			<hr />
+
 			<section ng-repeat="section in rd.sections">
 				<div class="dropdown pull-left">
 					<a class="btn dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></a>
@@ -117,7 +118,7 @@
 					</ul>
 				</div>
 				<div class="section-title" cw-editable id="{{section.guid}}" ng-model="section.title"></div>
-				<div class="section-content" text-angular ng-model="section.content"></div>
+				<div class="section-content" text-angular ng-class="{'no-print':!feature.content.length}" ng-model="section.content"></div>
 				<div class="flags" ng-include="'partials/flags.html'" ng-init="flags = section.flags" />
 				<div class="features cw-counted">
 					<div class="feature level_0" ng-repeat="feature in section.features" ng-include="'partials/feature.html'" ng-init="$level = 0"></div>

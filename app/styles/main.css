@@ -8,6 +8,7 @@ html {
 body {
 	margin: 0;
 	font-family: "ProximaNovaCondRegular",Helvetica,Arial,sans-serif;
+	position: relative;
 	font-size: 16px;
 	line-height: 22px;
 	color: #525252;
@@ -26,7 +27,6 @@ body {
   padding: 15px 0;
   margin: 0 0 15px 0;
   box-shadow: 0px 1px 5px -2px rgba(0, 0, 0, 0.32);
-  min-width: 275px;
 }
 
 .doc-content {
@@ -173,15 +173,16 @@ h3 {
 /* =============================================================================
    TOC
    ========================================================================== */
-
-.nav-fixed {
-	position: fixed;
-	overflow-y: scroll;
-	height: 100%;
-	left: 0;
-}
 .doc-toc {
 	margin-left: 0.5em;
+}
+.doc-toc .box-emp {
+	position: fixed;
+}
+@media (max-width: 991px) {
+	.doc-toc .box-emp {
+		position: inherit;
+	}
 }
 .doc-toc .nav > li > a {
 	padding: 5px 30px 5px 20px;
@@ -406,54 +407,6 @@ section {
 .form-control {
 	height: auto;
 	min-height: 34px;
-}
-
-
-/* =============================================================================
-   Print styles
-   ========================================================================== */
-
-
-@media print {
-  .dropdown,
-  .well,
-  .glyphicon-move,
-  .navbar-fixed-top  {
-  	display: none;
-
-  }
-
-  .doc-toc,
-  .doc-content,
-  .doc-header,
-  .nav-fixed {
-  	position: relative;
-  	float: none;
-  	width: 100%;
-  	height: auto;
-  }
-
-  .doc-container {
-  	margin-top: 0;
-  }
-
-  .toc-section {
-  	margin-top: .25em;
-	line-height: 1em;
-  }
-
-  .toc-feature {
-  	color: #9E9E9E !important
-  }
-
-  .doc-toc .nav > li > a {
-  	padding-left: 0;
-  }
-
-  /* force background colour printing in chrome browser */
-  body, span, div, table, tr, tbody, tfoot, td, hr, img { 
-  	-webkit-print-color-adjust: exact;
-  }
 }
 
 

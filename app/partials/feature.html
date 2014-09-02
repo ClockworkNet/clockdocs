@@ -25,7 +25,7 @@
 		</li>
 	</ul>
 </div>
-<div class="feature-content" id="{{feature.guid}}-content" text-angular ng-model="feature.content"></div>
+<div class="feature-content" id="{{feature.guid}}-content" ng-class="{'no-print':!feature.content.length}" text-angular ng-model="feature.content"></div>
 <div class="flags" id="{{feature.guid}}-flags" ng-include="'partials/flags.html'" ng-init="flags = feature.flags" />
 
 <!-- "{{feature.title}}" Child Features -->
