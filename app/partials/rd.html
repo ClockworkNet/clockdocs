@@ -90,10 +90,10 @@
 				<tbody>
 					<tr ng-repeat="rev in rd.revisions track by rev.id">
 						<td style="vertical-align: middle"><a ng-click="removeRevision($index)"><i class="glyphicon glyphicon-trash"></i></a></td>
-						<td><input class="form-control" ng-model="rev.revision" /></td>
-						<td><input class="form-control" ng-model="rev.date" /></td>
-						<td><input class="form-control" ng-model="rev.notes" /></td>
-						<td><input class="form-control" ng-model="rev.author" /></td>
+						<td ng-model="rev.revision" cw-editable></td>
+						<td ng-model="rev.date" cw-editable /></td>
+						<td ng-model="rev.notes" cw-editable /></td>
+						<td ng-model="rev.author" cw-editable /></td>
 					</tr>
 				</tbody>
 				<tfoot>
