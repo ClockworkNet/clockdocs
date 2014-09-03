@@ -4,43 +4,19 @@
 angular.module('Clockdoc.Utils')
 .factory('FileSystem', ['$q', function($q) {
 
-	var listeners = {
-		'info'   : [],
-		'error'  : [],
-		'cancel' : [],
-		'open'   : [],
-		'reading': [],
-		'read'   : [],
-		'writing': [],
-		'write'  : []
-	};
+	function checkError(deferred) {
+		if (chrome.runtime.lastError) {
+			deferred.reject(chrome.runtime.lastError);
+			return true;
+		}
+		return false;
+	}
 
 	return {
-		on: function(events, callback) {
-			events = events.split(' ');
-			events.forEach(function(event) {
-				listeners[event].push(callback);
-			});
-		},
-
-		fire: function(event) {
-			var args = Array.prototype.splice.call(arguments, 1);
-			var self = this;
-			console.trace('firing', event, args);
-			listeners[event].forEach(function(callback) {
-				// Wrapped in timeout to ensure asynchronous firing
-				setTimeout(function() {
-					callback.apply(self, args);
-				}, 0);
-			});
-		},
-
 		read: function(result, readMethod) {
 			var deferred = $q.defer();
-			var self = this;
 
 			if (!result || !result.entry || !result.entry.isFile) {
-				self.fire('cancel', result);
 				deferred.resolve(result);
 				return deferred.promise;
 			}
@@ -48,24 +24,20 @@ angular.module('Clockdoc.Utils')
 			var reader = new FileReader();
 
 			reader.onerror = function(e) {
-				self.fire('error', e);
 				return deferred.reject(e);
 			};
 
 			reader.onload = function(event) {
 				result.event   = event;
 				result.content = reader.result;
-				self.fire('read', event);
 				return deferred.resolve(result);
 			};
 
 			readMethod = readMethod || 'readAsText';
 
 			result.entry.file(function(file) {
-				self.fire('reading', file);
 				reader[readMethod](file);
 			}, function(e) {
-				self.fire('error', e);
 				return deferred.reject(e);
 			});
 
@@ -110,13 +82,11 @@ angular.module('Clockdoc.Utils')
 			}
 
 			var onOpen = function(entries) {
-				if (chrome.runtime.lastError) {
-					self.fire('error', chrome.runtime.lastError);
-					return deferred.reject(chrome.runtime.lastError);
+				if (checkError(deferred)) {
+					return;
 				}
 
 				if (!entries || entries.length < 1) {
-					self.fire('cancel', entries);
 					return deferred.resolve(null);
 				}
 
@@ -140,7 +110,6 @@ angular.module('Clockdoc.Utils')
 					results = results[0];
 				}
 
-				self.fire('open', results);
 				deferred.resolve(results);
 			};
 
@@ -153,9 +122,8 @@ angular.module('Clockdoc.Utils')
 			var deferred = $q.defer();
 			var self = this;
 			var onRestore = function(entry) {
-				if (chrome.runtime.lastError) {
-					self.fire('error', chrome.runtime.lastError);
-					return deferred.reject(chrome.runtime.lastError);
+				if (checkError(deferred)) {
+					return;
 				}
 
 				var result = {
@@ -167,7 +135,6 @@ angular.module('Clockdoc.Utils')
 					result.displayPath = path;
 				});
 
-				self.fire('open', result);
 				deferred.resolve(result);
 			};
 
@@ -185,18 +152,12 @@ angular.module('Clockdoc.Utils')
 		},
 
 		write: function(entry, data, type) {
-			var self = this;
 			var deferred = $q.defer();
 
 			if (!entry) {
 				deferred.resolve(null);
 				return deferred.promise;
 			}
-
-			self.fire('writing', {
-				content: data,
-				entry: entry
-			});
 
 			type = type || 'text/plain';
 
@@ -219,6 +180,9 @@ angular.module('Clockdoc.Utils')
 						entry: entry,
 						entryId: entryId
 					};
+					if (checkError(deferred)) {
+						return;
+					}
 					deferred.resolve(result);
 				};
 				writer.write(new Blob([data], {type: type}));
@@ -237,21 +201,13 @@ angular.module('Clockdoc.Utils')
 			var self = this;
 			var deferred = $q.defer();
 			chrome.fileSystem.restoreEntry(entryId, function(entry) {
-				if (chrome.runtime.lastError) {
-					self.fire('error', chrome.runtime.lastError);
+				if (checkError(deferred)) {
 					return;
 				}
 				self.write(entry, data, type)
 				.then(function(result) {
-					if (result) {
-						self.fire('write', result);
-					}
-					else {
-						self.fire('cancel', result);
-					}
 					deferred.resolve(result);
 				}, function(e) {
-					self.fire('error', e);
 					deferred.reject(e);
 				});
 			});
@@ -269,15 +225,8 @@ angular.module('Clockdoc.Utils')
 			chrome.fileSystem.chooseEntry(args, function(entry) {
 				self.write(entry, data, type)
 				.then(function(result) {
-					if (result) {
-						self.fire('write', result);
-					}
-					else {
-						self.fire('cancel', result);
-					}
 					deferred.resolve(result);
 				}, function(e) {
-					self.fire('error', e);
 					deferred.reject(e);
 				});
 			});

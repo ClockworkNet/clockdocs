@@ -38,6 +38,19 @@ angular.module('Clockdoc.Controllers')
 	});
 
 	/**
+	 *¬Forgets the specified entry and shows an error message
+	**/
+	function forgetEntry(entryId, e) {
+		$scope.recentEntries = $scope.recentEntries.filter(function(r) {
+			return r.entryId !== entryId;
+		});
+		$scope.result = null;
+		storage.set(RECENT_ENTRIES, $scope.recentEntries);
+		console.error('file error', e);
+		warn('Error', 'There was a problem opening your file.');
+	}
+
+	/**
 	 * Remembers a recent entry into storage¬
 	**/
 	function rememberEntry() {
@@ -53,7 +66,8 @@ angular.module('Clockdoc.Controllers')
 
 		var newEntry = {
 			entryId: $scope.result.entryId,
-			name: $scope.result.entry.name
+			name: $scope.result.entry.name,
+			date: new Date()
 		};
 
 		// Add the entry to the top
@@ -242,25 +256,6 @@ angular.module('Clockdoc.Controllers')
 	$scope.result = {};
 
 	/// Filesystem Methods ///
-	FileSystem.on('error', function() {
-		$scope.$apply(function() {
-			return warn('Filesystem Error', 'There was an error accessing the file system.');
-		});
-	});
-
-	FileSystem.on('writing reading', function() {
-		$scope.$apply(function() {
-			$scope.working = true;
-		});
-	});
-
-	FileSystem.on('write read', function(result) {
-		$scope.$apply(function() {
-			$scope.working = false;
-			$scope.result = result;
-		});
-	});
-
 	$scope.create = function() {
 		var doc = getSampleDoc('rd');
 		loadDoc(doc);
@@ -271,6 +266,7 @@ angular.module('Clockdoc.Controllers')
 		var readResult = function(result) {
 			FileSystem.read(result)
 			.then(function(result) {
+				$scope.working = false;
 				if (!result || !result.content) {
 					return;
 				}
@@ -286,22 +282,15 @@ angular.module('Clockdoc.Controllers')
 			});
 		};
 
-		var removeEntryId = function(e) {
-			$scope.recentEntries = $scope.recentEntries.filter(function(r) {
-				return r.entryId !== entryId;
-			});
-			storage.set(RECENT_ENTRIES, $scope.recentEntries);
-			console.error('file restore error', e);
-			warn('Error', 'There was a problem opening your file.');
-		};
-
+		var onError = forgetEntry.bind(null, entryId);
+		$scope.working = true;
 		if (entryId) {
 			FileSystem.restore(entryId)
-			.then(readResult, removeEntryId);
+			.then(readResult, onError);
 		}
 		else {
 			FileSystem.openFile([EXTENSION, 'json'])
-			.then(readResult);
+			.then(readResult, onError);
 		}
 	};
 
@@ -380,17 +369,19 @@ angular.module('Clockdoc.Controllers')
 			return;
 		}
 		var showMsg = warn.bind(this, 'Saved', $scope.result.entry.name, 'info');
+		var errMsg = warn.bind(this, 'Error', $scope.result.entry.name + ' could not be saved');
 		var content = angular.toJson($scope.rd, true);
 		FileSystem.save($scope.result.entryId, content)
-			.then(rememberEntry)
+			.then(rememberEntry, errMsg)
 			.then(showMsg);
 	};
 
 	$scope.saveAs = function() {
 		var rd = $scope.rd;
 		var showMsg = warn.bind(this, 'Saved', $scope.result.entry.name, 'info');
+		var errMsg = warn.bind(this, 'Error', $scope.result.entry.name + ' could not be saved');
 		FileSystem.saveAs(rd.title, EXTENSION, angular.toJson(rd, true))
-			.then(rememberEntry)
+			.then(rememberEntry, errMsg)
 			.then(showMsg);
 	};
 

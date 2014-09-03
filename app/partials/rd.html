@@ -39,7 +39,7 @@
 							<li ng-show="svnInstalled"><a data-toggle="modal" data-target="#svn-form"><cw-icon type="cloud-download"></cw-icon> Open from SVN</a></li>
 							<li ng-show="recentEntries" class="divider"></li>
 							<li ng-show="recentEntries" class="dropdown-header">Recent Files</li>
-							<li ng-repeat="re in recentEntries track by re.entryId">
+							<li ng-repeat="re in recentEntries track by $index">
 								<a ng-click="open(re.entryId)"><cw-icon type="file"></cw-icon> {{re.name}}</a>
 							</li>
 						</ul>
