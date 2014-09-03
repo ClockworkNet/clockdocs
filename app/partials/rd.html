@@ -88,7 +88,7 @@
 					<th width="10%">Author</th>
 				</thead>
 				<tbody>
-					<tr ng-repeat="rev in rd.revisions track by rev.id">
+					<tr ng-repeat="rev in rd.revisions track by $index">
 						<td style="vertical-align: middle"><a ng-click="removeRevision($index)"><i class="glyphicon glyphicon-trash"></i></a></td>
 						<td ng-model="rev.revision" cw-editable></td>
 						<td ng-model="rev.date" cw-editable /></td>

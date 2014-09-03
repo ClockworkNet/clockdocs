@@ -58,8 +58,8 @@ angular.module('textAngular')
 			['insertImage', 'insertLink', 'html']
 		];
 
-		taOptions.classes.htmlEditor = 'form-control';
-		taOptions.classes.textEditor = 'form-control';
+		taOptions.classes.htmlEditor = 'ta-form-control';
+		taOptions.classes.textEditor = 'ta-form-control';
 
 		return taOptions;
 	}]);
