@@ -89,6 +89,11 @@ angular.module('Clockdoc.Controllers')
 			title: ''
 		},
 		{
+			type: 'dev_note',
+			name: 'Dev Note',
+			title: 'Dev Note'
+		},
+		{
 			type: 'open_question',
 			name: 'Open Question',
 			title: 'Open Question'

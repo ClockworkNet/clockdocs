@@ -10,7 +10,7 @@ body {
 	font-family: "ProximaNovaCondRegular",Helvetica,Arial,sans-serif;
 	position: relative;
 	font-size: 16px;
-	line-height: 22px;
+	line-height: 1.3em;
 	color: #525252;
 	background: #fff;
 	padding-bottom: 400px;
@@ -48,7 +48,6 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
 	text-transform: uppercase;
 	font-variant: small-caps;
 	color: #1E1E1E;
-	line-height: 1em;
 	font-weight: normal;
 }
 
@@ -324,7 +323,6 @@ section {
 .flag-title {
 	font-family: "ProximaNovaCondSemiBold",Helvetica,Arial,sans-serif;
 	display: block;
-	text-align: right;
 }
 .flag-title:after {
 	content: ':';
