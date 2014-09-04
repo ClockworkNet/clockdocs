@@ -302,7 +302,7 @@ section {
 }
 .feature.level_2 .feature-title {
 	font-size: 1.5em;
-	font-weight: 500;
+	font-style: italic;
 }
 .feature.level_3 .feature-title {
 	font-size: 1.3em;

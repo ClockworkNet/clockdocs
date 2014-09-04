@@ -299,6 +299,28 @@ angular.module('Clockdoc.Controllers')
 		}
 	};
 
+	$scope.save = function() {
+		if (!$scope.result.entryId) {
+			$scope.saveAs();
+			return;
+		}
+		var showMsg = warn.bind(this, 'Saved', $scope.result.entry.name, 'info');
+		var errMsg = warn.bind(this, 'Error', $scope.result.entry.name + ' could not be saved');
+		var content = angular.toJson($scope.rd, true);
+		FileSystem.save($scope.result.entryId, content)
+			.then(rememberEntry, errMsg)
+			.then(showMsg);
+	};
+
+	$scope.saveAs = function() {
+		var rd = $scope.rd;
+		var showMsg = warn.bind(this, 'Saved', $scope.result.entry.name, 'info');
+		var errMsg = warn.bind(this, 'Error', $scope.result.entry.name + ' could not be saved');
+		FileSystem.saveAs(rd.title, EXTENSION, angular.toJson(rd, true))
+			.then(rememberEntry, errMsg)
+			.then(showMsg);
+	};
+
 	/// SVN ///
 	$scope.svnInstalled = false;
 
@@ -366,28 +388,6 @@ angular.module('Clockdoc.Controllers')
 	$scope.commit = function() {
 		$scope.result.content = angular.toJson($scope.rd, true);
 		Svn.commit($scope.result);
-	};
-
-	$scope.save = function() {
-		if (!$scope.result.entryId) {
-			$scope.saveAs();
-			return;
-		}
-		var showMsg = warn.bind(this, 'Saved', $scope.result.entry.name, 'info');
-		var errMsg = warn.bind(this, 'Error', $scope.result.entry.name + ' could not be saved');
-		var content = angular.toJson($scope.rd, true);
-		FileSystem.save($scope.result.entryId, content)
-			.then(rememberEntry, errMsg)
-			.then(showMsg);
-	};
-
-	$scope.saveAs = function() {
-		var rd = $scope.rd;
-		var showMsg = warn.bind(this, 'Saved', $scope.result.entry.name, 'info');
-		var errMsg = warn.bind(this, 'Error', $scope.result.entry.name + ' could not be saved');
-		FileSystem.saveAs(rd.title, EXTENSION, angular.toJson(rd, true))
-			.then(rememberEntry, errMsg)
-			.then(showMsg);
 	};
 
 	/// Section methods ///
