@@ -1,14 +1,46 @@
-/*global $:false, angular:false */
+/*global $:false, angular:false, Mustache:false */
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('RdCtrl', ['$scope', '$filter', '$timeout', 'FileSystem', 'Storage', 'Random', 'Svn', 'Scroll', 'Platform', 'Stylesheet', function($scope, $filter, $timeout, FileSystem, Storage, Random, Svn, Scroll, Platform, Stylesheet) {
+.controller('RdCtrl', ['$scope', '$filter', '$timeout', '$http', '$q', 'FileSystem', 'Storage', 'Random', 'Svn', 'Scroll', 'Platform', 'Stylesheet', function($scope, $filter, $timeout, $http, $q, FileSystem, Storage, Random, Svn, Scroll, Platform, Stylesheet) {
 
 	var EXTENSION = 'cw';
 	var ALERT_TIME = 5000;
 
 	var RECENT_ENTRIES = 'recent_entries';
 	var RECENT_ENTRIES_MAX = 5;
+
+	function loadTemplate(key) {
+		var deferred = $q.defer();
+
+		if (TEMPLATES[key].ready) {
+			deferred.resolve(TEMPLATES[key].content);
+			return deferred.promise;
+		}
+
+		var source = TEMPLATES[key].source;
+
+		$http.get(source).then(function(rsp) {
+			if (rsp.status !== 200) {
+				return;
+			}
+			TEMPLATES[key].ready = true;
+			TEMPLATES[key].content = rsp.data;
+			deferred.resolve(rsp.data);
+		});
+
+		return deferred.promise;
+	}
+
+	var TEMPLATES = {
+		'word': {
+			'extension': 'docx',
+			'source': 'templates/word.xml',
+			'load': loadTemplate.bind(this, 'word'),
+			'ready': false,
+			'content' : null
+		}
+	};
 
 	$scope.rd = null;
 	$scope.sorting = false;
@@ -319,6 +351,21 @@ angular.module('Clockdoc.Controllers')
 		FileSystem.saveAs(rd.title, EXTENSION, angular.toJson(rd, true))
 			.then(rememberEntry, errMsg)
 			.then(showMsg);
+	};
+
+	$scope.export = function(format) {
+		var showMsg = warn.bind(this, 'Saved', $scope.result.entry.name, 'info');
+		var errMsg = warn.bind(this, 'Error', $scope.result.entry.name + ' could not be exported');
+		var template = TEMPLATES[format];
+
+		var render = function(full) {
+			var trimmed = full.replace(/[\n\r\t]/gm, ' ');
+			var output = Mustache.render(trimmed, $scope.rd);
+			FileSystem.saveAs($scope.rd.title, template.extension, output)
+				.then(showMsg, errMsg);
+		};
+
+		template.load().then(render);
 	};
 
 	/// SVN ///
