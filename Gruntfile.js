@@ -48,6 +48,13 @@ module.exports = function (grunt) {
                     livereload: true
                 }
             },
+            templates: {
+                files: ['<%= config.app %>/templates/*.*'],
+                tasks: ['copy:dev'],
+                options: {
+                    livereload: true
+                }
+            },
             gruntfile: {
                 files: ['Gruntfile.js']
             },
@@ -259,6 +266,7 @@ module.exports = function (grunt) {
                         '*.{ico,png,txt}',
                         'images/{,*/}*.{webp,gif}',
                         '{,*/}*.html',
+                        'templates/*.*',
                         'styles/fonts/**/*.*',
                         '_locales/{,*/}*.json',
                     ]

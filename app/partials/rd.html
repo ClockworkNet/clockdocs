@@ -55,7 +55,9 @@
 						<ul class="dropdown-menu">
 							<li ng-show="result.entry.name"><a ng-click="save()"><cw-icon type="save"></cw-icon> Save to <em>{{result.entry.name}}</em></a></li>
 							<li ng-show="rd"><a ng-click="saveAs()"><cw-icon type="export"></cw-icon> Save As ...</a></li>
-							<li ng-show="rd"><a ng-click="export('word')"><cw-icon type="file"></cw-icon> Export Word Document</a></li>
+							<li ng-show="rd" class="divider"></li>
+							<li ng-show="rd" class="dropdown-header">Export</li>
+							<li ng-show="rd"><a ng-click="export('word')"><cw-icon type="file"></cw-icon> Export As Word Document</a></li>
 							<li ng-show="result.svn.Revision"><a data-toggle="modal" data-target="#svn-form-commit"><cw-icon type="cloud-upload"></cw-icon> Commit to SVN</a></li>
 						</ul>
 					</li>

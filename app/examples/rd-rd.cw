@@ -3,12 +3,21 @@
   "author": "Anonymous",
   "created": "2014-04-17T21:29:43.607Z",
   "guid": "10i65era8nu3tuzwp",
-  "revisions": [],
+  "revisions": [
+    {
+      "id": "hduad9yb3atsoqb8",
+      "version": 1,
+      "revision": 0.1,
+      "date": "2014-09-05",
+      "notes": "Initial Revision",
+      "author": "AGB"
+    }
+  ],
   "sections": [
     {
       "title": "Definitions and Conventions",
       "guid": "j10feq8myrju1gfsn",
-      "content": "Herein resides some terms and conventions used in this doc.",
+      "content": "<p>Herein resides some terms and conventions used in this doc.</p>",
       "features": [],
       "flags": [
         {

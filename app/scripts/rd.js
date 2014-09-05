@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('RdCtrl', ['$scope', '$filter', '$timeout', '$http', '$q', 'FileSystem', 'Storage', 'Random', 'Svn', 'Scroll', 'Platform', 'Stylesheet', function($scope, $filter, $timeout, $http, $q, FileSystem, Storage, Random, Svn, Scroll, Platform, Stylesheet) {
+.controller('RdCtrl', ['$scope', '$filter', '$timeout', '$http', '$q', 'FileSystem', 'Storage', 'Random', 'Svn', 'Scroll', 'Platform', 'Stylesheet', 'ooxml', function($scope, $filter, $timeout, $http, $q, FileSystem, Storage, Random, Svn, Scroll, Platform, Stylesheet, ooxml) {
 
 	var EXTENSION = 'cw';
 	var ALERT_TIME = 5000;
@@ -32,11 +32,23 @@ angular.module('Clockdoc.Controllers')
 		return deferred.promise;
 	}
 
+	function prepareForWord(doc) {
+		var prepared = flattenDoc(doc);
+		prepared.sections.forEach(function(section, si) {
+			prepared.sections[si].content = ooxml(section.content);
+			section.features.forEach(function(feature, fi) {
+				prepared.sections[si].features[fi].content = ooxml(prepared.sections[si].features[fi].content);
+			});
+		});
+		return prepared;
+	}
+
 	var TEMPLATES = {
 		'word': {
 			'extension': 'docx',
 			'source': 'templates/word.xml',
 			'load': loadTemplate.bind(this, 'word'),
+			'transform': prepareForWord.bind(this),
 			'ready': false,
 			'content' : null
 		}
@@ -76,10 +88,14 @@ angular.module('Clockdoc.Controllers')
 		$scope.recentEntries = $scope.recentEntries.filter(function(r) {
 			return r.entryId !== entryId;
 		});
+		$scope.working = false;
 		$scope.result = null;
 		storage.set(RECENT_ENTRIES, $scope.recentEntries);
 		console.error('file error', e);
-		warn('Error', 'There was a problem opening your file.');
+
+		if (e.message !== FileSystem.MESSAGE_USER_CANCELLED) {
+			warn('Error', 'There was a problem opening your file.');
+		}
 	}
 
 	/**
@@ -183,6 +199,52 @@ angular.module('Clockdoc.Controllers')
 			if (!doc.files.hasOwnProperty(id)) {continue;}
 			addFileStyle(doc.files[id]);
 		}
+	}
+
+	function flattenDoc(doc) {
+		var flat = angular.copy(doc);
+		if (!flat.sections) {
+			return flat;
+		}
+		flat.sections.forEach(function(section) {
+			if (!section.features) {
+				return;
+			}
+			var flattened = flatten(section.features, 'features');
+			section.features = flattened;
+		});
+		return flat;
+	}
+
+	/**
+	 * Replaces a recursive array with a one-level
+	 * array and adds level information as a x.x.x numbering system
+	 * system to the title key. Very useful for rendering without
+	 * using recursion!
+	**/
+	function flatten(a, childKey, levels) {
+		var flattened = [];
+		levels = levels || [];
+
+		a.forEach(function(el, ix) {
+			// Calculate the current level of this node
+			var level = levels.slice(0);
+			level.push(ix + 1);
+			el.level = level.join('.');
+
+			// The depth is bumped up by 1 to account for sections
+			el.depth = level.length + 1;
+
+			// Add to the flattened array
+			flattened.push(el);
+
+			// Add any children to the flattened array
+			var children = el[childKey] ? el[childKey].slice(0) : [];
+			var flatKids = flatten(children, childKey, level);
+			flattened = flattened.concat(flatKids);
+		});
+
+		return flattened;
 	}
 
 	function unwarn() {
@@ -336,8 +398,8 @@ angular.module('Clockdoc.Controllers')
 			$scope.saveAs();
 			return;
 		}
-		var showMsg = warn.bind(this, 'Saved', $scope.result.entry.name, 'info');
-		var errMsg = warn.bind(this, 'Error', $scope.result.entry.name + ' could not be saved');
+		var showMsg = warn.bind(this, 'Saved!', $scope.result.entry.name, 'info');
+		var errMsg = warn.bind(this, 'Error!', $scope.result.entry.name + ' could not be saved');
 		var content = angular.toJson($scope.rd, true);
 		FileSystem.save($scope.result.entryId, content)
 			.then(rememberEntry, errMsg)
@@ -346,21 +408,22 @@ angular.module('Clockdoc.Controllers')
 
 	$scope.saveAs = function() {
 		var rd = $scope.rd;
-		var showMsg = warn.bind(this, 'Saved', $scope.result.entry.name, 'info');
-		var errMsg = warn.bind(this, 'Error', $scope.result.entry.name + ' could not be saved');
+		var showMsg = warn.bind(this, 'Saved!', $scope.result.entry.name, 'info');
+		var errMsg = warn.bind(this, 'Error!', $scope.result.entry.name + ' could not be saved');
 		FileSystem.saveAs(rd.title, EXTENSION, angular.toJson(rd, true))
 			.then(rememberEntry, errMsg)
 			.then(showMsg);
 	};
 
 	$scope.export = function(format) {
-		var showMsg = warn.bind(this, 'Saved', $scope.result.entry.name, 'info');
-		var errMsg = warn.bind(this, 'Error', $scope.result.entry.name + ' could not be exported');
+		var showMsg = warn.bind(this, 'Done!', 'Your file has been exported', 'info');
+		var errMsg = warn.bind(this, 'Error!', $scope.result.entry.name + ' could not be exported');
 		var template = TEMPLATES[format];
 
 		var render = function(full) {
-			var trimmed = full.replace(/[\n\r\t]/gm, ' ');
-			var output = Mustache.render(trimmed, $scope.rd);
+			var prepared = template.transform($scope.rd);
+			var output = Mustache.render(full, prepared);
+			output = output.replace(/[\n\r\t]/gm, ' ');
 			FileSystem.saveAs($scope.rd.title, template.extension, output)
 				.then(showMsg, errMsg);
 		};

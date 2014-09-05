@@ -13,6 +13,8 @@ angular.module('Clockdoc.Utils')
 	}
 
 	return {
+		MESSAGE_USER_CANCELLED: 'User cancelled',
+
 		read: function(result, readMethod) {
 			var deferred = $q.defer();
 
@@ -225,7 +227,12 @@ angular.module('Clockdoc.Utils')
 			chrome.fileSystem.chooseEntry(args, function(entry) {
 				self.write(entry, data, type)
 				.then(function(result) {
-					deferred.resolve(result);
+					if (result) {
+						deferred.resolve(result);
+					}
+					else {
+						deferred.reject(null);
+					}
 				}, function(e) {
 					deferred.reject(e);
 				});
