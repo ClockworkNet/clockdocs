@@ -45,18 +45,28 @@
 		</w:sectPr>
 
 		<w:p>
-			<w:pPr><w:pStyle w:val="Heading1"/></w:pPr>
 			<w:r>
+				<w:rPr>
+					<w:szCs w:val="24"/>
+					<w:sz w:val="32"/>
+				</w:rPr>
 				<w:t xml:space="preserve">{{client}} </w:t>
 			</w:r>
 			<w:r>
-				<w:rPr><w:color w:val="999999"/></w:rPr>
+				<w:rPr>
+					<w:szCs w:val="24"/>
+					<w:sz w:val="32"/>
+					<w:color w:val="999999"/>
+				</w:rPr>
 				<w:t xml:space="preserve">| </w:t>
 			</w:r>
 			<w:r>
+				<w:rPr>
+					<w:szCs w:val="24"/>
+					<w:sz w:val="32"/>
+				</w:rPr>
 				<w:t>{{project}}</w:t>
 			</w:r>
-			<w:r><w:br/></w:r>
 		</w:p>
 
 		<w:p>
@@ -66,6 +76,7 @@
 					<w:szCs w:val="24"/>
 				</w:rPr>
 			</w:pPr>
+			<w:r><w:br/></w:r>
 			<w:r><w:t>{{date}}</w:t></w:r>
 			<w:r><w:br/></w:r>
 		</w:p>
