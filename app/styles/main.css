@@ -282,10 +282,14 @@ section {
 	font-family: 'BrandonGrotesqueRegular', Helvetica, sans-serif;
 	font-size: 3em;
 	margin-bottom: .25em;
+	padding: 0.5em;
 }
 
 .feature {
 	padding-top: 1em;
+}
+.feature-title {
+	padding: 0.5em;
 }
 .feature .feature-label {
 	font-weight: 600;
