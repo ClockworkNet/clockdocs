@@ -66,6 +66,8 @@ angular.module('Clockdoc.Controllers')
 			});
 		});
 
+		prepared.date = $filter('date')(new Date(), 'yyyy-MM-dd');
+
 		var output = Mustache.render(src, prepared);
 		output = output.replace(/[\n\r\t]/gm, ' ')
 			.replace(/>\s+</gm, '><');
