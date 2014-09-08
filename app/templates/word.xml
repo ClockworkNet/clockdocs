@@ -47,17 +47,19 @@
 			<w:r><w:t>{{title}}</w:t></w:r>
 		</w:p>
 		{{#sections}}
-		<w:p>
-			<w:pPr><w:pStyle w:val="Heading1"/></w:pPr>
-			<w:r><w:t>{{title}}</w:t></w:r>
-		</w:p>
-		{{{content}}}
-			{{#features}}
 			<w:p>
-				<w:pPr><w:pStyle w:val="Heading{{depth}}"/></w:pPr>
-				<w:r><w:t>{{level}} {{title}}</w:t></w:r>
+				<w:pPr><w:pStyle w:val="Heading1"/></w:pPr>
+				<w:r><w:t>{{title}}</w:t></w:r>
 			</w:p>
 			{{{content}}}
+			{{#flags}}{{{content}}}{{/flags}}
+			{{#features}}
+				<w:p>
+					<w:pPr><w:pStyle w:val="Heading{{depth}}"/></w:pPr>
+					<w:r><w:t>{{level}} {{title}}</w:t></w:r>
+				</w:p>
+				{{#flags}}{{{content}}}{{/flags}}
+				{{{content}}}
 			{{/features}}
 		{{/sections}}
 	</w:body>

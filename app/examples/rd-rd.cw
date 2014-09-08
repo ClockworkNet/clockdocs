@@ -24,7 +24,7 @@
           "title": "Chrome Packaged App",
           "guid": "fwisv95wmzczpmh7",
           "type": "definition",
-          "content": "<span style=\"color: rgb(119, 119, 119); font-family: 'Open Sans', Arial, 'Lucida Grande', sans-serif; font-size: 13px; line-height: 24px;\">Chrome Apps deliver an experience as capable as a native app, but as safe as a web page. Just like web apps, Chrome Apps are written in HTML5, JavaScript, and CSS. But Chrome Apps look and behave like native apps, and they have native-like capabilities that are much more powerful than those available to web apps.</span>"
+          "content": "Chrome Apps deliver an experience as capable as a native app, but as safe as a web page. Just like web apps, Chrome Apps are written in HTML5, JavaScript, and CSS. But Chrome Apps look and behave like native apps, and they have native-like capabilities that are much more powerful than those available to web apps."
         }
       ]
     },
@@ -55,9 +55,16 @@
             {
               "title": "Flags",
               "guid": "zq1p3jnh1xu4vldq",
-              "content": "",
+              "content": "<p>The application will support adding &#34;flags.&#34;</p><ul><li>Assumptions</li><li>Definitions</li><li>Dev Notes</li><li>Open questions</li></ul>",
               "features": [],
-              "flags": []
+              "flags": [
+                {
+                  "title": "Assumption",
+                  "guid": "bgvny9ou4g5lkek6",
+                  "type": "assumption",
+                  "content": "This should work."
+                }
+              ]
             },
             {
               "title": "Organization",

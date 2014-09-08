@@ -34,12 +34,36 @@ angular.module('Clockdoc.Controllers')
 
 	function prepareForWord(doc) {
 		var prepared = flattenDoc(doc);
-		prepared.sections.forEach(function(section, si) {
-			prepared.sections[si].content = ooxml(section.content);
-			section.features.forEach(function(feature, fi) {
-				prepared.sections[si].features[fi].content = ooxml(prepared.sections[si].features[fi].content);
+
+		var format = function(a, callback) {
+			if (!a) {
+				return;
+			}
+			a.forEach(function(item, ix, self) {
+				self[ix].content = ooxml(item.content);
+				if (callback) {
+					callback(item);
+				}
+			});
+		};
+
+		var fixFlags = function(flags) {
+			if (!flags) {
+				return;
+			}
+			flags.forEach(function(flag, ix, self) {
+				var html = $('<div><b>' + flag.title + ': </b>' + flag.content + '</div>');
+				self[ix].content = ooxml(html);
+			});
+		};
+
+		format(prepared.sections, function(section) {
+			fixFlags(section.flags);
+			format(section.features, function(feature) {
+				fixFlags(feature.flags);
 			});
 		});
+
 		return prepared;
 	}
 
