@@ -43,10 +43,361 @@
 			<w:cols w:space="720"/>
 			<w:docGrid w:linePitch="360"/>
 		</w:sectPr>
+
 		<w:p>
 			<w:pPr><w:pStyle w:val="Title"/></w:pPr>
 			<w:r><w:t>{{title}}</w:t></w:r>
 		</w:p>
+
+		<w:p>
+			<w:pPr><w:pStyle w:val="Subtitle"/></w:pPr>
+			<w:r><w:t>{{date}}</w:t></w:r>
+		</w:p>
+
+		<w:tbl>
+			<w:tblPr>
+				<w:tblW w:w="0" w:type="auto"/>
+				<w:tblInd w:w="108" w:type="dxa"/>
+				<w:tblLayout w:type="fixed"/>
+				<w:tblLook w:val="0000" w:firstRow="0" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="0" w:noVBand="0"/>
+			</w:tblPr>
+			<w:tblGrid>
+				<w:gridCol w:w="1620"/>
+				<w:gridCol w:w="3870"/>
+				<w:gridCol w:w="1620"/>
+				<w:gridCol w:w="3010"/>
+			</w:tblGrid>
+			<w:tr>
+				<w:tc>
+					<w:tcPr>
+						<w:tcW w:w="1620" w:type="dxa"/>
+						<w:tcBorders>
+							<w:top w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:left w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:bottom w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+						</w:tcBorders>
+						<w:shd w:val="clear" w:color="auto" w:fill="FFFFFF"/>
+					</w:tcPr>
+					<w:p w:rsidR="00011629" w:rsidRDefault="00011629">
+						<w:pPr>
+							<w:spacing w:before="80" w:after="40"/>
+						</w:pPr>
+						<w:r>
+							<w:rPr>
+								<w:color w:val="999999"/>
+							</w:rPr>
+							<w:t>CLIENT:</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+				<w:tc>
+					<w:tcPr>
+						<w:tcW w:w="3870" w:type="dxa"/>
+						<w:tcBorders>
+							<w:top w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:left w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:bottom w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+						</w:tcBorders>
+						<w:shd w:val="clear" w:color="auto" w:fill="FFFFFF"/>
+					</w:tcPr>
+					<w:p>
+						<w:pPr>
+							<w:pStyle w:val="TableContents"/>
+							<w:spacing w:before="80" w:after="40"/>
+						</w:pPr>
+						<w:r>
+							<w:t>{{client}}</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+				<w:tc>
+					<w:tcPr>
+						<w:tcW w:w="1620" w:type="dxa"/>
+						<w:tcBorders>
+							<w:top w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:left w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:bottom w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+						</w:tcBorders>
+						<w:shd w:val="clear" w:color="auto" w:fill="FFFFFF"/>
+					</w:tcPr>
+					<w:p w:rsidR="00011629" w:rsidRDefault="00011629">
+						<w:pPr>
+							<w:spacing w:before="80" w:after="40"/>
+						</w:pPr>
+						<w:r>
+							<w:rPr>
+								<w:color w:val="999999"/>
+							</w:rPr>
+							<w:t>PROJECT MGR:</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+				<w:tc>
+					<w:tcPr>
+						<w:tcW w:w="3010" w:type="dxa"/>
+						<w:tcBorders>
+							<w:top w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:left w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:bottom w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:right w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+						</w:tcBorders>
+						<w:shd w:val="clear" w:color="auto" w:fill="FFFFFF"/>
+					</w:tcPr>
+					<w:p>
+						<w:pPr>
+							<w:pStyle w:val="TableContents"/>
+							<w:spacing w:before="80" w:after="40"/>
+						</w:pPr>
+						<w:r>
+							<w:t>{{pm}}</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+			</w:tr>
+			<w:tr>
+				<w:tc>
+					<w:tcPr>
+						<w:tcW w:w="1620" w:type="dxa"/>
+						<w:tcBorders>
+							<w:top w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:left w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:bottom w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+						</w:tcBorders>
+						<w:shd w:val="clear" w:color="auto" w:fill="FFFFFF"/>
+					</w:tcPr>
+					<w:p w:rsidR="00011629" w:rsidRDefault="00011629">
+						<w:pPr>
+							<w:spacing w:before="80" w:after="40"/>
+						</w:pPr>
+						<w:r>
+							<w:rPr>
+								<w:color w:val="999999"/>
+							</w:rPr>
+							<w:t>PROJECT:</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+				<w:tc>
+					<w:tcPr>
+						<w:tcW w:w="3870" w:type="dxa"/>
+						<w:tcBorders>
+							<w:top w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:left w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:bottom w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+						</w:tcBorders>
+						<w:shd w:val="clear" w:color="auto" w:fill="FFFFFF"/>
+					</w:tcPr>
+					<w:p>
+						<w:pPr>
+							<w:pStyle w:val="TableContents"/>
+							<w:spacing w:before="80" w:after="40"/>
+						</w:pPr>
+						<w:r>
+							<w:t>{{project}}</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+				<w:tc>
+					<w:tcPr>
+						<w:tcW w:w="1620" w:type="dxa"/>
+						<w:tcBorders>
+							<w:top w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:left w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:bottom w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+						</w:tcBorders>
+						<w:shd w:val="clear" w:color="auto" w:fill="FFFFFF"/>
+					</w:tcPr>
+					<w:p></w:p>
+				</w:tc>
+				<w:tc>
+					<w:tcPr>
+						<w:tcW w:w="3010" w:type="dxa"/>
+						<w:tcBorders>
+							<w:top w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:left w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:bottom w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:right w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+						</w:tcBorders>
+						<w:shd w:val="clear" w:color="auto" w:fill="FFFFFF"/>
+					</w:tcPr>
+					<w:p></w:p>
+				</w:tc>
+			</w:tr>
+			<w:tr w:rsidR="00011629">
+				<w:tc>
+					<w:tcPr>
+						<w:tcW w:w="1620" w:type="dxa"/>
+						<w:tcBorders>
+							<w:top w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:left w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:bottom w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+						</w:tcBorders>
+						<w:shd w:val="clear" w:color="auto" w:fill="FFFFFF"/>
+					</w:tcPr>
+					<w:p w:rsidR="00011629" w:rsidRDefault="00011629">
+						<w:pPr>
+							<w:spacing w:before="80" w:after="40"/>
+							<w:rPr>
+								<w:color w:val="999999"/>
+							</w:rPr>
+						</w:pPr>
+						<w:r>
+							<w:rPr>
+								<w:color w:val="999999"/>
+							</w:rPr>
+							<w:t>REVISION:</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+				<w:tc>
+					<w:tcPr>
+						<w:tcW w:w="3870" w:type="dxa"/>
+						<w:tcBorders>
+							<w:top w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:left w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:bottom w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+						</w:tcBorders>
+						<w:shd w:val="clear" w:color="auto" w:fill="FFFFFF"/>
+					</w:tcPr>
+					<w:p w:rsidR="00011629" w:rsidRDefault="00011629">
+						<w:pPr>
+							<w:spacing w:before="80" w:after="40"/>
+							<w:rPr>
+								<w:color w:val="999999"/>
+							</w:rPr>
+						</w:pPr>
+						<w:r>
+							<w:rPr>
+								<w:color w:val="999999"/>
+							</w:rPr>
+							<w:t>DATE:</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+				<w:tc>
+					<w:tcPr>
+						<w:tcW w:w="4630" w:type="dxa"/>
+						<w:gridSpan w:val="2"/>
+						<w:tcBorders>
+							<w:top w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:left w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:bottom w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:right w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+						</w:tcBorders>
+						<w:shd w:val="clear" w:color="auto" w:fill="FFFFFF"/>
+					</w:tcPr>
+					<w:p w:rsidR="00011629" w:rsidRDefault="00011629">
+						<w:pPr>
+							<w:spacing w:before="80" w:after="40"/>
+						</w:pPr>
+						<w:r>
+							<w:rPr>
+								<w:color w:val="999999"/>
+							</w:rPr>
+							<w:t>NOTES:</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+			</w:tr>
+			{{#revisions}}
+			<w:tr>
+				<w:tc>
+					<w:tcPr>
+						<w:tcW w:w="1620" w:type="dxa"/>
+						<w:tcBorders>
+							<w:top w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:left w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:bottom w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+						</w:tcBorders>
+						<w:shd w:val="clear" w:color="auto" w:fill="auto"/>
+					</w:tcPr>
+					<w:p>
+						<w:pPr>
+							<w:pStyle w:val="TableContents"/>
+							<w:spacing w:before="80" w:after="40"/>
+						</w:pPr>
+						<w:r>
+							<w:t>{{revision}}</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+				<w:tc>
+					<w:tcPr>
+						<w:tcW w:w="3870" w:type="dxa"/>
+						<w:tcBorders>
+							<w:top w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:left w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:bottom w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+						</w:tcBorders>
+						<w:shd w:val="clear" w:color="auto" w:fill="auto"/>
+					</w:tcPr>
+					<w:p>
+						<w:pPr>
+							<w:pStyle w:val="TableContents"/>
+							<w:spacing w:before="80" w:after="40"/>
+						</w:pPr>
+						<w:r>
+							<w:t>{{date}}</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+				<w:tc>
+					<w:tcPr>
+						<w:tcW w:w="4630" w:type="dxa"/>
+						<w:gridSpan w:val="2"/>
+						<w:tcBorders>
+							<w:top w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:left w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:bottom w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+							<w:right w:val="dotted" w:sz="4" w:space="0" w:color="000000"/>
+						</w:tcBorders>
+						<w:shd w:val="clear" w:color="auto" w:fill="auto"/>
+					</w:tcPr>
+					<w:p>
+						<w:pPr>
+							<w:pStyle w:val="TableContents"/>
+							<w:spacing w:before="80" w:after="40"/>
+						</w:pPr>
+						<w:r>
+							<w:t>{{notes}} [{{author}}]</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+			</w:tr>
+			{{/revisions}}
+		</w:tbl>
+
+		<w:p>
+			<w:pPr><w:pageBreakBefore/></w:pPr>
+		</w:p>
+		<w:p>
+			<w:pPr>
+				<w:pStyle w:val="TOAHeading"/>
+			</w:pPr>
+			<w:r>
+				<w:lastRenderedPageBreak/>
+				<w:t>Table of Contents</w:t>
+			</w:r>
+		</w:p>
+		<w:p>
+			<w:r>
+				<w:lastRenderedPageBreak/>
+				<w:fldChar w:fldCharType="begin"/>
+			</w:r>
+			<w:r>
+				<w:instrText xml:space="preserve"> TOC \f \o "1-9" \h</w:instrText>
+			</w:r>
+			<w:r>
+				<w:fldChar w:fldCharType="separate"/>
+			</w:r>
+			<w:r>
+				<w:fldChar w:fldCharType="end"/>
+			</w:r>
+		</w:p>
+		<w:p>
+			<w:pPr><w:pageBreakBefore/></w:pPr>
+		</w:p>
+
 		{{#sections}}
 			<w:p>
 				<w:pPr><w:pStyle w:val="Heading1"/></w:pPr>
