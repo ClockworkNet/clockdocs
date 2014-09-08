@@ -32,7 +32,7 @@ angular.module('Clockdoc.Controllers')
 		return deferred.promise;
 	}
 
-	function prepareForWord(doc) {
+	function prepareForWord(src, doc) {
 		var prepared = flattenDoc(doc);
 
 		var format = function(a, callback) {
@@ -66,7 +66,11 @@ angular.module('Clockdoc.Controllers')
 			});
 		});
 
-		return prepared;
+		var output = Mustache.render(src, prepared);
+		output = output.replace(/[\n\r\t]/gm, ' ')
+			.replace(/>\s+</gm, '><');
+
+		return output;
 	}
 
 	var TEMPLATES = {
@@ -447,9 +451,7 @@ angular.module('Clockdoc.Controllers')
 		var template = TEMPLATES[format];
 
 		var render = function(full) {
-			var prepared = template.transform($scope.rd);
-			var output = Mustache.render(full, prepared);
-			output = output.replace(/[\n\r\t]/gm, ' ');
+			var output = template.transform(full, $scope.rd);
 			FileSystem.saveAs($scope.rd.title, template.extension, output)
 				.then(showMsg, errMsg);
 		};
