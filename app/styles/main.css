@@ -119,13 +119,13 @@ h3 {
 
 [cw-editable], .ta-editor {
 	margin: 1px;
-	border: solid 1px #fff;
 	padding-left: 0;
 	padding-right: 0;
 }
 
 [cw-editable]:hover, .ta-editor:hover {
-	border: dashed 1px #ccc;
+	box-shadow: 0 0 10px #9ecaed;
+	cursor: text;
 }
 
 [cw-editable]:focus, .ta-editor:focus {
@@ -262,6 +262,15 @@ ul.cw-sortable li a:active .draggable {
 
 
 /* =============================================================================
+   Revisions
+   ========================================================================== */
+.revisions .header {
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+
+/* =============================================================================
    Sections and Features
    ========================================================================== */
 
@@ -323,6 +332,7 @@ section {
 .flag-title {
 	font-family: "ProximaNovaCondSemiBold",Helvetica,Arial,sans-serif;
 	display: block;
+	white-space: nowrap;
 }
 .flag-title:after {
 	content: ':';

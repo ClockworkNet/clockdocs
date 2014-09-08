@@ -96,8 +96,13 @@ angular.module('Clockdoc.Utils')
 			if ((isUl || isOl) && inNode.childNodes) {
 				var asList = function(p, pr) {
 					var numPr = node(pr, 'numPr');
+
+					// @todo: allow setting these ids
 					var numId = isUl ? '9' : '5';
-					node(numPr, 'ilvl').setAttribute('val', '0');
+
+					// @todo: add support for more than 2 indent levels
+					var ilvl = format ? '1' : '0';
+					node(numPr, 'ilvl').setAttribute('val', ilvl);
 					node(numPr, 'numId').setAttribute('val', numId);
 				};
 				each(inNode.childNodes, function(listItem) {

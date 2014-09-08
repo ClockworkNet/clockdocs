@@ -56,10 +56,10 @@
 			{{#features}}
 				<w:p>
 					<w:pPr><w:pStyle w:val="Heading{{depth}}"/></w:pPr>
-					<w:r><w:t>{{level}} {{title}}</w:t></w:r>
+					<w:r><w:t>{{prefix}}{{level}} {{title}}</w:t></w:r>
 				</w:p>
-				{{#flags}}{{{content}}}{{/flags}}
 				{{{content}}}
+				{{#flags}}{{{content}}}{{/flags}}
 			{{/features}}
 		{{/sections}}
 	</w:body>

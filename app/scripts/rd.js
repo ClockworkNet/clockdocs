@@ -59,7 +59,9 @@ angular.module('Clockdoc.Controllers')
 
 		format(prepared.sections, function(section) {
 			fixFlags(section.flags);
+			var prefix = section.title[0];
 			format(section.features, function(feature) {
+				feature.prefix = prefix;
 				fixFlags(feature.flags);
 			});
 		});
