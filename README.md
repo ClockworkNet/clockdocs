@@ -14,7 +14,7 @@ Write client documents like Clockwork.
 ### Installation
  1. Install prerequisites.
  2. Checkout the repository.
-    `git clone https://github.com/ClockworkNet/clockdocs.git`
+    `git clone https://github.com/ClockworkNet/clockdocs.git && cd clockdocs`
  3. Install server-side packages.
     `npm update`
  4. Install client-side packages.
