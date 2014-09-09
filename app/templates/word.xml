@@ -412,7 +412,7 @@
 				<w:fldChar w:fldCharType="begin"/>
 			</w:r>
 			<w:r>
-				<w:instrText xml:space="preserve"> TOC \f \o "1-9" \h</w:instrText>
+				<w:instrText xml:space="preserve"> TOC \h \u \o "1-9"</w:instrText>
 			</w:r>
 			<w:r>
 				<w:fldChar w:fldCharType="separate"/>

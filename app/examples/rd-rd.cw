@@ -1,5 +1,5 @@
 {
-  "title": "Clockdoc Requirements Definition App Requirements Definition",
+  "title": "Clockdoc Requirements Definition",
   "author": "Anonymous",
   "created": "2014-04-17T21:29:43.607Z",
   "guid": "10i65era8nu3tuzwp",
@@ -183,5 +183,7 @@
       "id": "our1028f9hczfjv8k"
     }
   },
-  "version": "0.2"
+  "version": "0.2",
+  "client": "Clockwork",
+  "project": "Clockdocs"
 }

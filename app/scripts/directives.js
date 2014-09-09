@@ -87,6 +87,7 @@ angular.module('Clockdoc.Directives')
 			key: '@cwSortKey',
 			handle: '@cwSortHandle',
 			items: '@cwSortItems',
+			empty: '@cwEmptyItems',
 			nested: '@cwSortNested',
 			toleranceElement: '@cwSortToleranceElement',
 			onUpdate: '&cwSortOnUpdated',
@@ -95,6 +96,8 @@ angular.module('Clockdoc.Directives')
 		},
 		link: function(scope, el) {
 			var itemKey = scope.key || 'guid';
+			var itemSelector = scope.items || '.cw-sorted';
+			var emptySelector = scope.empty || '.cw-sorted-empty';
 
 			var dragParentGuid = null;
 
@@ -116,7 +119,7 @@ angular.module('Clockdoc.Directives')
 
 				args.guid = dropped.data(itemKey);
 				args.parentGuid = getParentGuid(dropped);
-				args.index = dropped.prevAll().length;
+				args.index = dropped.prevAll(':not(' + emptySelector + ')').length;
 
 				// When the node moved is placed outside its current parent,
 				// remove it from the DOM. Otherwise, it will get cloned.
@@ -138,19 +141,21 @@ angular.module('Clockdoc.Directives')
 				scope.onStop();
 			};
 
-			var itemSelector = scope.items || '.cw-sorted';
 			var options = {
+				axis: 'y',
+				containment: '.cw-sortable',
+				cursor: 'hand',
 				distance: 5,
 				delay: 250,
-				opacity: 0.5,
-				tolerance: 'intersect',
-				placeholder: 'cw-sortable-placeholder',
 				forcePlaceholderSize: true,
-				items: itemSelector,
-				scroll: true,
 				handle: scope.handle,
+				items: itemSelector,
+				opacity: 0.8,
+				placeholder: 'cw-sortable-placeholder',
+				scroll: true,
 				start: started,
 				stop: stopped,
+				tolerance: 'intersect',
 				update: updated
 			};
 

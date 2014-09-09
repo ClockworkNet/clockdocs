@@ -202,16 +202,18 @@ h3 {
 .toc li.cw-sorted-feature {
 	padding-left: 0.5em;
 }
-ul.cw-sortable .cw-sorted-empty {
-	height: 0px;
-}
-ul.cw-sortable.cw-sorting .cw-sorted-empty:hover {
-	height: 1em;
-}
 .cw-sortable-placeholder {
 	border: 1px dotted red;
 	padding: 10px 20px 5px 20px;
 	background: #d0d0d0;
+	padding-left: 1.5em;
+}
+ul.cw-sortable .cw-sorted-empty {
+	height: 0px;
+}
+ul.cw-sortable.cw-sorting li.cw-sorted-feature {
+	border: 1px solid #ccc;
+	margin: 1em;
 }
 ul.cw-sortable li a .draggable {
 	opacity: 0;
@@ -226,6 +228,7 @@ ul.cw-sortable li a:hover .draggable,
 ul.cw-sortable li a:active .draggable {
 	-webkit-transition: all 0.2s ease-in;
 	opacity: 1.0;
+	cursor: hand;
 }
 .toc-section {
 	font-weight: 600;

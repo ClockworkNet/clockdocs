@@ -440,8 +440,9 @@ angular.module('Clockdoc.Controllers')
 
 	$scope.saveAs = function() {
 		var rd = $scope.rd;
-		var showMsg = warn.bind(this, 'Saved!', $scope.result.entry.name, 'info');
-		var errMsg = warn.bind(this, 'Error!', $scope.result.entry.name + ' could not be saved');
+		var name = $scope.result && $scope.result.entry ? $scope.result.entry.name : rd.title;
+		var showMsg = warn.bind(this, 'Saved!', name, 'info');
+		var errMsg = warn.bind(this, 'Error!', name + ' could not be saved');
 		FileSystem.saveAs(rd.title, EXTENSION, angular.toJson(rd, true))
 			.then(rememberEntry, errMsg)
 			.then(showMsg);
