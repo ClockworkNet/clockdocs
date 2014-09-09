@@ -143,7 +143,6 @@ angular.module('Clockdoc.Directives')
 
 			var options = {
 				axis: 'y',
-				containment: '.cw-sortable',
 				cursor: 'hand',
 				distance: 5,
 				delay: 250,
