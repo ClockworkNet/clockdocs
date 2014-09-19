@@ -24,7 +24,7 @@ angular.module('Clockdoc.Utils')
 		this.relationships = [];
 		this.lines = [];
 
-		this.olId = 5;
+		this.olId = 20;
 		this.ulId = 9;
 
 		// Stores the HTML -> OOXML tag conversions
@@ -135,8 +135,6 @@ angular.module('Clockdoc.Utils')
 			}
 			var asList = function(p, pr) {
 				var numPr = this._node(pr, 'numPr');
-
-				// @todo: allow setting these ids
 				var numId = isUl ? this.ulId : this.olId;
 
 				this._node(numPr, 'ilvl').setAttribute('val', level);
