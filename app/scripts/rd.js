@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('RdCtrl', ['$scope', '$filter', '$timeout', '$http', '$q', 'FileSystem', 'Storage', 'Random', 'Svn', 'Scroll', 'Platform', 'Stylesheet', 'ooxml', function($scope, $filter, $timeout, $http, $q, FileSystem, Storage, Random, Svn, Scroll, Platform, Stylesheet, ooxml) {
+.controller('RdCtrl', ['$scope', '$filter', '$timeout', '$http', '$q', 'FileSystem', 'Storage', 'Random', 'Svn', 'Scroll', 'Platform', 'Stylesheet', 'Ooxml', function($scope, $filter, $timeout, $http, $q, FileSystem, Storage, Random, Svn, Scroll, Platform, Stylesheet, Ooxml) {
 
 	var EXTENSION = 'cw';
 	var ALERT_TIME = 5000;
@@ -34,13 +34,14 @@ angular.module('Clockdoc.Controllers')
 
 	function prepareForWord(src, doc) {
 		var prepared = flattenDoc(doc);
+		var ooxml = new Ooxml();
 
 		var format = function(a, callback) {
 			if (!a) {
 				return;
 			}
 			a.forEach(function(item, ix, self) {
-				self[ix].content = ooxml(item.content);
+				self[ix].content = ooxml.add(item.content);
 				if (callback) {
 					callback(item);
 				}
@@ -53,7 +54,7 @@ angular.module('Clockdoc.Controllers')
 			}
 			flags.forEach(function(flag, ix, self) {
 				var html = $('<div><b>' + flag.title + ': </b>' + flag.content + '</div>');
-				self[ix].content = ooxml(html);
+				self[ix].content = ooxml.add(html);
 			});
 		};
 
