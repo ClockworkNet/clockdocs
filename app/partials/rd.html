@@ -1,16 +1,16 @@
-<div class="controller" ng-controller="RdCtrl" ng-keyup="keyup($event)">
+<div class="controller" ng-controller="RdCtrl" ng-keyup="keyup($event)" ng-class="{working: working}">
 
-	<cw-hotkey key="N" ctrl="true" action="create()" />
-	<cw-hotkey key="N" meta="true" action="create()" />
+	<cw-hotkey key="N" ctrl="true" action="create()"></cw-hotkey>
+	<cw-hotkey key="N" meta="true" action="create()"></cw-hotkey>
 
-	<cw-hotkey key="O" ctrl="true" action="open()" />
-	<cw-hotkey key="O" meta="true" action="open()" />
+	<cw-hotkey key="O" ctrl="true" action="open()"></cw-hotkey>
+	<cw-hotkey key="O" meta="true" action="open()"></cw-hotkey>
 
-	<cw-hotkey key="S" ctrl="true" action="save()" />
-	<cw-hotkey key="S" meta="true" action="save()" />
+	<cw-hotkey key="S" ctrl="true" action="save()"></cw-hotkey>
+	<cw-hotkey key="S" meta="true" action="save()"></cw-hotkey>
 
-	<cw-hotkey key="P" ctrl="true" action="print()" />
-	<cw-hotkey key="P" meta="true" action="print()" />
+	<cw-hotkey key="P" ctrl="true" action="print()"></cw-hotkey>
+	<cw-hotkey key="P" meta="true" action="print()"></cw-hotkey>
 
 	<nav class="navbar navbar-default navbar-fixed-top">
 		<div class="container-fluid">

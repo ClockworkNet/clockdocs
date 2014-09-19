@@ -156,6 +156,9 @@ h3 {
 .doc-container {
 	margin-top: 110px; /* Make room for the nav */
 }
+.working .doc-container, .working header {
+	-webkit-filter: blur(5px);
+}
 .cw-counted {
 	counter-reset: item;
 }

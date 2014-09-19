@@ -508,16 +508,19 @@ angular.module('Clockdoc.Controllers')
 	}
 
 	$scope.openSvn = function() {
+		$scope.working = true;
 		Svn.open($scope.svn.url)
 			.then(svnRead, svnError);
 	};
 
 	$scope.checkout = function() {
+		$scope.working = true;
 		Svn.checkout($scope.svn.url)
 			.then(svnRead, svnError);
 	};
 
 	$scope.installSvn = function() {
+		$scope.working = true;
 		Svn.install().then(function() {
 			$scope.working = false;
 			$scope.svnInstalled = true;
@@ -528,6 +531,7 @@ angular.module('Clockdoc.Controllers')
 	};
 
 	$scope.commit = function() {
+		$scope.working = true;
 		$scope.result.content = angular.toJson($scope.rd, true);
 		Svn.commit($scope.result, $scope.svn.message)
 			.then(svnCommitted, svnError);
