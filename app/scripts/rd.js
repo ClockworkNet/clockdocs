@@ -464,56 +464,52 @@ angular.module('Clockdoc.Controllers')
 
 	/// SVN ///
 	$scope.svnInstalled = false;
+	$scope.svn = {
+		URL: Svn.svnRoot
+	};
 
-	Svn.test().then(function() {
+	Svn.test().then(function(res) {
+		console.info(res);
 		$scope.svnInstalled = true;
+	}, function(res) {
+		console.info(res);
+		$scope.svnInstalled = false;
 	});
 
-	Svn.on('error', function(e) {
-		$scope.$apply(function() {
-			console.error('SVN error', e);
-			warn('A SVN error occurred.', 'Check the console log for details.');
-		});
-	});
+	function svnError(e) {
+		console.error('SVN error', e);
+		warn('A SVN error occurred.', 'Check the console log for details.');
+	}
 
-	Svn.on('executing', function(args) {
-		$scope.$apply(function() {
-			$scope.working = true;
-			warn('Running', args.join(' '), 'info');
-		});
-	});
-
-	Svn.on('read checkout', function(result) {
+	function svnRead(result) {
 		console.info('Read from SVN', result);
 
-		$scope.$apply(function() {
-			$scope.working = false;
-			$scope.result = result;
-			try {
-				loadDoc(angular.fromJson(result.content));
-				unwarn();
-			}
-			catch (e) {
-				console.error('Error reading file', e, result);
-				warn('File error', 'There was an error reading the SVN file. Check the console log for details');
-			}
-		});
-	});
+		$scope.working = false;
+		$scope.result = result;
+		try {
+			loadDoc(angular.fromJson(result.content));
+			unwarn();
+		}
+		catch (e) {
+			console.error('Error reading file', e, result);
+			warn('File error', 'There was an error reading the SVN file. Check the console log for details');
+		}
+	}
 
-	Svn.on('commit', function(result) {
-		$scope.$apply(function() {
-			$scope.working = false;
-			$scope.result = result;
-			warn('Committed', 'changes committed to SVN', 'success');
-		});
-	});
+	function svnCommitted(result) {
+		$scope.working = false;
+		$scope.result = result;
+		warn('Committed', 'changes committed to SVN', 'success');
+	}
 
 	$scope.openSvn = function() {
-		Svn.open($scope.result.svn.URL);
+		Svn.open($scope.svn.URL)
+			.then(svnRead, svnError);
 	};
 
 	$scope.checkout = function() {
-		Svn.checkout($scope.result.svn.URL);
+		Svn.checkout($scope.svn.URL)
+			.then(svnRead, svnError);
 	};
 
 	$scope.installSvn = function() {
@@ -528,7 +524,8 @@ angular.module('Clockdoc.Controllers')
 
 	$scope.commit = function() {
 		$scope.result.content = angular.toJson($scope.rd, true);
-		Svn.commit($scope.result);
+		Svn.commit($scope.result)
+			.then(svnCommitted, svnError);
 	};
 
 	/// Section methods ///

@@ -5,17 +5,47 @@
 angular.module('Clockdoc.Utils')
 .service('ooxml', [function() {
 
+	/**
+	 * Based on DOCX.js by Stephen Hardy https://github.com/stephen-hardy/DOCX.js
+	**/
 	return function(html) {
 		var parser = new DOMParser();
 		var serializer = new XMLSerializer();
 		var doc = parser.parseFromString('<root></root>', 'text/xml');
 
+		var styleMap = {
+			'b'      : 'b',
+			'strong' : 'b',
+			'i'      : 'i',
+			'em'     : 'i',
+			'u'      : {
+				'node' : 'u',
+				'val'  : 'single'
+			},
+			's'      : 'strike',
+			'strike' : 'strike',
+			'sub'    : {
+				'node' : 'vertAlign',
+				'val'  : 'subscript'
+			},
+			'sup'    : {
+				'node' : 'vertAlign',
+				'val'  : 'superscript'
+			}
+		};
+
+		/**
+		 * Helper for looping through child nodes
+		**/
 		function each(nodes, callback) {
 			for (var i=0; i<nodes.length; i++) {
 				callback(nodes[i], i, nodes);
 			}
 		}
 
+		/**
+		 * Takes an OOXML node and returns a string version
+		**/
 		function toString(node) {
 			var serialized = serializer.serializeToString(node);
 			return serialized
@@ -23,6 +53,11 @@ angular.module('Clockdoc.Utils')
 				.replace(/val=/g, 'w:val=');
 		}
 
+		/**
+		 * Generates a new node, attaches it to the specified parent,
+		 * and returns the new node. If text is specified, it is added
+		 * to the new node.
+		**/
 		function node(parent, name, text) {
 			var el = doc.createElement('w:' + name);
 			if (text) {
@@ -32,7 +67,10 @@ angular.module('Clockdoc.Utils')
 			return el;
 		}
 
-		function color(str) { // Return hex or named color
+		/**
+		 * Takes the HTML-version of a color and returns the hex for it
+		**/
+		function color(str) {
 			if (str.charAt(0) === '#') {
 				return str.substr(1);
 			}
@@ -46,6 +84,9 @@ angular.module('Clockdoc.Utils')
 			return (blue | (green << 8) | (red << 16)).toString(16);
 		}
 
+		/**
+		 * Generates a OOXML run.
+		**/
 		function run(p, inNodeChild) {
 			var r = node(p, 'r');
 
@@ -86,30 +127,38 @@ angular.module('Clockdoc.Utils')
 			node(r, 't', inNodeChild.textContent);
 		}
 
-		function paragraph(parent, inNode, format) {
-			var p = node(parent, 'p');
-			var pr = node(p, 'pPr');
+		/**
+		 * Creates a new OOXML paragraph based on HTML input.
+		**/
+		function paragraph(parent, inNode, format, level) {
+			level = level || 0;
 
 			var isUl = inNode.nodeName === 'UL';
 			var isOl = inNode.nodeName === 'OL';
 
-			if ((isUl || isOl) && inNode.childNodes) {
+			if (isUl || isOl) {
+				if (!inNode.childNodes) {
+					return;
+				}
 				var asList = function(p, pr) {
 					var numPr = node(pr, 'numPr');
 
 					// @todo: allow setting these ids
 					var numId = isUl ? '9' : '5';
 
-					// @todo: add support for more than 2 indent levels
-					var ilvl = format ? '1' : '0';
-					node(numPr, 'ilvl').setAttribute('val', ilvl);
+					node(numPr, 'ilvl').setAttribute('val', level);
 					node(numPr, 'numId').setAttribute('val', numId);
 				};
+
 				each(inNode.childNodes, function(listItem) {
-					paragraph(parent, listItem, asList);
+					paragraph(parent, listItem, asList, level + 1);
 				});
+
 				return;
 			}
+
+			var p = node(parent, 'p');
+			var pr = node(p, 'pPr');
 
 			if (format) {
 				format(p, pr);
@@ -120,7 +169,7 @@ angular.module('Clockdoc.Utils')
 					.setAttribute('val', inNode.style.textAlign);
 			}
 
-			if (inNode.nodeName === '#text') {
+			if (inNode.nodeName === '#text' && inNode.nodeValue.length) {
 				node(node(p, 'r'), 't', inNode.nodeValue);
 				return;
 			}
@@ -133,27 +182,6 @@ angular.module('Clockdoc.Utils')
 				run(p, inNodeChild);
 			});
 		}
-
-		var styleMap = {
-			'b'      : 'b',
-			'strong' : 'b',
-			'i'      : 'i',
-			'em'     : 'i',
-			'u'      : {
-				'node' : 'u',
-				'val'  : 'single'
-			},
-			's'      : 'strike',
-			'strike' : 'strike',
-			'sub'    : {
-				'node' : 'vertAlign',
-				'val'  : 'subscript'
-			},
-			'sup'    : {
-				'node' : 'vertAlign',
-				'val'  : 'superscript'
-			}
-		};
 
 
 		var input = $('<div/>').html(html).get(0);

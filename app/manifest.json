@@ -16,6 +16,7 @@
                 "directory"
             ]
         },
+        "nativeMessaging",
         "identity",
         "storage",
         "syncFileSystem",

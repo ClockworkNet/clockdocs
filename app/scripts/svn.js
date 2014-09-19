@@ -4,52 +4,28 @@
 angular.module('Clockdoc.Utils')
 .factory('Svn', ['$q', 'FileSystem', function($q, FileSystem) {
 
-	// svn+ssh://svn.pozitronic.com/svnroot/templates/rd-rd.json
 	var nativeSvnApp = 'com.clockwork.svn';
-	var svnRoot = 'svn+ssh://svn.pozitronic.com/svnroot';
-
-	var listeners = {
-		'error'     : [],
-		'cancel'    : [],
-		'executing' : [],
-		'read'      : [],
-		'checkout'  : [],
-		'info'      : [],
-		'commit'    : [],
-		'update'    : []
-	};
 
 	return {
+		svnRoot: 'svn+ssh://svn.pozitronic.com/svnroot',
+
 		install: function() {
 			var deferred = $q.defer();
 			var filename = nativeSvnApp + '.json';
 			var self = this;
-
-			var resolve = function() {
-				setTimeout(function() {
-					console.log('Wrote manifest file', filename);
-					deferred.resolve(true);
-				}, 0);
-			};
-
-			var reject = function(e) {
-				self.fire('error', e);
-				setTimeout(function() {
-					deferred.reject(false);
-				}, 0);
-			};
 
 			var opts = {
 				type: 'openWritableFile',
 				accepts: [{extensions: ['json']}],
 				suggestedName: filename
 			};
+
 			FileSystem.open(opts)
 			.then(function(result) {
 				FileSystem.read(result)
 				.then(function(result) {
 					if (!result) {
-						return reject();
+						return deferred.reject(null);
 					}
 					var manifest = angular.fromJson(result.content);
 					/*jshint camelcase: false */
@@ -59,7 +35,8 @@ angular.module('Clockdoc.Utils')
 					manifest.allowed_origins.push(chrome.runtime.getURL(''));
 					/*jshint camelcase: true */
 					var manifestText = angular.toJson(manifest, true);
-					FileSystem.write(result.entry, manifestText).then(resolve, reject);
+					FileSystem.write(result.entry, manifestText)
+						.then(deferred.resolve.bind(self), deferred.reject.bind(self));
 				});
 			});
 
@@ -69,53 +46,17 @@ angular.module('Clockdoc.Utils')
 		test: function() {
 			var deferred = $q.defer();
 
-			var pwd = function() {
-				try {
-					var args = ['pwd'];
-					chrome.runtime.sendNativeMessage(
-						nativeSvnApp,
-						{ command: args },
-						function(response) {
-							if (response) {
-								deferred.resolve(response);
-							}
-							else {
-								deferred.reject(response);
-							}
-						}
-					);
+			this.exec(['pwd'])
+			.then(function(res) {
+				if (res) {
+					deferred.resolve(res);
 				}
-				catch (e) {
-					deferred.reject(e);
+				else {
+					deferred.reject(res);
 				}
-			};
-
-			setTimeout(pwd, 0);
+			}, deferred.reject.bind(this));
 
 			return deferred.promise;
-		},
-
-		on: function(events, callback) {
-			events = events.split(' ');
-			events.forEach(function(event) {
-				listeners[event].push(callback);
-			});
-		},
-
-		fire: function(event) {
-			if (!listeners[event]) {
-				console.warn('Undefined event', event);
-				return;
-			}
-
-			var args = Array.prototype.splice.call(arguments, 1);
-			var self = this;
-			listeners[event].forEach(function(callback) {
-				// Wrapped in timeout to ensure asynchronous firing
-				setTimeout(function() {
-					callback.apply(self, args);
-				}, 0);
-			});
 		},
 
 		parseInfo: function(response) {
@@ -135,31 +76,17 @@ angular.module('Clockdoc.Utils')
 		},
 
 		info: function(svnPath) {
-			var self = this;
-			var args = ['svn', 'info', svnPath];
+			var self = this,
+				args = ['svn', 'info', svnPath],
+				deferred = $q.defer();
 
-			return self.exec(args)
+			self.exec(args)
 			.then(function(response) {
 				var values = self.parseInfo(response);
-				self.fire('info', values);
-			})
-			.catch(function(e) {
-				self.fire('error', e);
-			});
-		},
+				deferred.resolve(values);
+			}, deferred.reject.bind(self));
 
-		fireWithInfo: function(event, result) {
-			var self = this;
-			var args = ['svn', 'info', result.path];
-			// Add info to the checkout
-			return self.exec(args)
-			.then(function(response) {
-				result.svn = self.parseInfo(response);
-				self.fire(event, result);
-			})
-			.catch(function(e) {
-				self.fire('error', e);
-			});
+			return deferred.promise;
 		},
 
 		open: function(svnPath) {
@@ -172,10 +99,7 @@ angular.module('Clockdoc.Utils')
 					content: text && text.response,
 					path: svnPath
 				};
-				return self.fireWithInfo('read', result);
-			})
-			.catch(function(e) {
-				self.fire('error', e);
+				return result;
 			});
 		},
 
@@ -183,16 +107,17 @@ angular.module('Clockdoc.Utils')
 		// receives the contents, path, file entry and svn info
 		checkout: function(svnPath) {
 			var self = this,
-				path = svnPath.replace(svnRoot, ''),
+				path = svnPath.replace(this.svnRoot, ''),
 				svnDir = svnPath.substr(0, svnPath.lastIndexOf('/')),
-				svnFile = path.split('/').reverse()[0];
+				svnFile = path.split('/').reverse()[0],
+				deferred = $q.defer();
 
-			return FileSystem.open()
+			FileSystem.open()
 			.then(function(localDir) {
 
 				console.log('Selected directory', localDir);
 				if (!localDir || !localDir.entry) {
-					return self.fire('cancel');
+					return null;
 				}
 
 				var run = function(args) {
@@ -211,7 +136,7 @@ angular.module('Clockdoc.Utils')
 
 				var localFilePath = localDirPath + svnFile;
 
-				return self.exec(['svn', 'co', '--depth=empty', svnDir, localDirPath])
+				self.exec(['svn', 'co', '--depth=empty', svnDir, localDirPath])
 				.then(run(['svn', 'up', localFilePath]))
 				.then(run(['cat', localFilePath]))
 				.then(function(response) {
@@ -226,49 +151,45 @@ angular.module('Clockdoc.Utils')
 					console.log('trying to get file', svnFile);
 					localDir.entry.getFile(svnFile, {create: false}, function(entry) {
 						result.entry = entry;
-						self.fireWithInfo('checkout', result);
+						deferred.resolve(result);
 					}, function(e) {
-						self.fire('error', e);
+						deferred.reject(e);
 					});
-				})
-				.catch(function(e) {
-					self.fire('error', e);
 				});
 			});
+
+			return deferred.promise;
 		},
 
 		// Commits changes made to a checkout. Uses the 'result' object
 		// returned by a checkout
 		commit: function(result) {
-			var self = this;
+			var self = this,
+				deferred = $q.defer();
+
 			if (!result.svn || !result.svn.Message) {
-				self.fire('error', new Error('Commits require a message'));
-				return;
+				deferred.reject(new Error('Commits require a message'));
 			}
 			if (!result.entry || !result.localPath) {
-				self.fire('error', new Error('Local path not found'));
-				return;
+				deferred.reject(new Error('Local path not found'));
 			}
-			return FileSystem.write(result.entry, result.content)
+
+			FileSystem.write(result.entry, result.content)
 			.then(function(result) {
 				var message = result.svn.Message;
 				self.exec(['svn', 'ci', result.localPath, '-m', message])
 				.then(function(response) {
 					console.log('committed!', response);
-					self.fireWithInfo('commit', result);
-				}).
-				catch(function(e) {
-					self.fire('error', e);
-				});
+					deferred.resolve(result);
+				}, deferred.reject.bind(this));
 			});
+
+			return deferred.promise;
 		},
 
 		// Queues up the execution of a command and returns a promise
 		exec: function(args) {
 			var deferred = $q.defer();
-			var self     = this;
-
-			self.fire('executing', args);
 
 			var resolveResponse = function(response) {
 				if (chrome.runtime.lastError) {
@@ -277,12 +198,17 @@ angular.module('Clockdoc.Utils')
 				deferred.resolve(response);
 			};
 
-			console.log('Svn.exec:', args);
-			chrome.runtime.sendNativeMessage(
-				nativeSvnApp,
-				{ command: args },
-				resolveResponse
-			);
+			try {
+				console.info('executing', args);
+				chrome.runtime.sendNativeMessage(
+					nativeSvnApp,
+					{ command: args },
+					resolveResponse
+				);
+			}
+			catch (e) {
+				deferred.reject(e);
+			}
 
 			return deferred.promise;
 		}

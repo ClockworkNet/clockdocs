@@ -5,7 +5,7 @@ from shutil import copyfile
 from os import path
 import sys 
 
-appid = 'giihfdnnhneffdkhekfbfepickanbkje'
+appid = 'jocddfhehbjkaghkkfnljdheibfppmmf'
 
 # Determine hosts file based on os
 if sys.platform == 'linux2':
