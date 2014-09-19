@@ -23,6 +23,9 @@
 			<Relationship Id="rId8" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" Target="footer.xml"/>
 			<Relationship Id="rId20" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/fontTable" Target="fontTable.xml"/>
 			<Relationship Id="rId21" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme.xml"/>
+			{{#relationships}}
+			<Relationship Id="{{id}}" Type="{{{type}}}" Target="{{{target}}}" TargetMode="{{{targetMode}}}"/>
+			{{/relationships}}
 		</Relationships>
 	</pkg:xmlData>
 </pkg:part>

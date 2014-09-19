@@ -68,6 +68,7 @@ angular.module('Clockdoc.Controllers')
 		});
 
 		prepared.date = $filter('date')(new Date(), 'yyyy-MM-dd');
+		prepared.relationships = ooxml.relationships;
 
 		var output = Mustache.render(src, prepared);
 		output = output.replace(/[\n\r\t]/gm, ' ')
@@ -450,13 +451,14 @@ angular.module('Clockdoc.Controllers')
 	};
 
 	$scope.export = function(format) {
+		var name = $scope.result && $scope.result.entry ? $scope.result.entry.name : $scope.rd.title;
 		var showMsg = warn.bind(this, 'Done!', 'Your file has been exported', 'info');
-		var errMsg = warn.bind(this, 'Error!', $scope.result.entry.name + ' could not be exported');
+		var errMsg = warn.bind(this, 'Error!', name + ' could not be exported');
 		var template = TEMPLATES[format];
 
 		var render = function(full) {
 			var output = template.transform(full, $scope.rd);
-			FileSystem.saveAs($scope.rd.title, template.extension, output)
+			FileSystem.saveAs(name, template.extension, output)
 				.then(showMsg, errMsg);
 		};
 

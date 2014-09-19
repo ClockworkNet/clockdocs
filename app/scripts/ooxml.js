@@ -5,6 +5,14 @@
 angular.module('Clockdoc.Utils')
 .service('Ooxml', [function() {
 
+	function Hyperlink(url, index) {
+		this.index = index;
+		this.id = 'rId' + (100 + index);
+		this.type = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink';
+		this.target = url;
+		this.targetMode = 'External';
+	}
+
 	/**
 	 * Based on DOCX.js by Stephen Hardy https://github.com/stephen-hardy/DOCX.js
 	**/
@@ -15,6 +23,9 @@ angular.module('Clockdoc.Utils')
 
 		this.relationships = [];
 		this.lines = [];
+
+		this.olId = 5;
+		this.ulId = 9;
 
 		// Stores the HTML -> OOXML tag conversions
 		this.styleMap = {
@@ -91,7 +102,8 @@ angular.module('Clockdoc.Utils')
 		var serialized = this.serializer.serializeToString(node);
 		return serialized
 			.replace(/<w:t>/g, '<w:t xml:space="preserve">')
-			.replace(/val=/g, 'w:val=');
+			.replace(/val=/g, 'w:val=')
+			.replace(/id=/g, 'r:id=');
 	};
 
 	/**
@@ -125,7 +137,7 @@ angular.module('Clockdoc.Utils')
 				var numPr = this._node(pr, 'numPr');
 
 				// @todo: allow setting these ids
-				var numId = isUl ? '9' : '5';
+				var numId = isUl ? this.ulId : this.olId;
 
 				this._node(numPr, 'ilvl').setAttribute('val', level);
 				this._node(numPr, 'numId').setAttribute('val', numId);
@@ -168,39 +180,59 @@ angular.module('Clockdoc.Utils')
 	 * Generates a OOXML run.
 	**/
 	Ooxml.prototype._run = function(p, inNodeChild) {
+		var hyperlink = inNodeChild.nodeName === 'A';
+
+		// Wrap the run in a hyperlink element if needed.
+		if (hyperlink) {
+			p = this._node(p, 'hyperlink');
+			var url = inNodeChild.getAttribute('href');
+			var rel = new Hyperlink(url, this.relationships.length);
+			this.relationships.push(rel);
+			p.setAttribute('id', rel.id);
+		}
+
 		var r = this._node(p, 'r');
 
-		if (inNodeChild.nodeName !== '#text') {
-			var style = this._node(r, 'rPr');
-			var tempStr = inNodeChild.outerHTML;
+		if (inNodeChild.nodeName === '#text') {
+			this._node(r, 't', inNodeChild.textContent);
+			return;
+		}
 
-			for (var markup in this.styleMap) {
-				if (tempStr.indexOf('<' + markup + '>') > -1) {
-					var outMark = this.styleMap[markup];
-					if (typeof outMark === 'object') {
-						this._node(style, outMark.node)
-							.setAttribute('val', outMark.val);
-					}
-					else {
-						this._node(style, outMark);
-					}
+		var style = this._node(r, 'rPr');
+		var tempStr = inNodeChild.outerHTML;
+
+		if (hyperlink) {
+			this._node(style, 'rStyle')
+				.setAttribute('val', 'Hyperlink');
+		}
+
+		// Replace simple HTML markup with OOXML versions
+		for (var markup in this.styleMap) {
+			if (tempStr.indexOf('<' + markup + '>') > -1) {
+				var outMark = this.styleMap[markup];
+				if (typeof outMark === 'object') {
+					this._node(style, outMark.node)
+						.setAttribute('val', outMark.val);
+				}
+				else {
+					this._node(style, outMark);
 				}
 			}
+		}
 
-			var tempNode = inNodeChild.nodeName === 'SPAN' ? inNodeChild : inNodeChild.getElementsByTagName('SPAN')[0];
-			if (tempNode && tempNode.style) {
-				if (tempNode.style.fontSize) {
-					this._node(style, 'sz')
-						.setAttribute('val', parseInt(tempNode.style.fontSize, 10) * 2);
-				}
-				else if (tempNode.style.backgroundColor) {
-					this._node(style, 'highlight')
-						.setAttribute('val', this.color(tempNode.style.backgroundColor));
-				}
-				else if (tempNode.style.color) {
-					this._node(style, 'color')
-						.setAttribute('val', this.color(tempNode.style.color));
-				}
+		var tempNode = inNodeChild.nodeName === 'SPAN' ? inNodeChild : inNodeChild.getElementsByTagName('SPAN')[0];
+		if (tempNode && tempNode.style) {
+			if (tempNode.style.fontSize) {
+				this._node(style, 'sz')
+					.setAttribute('val', parseInt(tempNode.style.fontSize, 10) * 2);
+			}
+			else if (tempNode.style.backgroundColor) {
+				this._node(style, 'highlight')
+					.setAttribute('val', this.color(tempNode.style.backgroundColor));
+			}
+			else if (tempNode.style.color) {
+				this._node(style, 'color')
+					.setAttribute('val', this.color(tempNode.style.color));
 			}
 		}
 
