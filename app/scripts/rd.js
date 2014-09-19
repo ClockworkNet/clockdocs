@@ -466,7 +466,7 @@ angular.module('Clockdoc.Controllers')
 	/// SVN ///
 	$scope.svnInstalled = false;
 	$scope.svn = {
-		URL: Svn.svnRoot
+		url: Svn.svnRoot
 	};
 
 	Svn.test().then(function(res) {
@@ -487,6 +487,10 @@ angular.module('Clockdoc.Controllers')
 
 		$scope.working = false;
 		$scope.result = result;
+		Svn.info(result.svnLocation.full)
+			.then(function(info) {
+				$scope.svn = info;
+			});
 		try {
 			loadDoc(angular.fromJson(result.content));
 			unwarn();
@@ -504,12 +508,12 @@ angular.module('Clockdoc.Controllers')
 	}
 
 	$scope.openSvn = function() {
-		Svn.open($scope.svn.URL)
+		Svn.open($scope.svn.url)
 			.then(svnRead, svnError);
 	};
 
 	$scope.checkout = function() {
-		Svn.checkout($scope.svn.URL)
+		Svn.checkout($scope.svn.url)
 			.then(svnRead, svnError);
 	};
 
@@ -525,7 +529,7 @@ angular.module('Clockdoc.Controllers')
 
 	$scope.commit = function() {
 		$scope.result.content = angular.toJson($scope.rd, true);
-		Svn.commit($scope.result)
+		Svn.commit($scope.result, $scope.svn.message)
 			.then(svnCommitted, svnError);
 	};
 

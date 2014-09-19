@@ -87,6 +87,10 @@ angular.module('Clockdoc.Utils')
 				var key = line.substr(0, colon).trim();
 				var value = line.substr(colon + 1).trim();
 				if (key && key.length) {
+					// camelCase
+					key = key.toLowerCase().replace(/[ -](.)/gi, function(a, m) {
+						return m.toUpperCase();
+					});
 					values[key] = value;
 				}
 			});
@@ -180,27 +184,31 @@ angular.module('Clockdoc.Utils')
 
 		// Commits changes made to a checkout. Uses the 'result' object
 		// returned by a checkout
-		commit: function(svnResult) {
+		commit: function(svnResult, message) {
 			var self = this,
-				deferred = $q.defer();
+				deferred = $q.defer(),
+				valid = true;
 
-			if (!svnResult.svn || !svnResult.svn.Message) {
+			if (!message) {
+				valid = false;
 				deferred.reject(new Error('Commits require a message'));
 			}
 
 			if (!svnResult.entry || !svnResult.localLocation) {
+				valid = false;
 				deferred.reject(new Error('Local path not found'));
 			}
 
-			FileSystem.write(svnResult.entry, svnResult.content)
-			.then(function() {
-				var message = svnResult.svn.Message;
-				self.exec(['svn', 'ci', svnResult.localLocation.full, '-m', message])
-				.then(function(svnResponse) {
-					console.log('committed!', svnResponse);
-					deferred.resolve(svnResult);
-				}, deferred.reject.bind(this));
-			});
+			if (valid) {
+				FileSystem.write(svnResult.entry, svnResult.content)
+				.then(function() {
+					self.exec(['svn', 'ci', svnResult.localLocation.full, '-m', message])
+					.then(function(svnResponse) {
+						console.log('committed!', svnResponse);
+						deferred.resolve(svnResult);
+					}, deferred.reject.bind(this));
+				});
+			}
 
 			return deferred.promise;
 		},
