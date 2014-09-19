@@ -6,6 +6,24 @@ angular.module('Clockdoc.Utils')
 
 	var nativeSvnApp = 'com.clockwork.svn';
 
+	// Holds helpful information about a location
+	function Location(fullPath, entry) {
+		this.full = fullPath;
+		this.dir = fullPath && fullPath.substr(0, fullPath.lastIndexOf('/'));
+		this.file = fullPath && fullPath.split('/').reverse()[0];
+		this.entry = entry;
+		this.entryId = entry && entry.entryId;
+	}
+
+	// Stores the result of an SVN request
+	function SvnResult(response, svnLocation, localLocation) {
+		this.result = angular.fromJson(response);
+		this.content = this.result && this.result.response;
+		this.svnLocation = svnLocation;
+		this.localLocation = localLocation;
+		this.entry = null;
+	}
+
 	return {
 		svnRoot: 'svn+ssh://svn.pozitronic.com/svnroot',
 
@@ -94,12 +112,7 @@ angular.module('Clockdoc.Utils')
 			var args = ['svn', 'cat', svnPath];
 			return self.exec(args)
 			.then(function(response) {
-				var text = angular.fromJson(response);
-				var result = {
-					content: text && text.response,
-					path: svnPath
-				};
-				return result;
+				return new SvnResult(response, new Location(svnPath));
 			});
 		},
 
@@ -107,12 +120,10 @@ angular.module('Clockdoc.Utils')
 		// receives the contents, path, file entry and svn info
 		checkout: function(svnPath) {
 			var self = this,
-				path = svnPath.replace(this.svnRoot, ''),
-				svnDir = svnPath.substr(0, svnPath.lastIndexOf('/')),
-				svnFile = path.split('/').reverse()[0],
+				svnLocation = new Location(svnPath),
 				deferred = $q.defer();
 
-			FileSystem.open()
+			FileSystem.openDirectory()
 			.then(function(localDir) {
 
 				console.log('Selected directory', localDir);
@@ -120,42 +131,48 @@ angular.module('Clockdoc.Utils')
 					return null;
 				}
 
+				var localLocation = new Location();
+
 				var run = function(args) {
 					return function() {
 						return self.exec(args);
 					};
 				};
 
-				// The display path typically has a "~" indication 
-				// for the home directory. We need to get the real home
-				// first and replace it
-				var localDirPath = localDir.displayPath + '/';
-				if (localDirPath[0] === '~') {
-					localDirPath = '.' + localDirPath.substring(1);
-				}
+				var fail = function(e) {
+					deferred.reject(e);
+				};
 
-				var localFilePath = localDirPath + svnFile;
+				localDir.getDisplayPath()
+				.then(function(displayPath) {
+					// The display path typically has a "~" indication 
+					// for the home directory. We need to get the real home
+					// first and replace it
+					displayPath += '/';
+					if (displayPath[0] === '~') {
+						displayPath = '.' + displayPath.substring(1);
+					}
+					displayPath += svnLocation.file;
+					localLocation = new Location(displayPath, localDir);
+				})
+				.then(function() {
+					// We have the display path, now chaing together SVN calls
+					self.exec(['svn', 'co', '--depth=empty', svnLocation.dir, localLocation.dir])
+					.then(run(['svn', 'up', localLocation.full]))
+					.then(run(['cat', localLocation.full]))
+					.then(function(response) {
+						var result = new SvnResult(response, new Location(svnPath), localLocation);
+						console.log('trying to get file from svn result', result);
 
-				self.exec(['svn', 'co', '--depth=empty', svnDir, localDirPath])
-				.then(run(['svn', 'up', localFilePath]))
-				.then(run(['cat', localFilePath]))
-				.then(function(response) {
-					var text = angular.fromJson(response);
-					var result = {
-						content: text && text.response,
-						path: svnPath,
-						localPath: localFilePath,
-						dir: localDir.entry,
-						dirId: localDir.entryId
-					};
-					console.log('trying to get file', svnFile);
-					localDir.entry.getFile(svnFile, {create: false}, function(entry) {
-						result.entry = entry;
-						deferred.resolve(result);
-					}, function(e) {
-						deferred.reject(e);
-					});
-				});
+						localDir.entry.getFile(localLocation.file, {create: false}, function(entry) {
+							result.entry = entry;
+							deferred.resolve(result);
+						}, function(e) {
+							deferred.reject(e);
+						});
+					})
+					.catch(fail);
+				}).catch(fail);
 			});
 
 			return deferred.promise;
@@ -163,24 +180,25 @@ angular.module('Clockdoc.Utils')
 
 		// Commits changes made to a checkout. Uses the 'result' object
 		// returned by a checkout
-		commit: function(result) {
+		commit: function(svnResult) {
 			var self = this,
 				deferred = $q.defer();
 
-			if (!result.svn || !result.svn.Message) {
+			if (!svnResult.svn || !svnResult.svn.Message) {
 				deferred.reject(new Error('Commits require a message'));
 			}
-			if (!result.entry || !result.localPath) {
+
+			if (!svnResult.entry || !svnResult.localLocation) {
 				deferred.reject(new Error('Local path not found'));
 			}
 
-			FileSystem.write(result.entry, result.content)
-			.then(function(result) {
-				var message = result.svn.Message;
-				self.exec(['svn', 'ci', result.localPath, '-m', message])
-				.then(function(response) {
-					console.log('committed!', response);
-					deferred.resolve(result);
+			FileSystem.write(svnResult.entry, svnResult.content)
+			.then(function() {
+				var message = svnResult.svn.Message;
+				self.exec(['svn', 'ci', svnResult.localLocation.full, '-m', message])
+				.then(function(svnResponse) {
+					console.log('committed!', svnResponse);
+					deferred.resolve(svnResult);
 				}, deferred.reject.bind(this));
 			});
 

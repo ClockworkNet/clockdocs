@@ -12,6 +12,23 @@ angular.module('Clockdoc.Utils')
 		return false;
 	}
 
+	function FileSystemResult(entry, entryId) {
+		entryId = entryId || chrome.fileSystem.retainEntry(entry);
+		this.entry = entry;
+		this.entryId = entryId;
+	}
+
+	FileSystemResult.prototype.getDisplayPath = function() {
+		var deferred = $q.defer();
+		chrome.fileSystem.getDisplayPath(this.entry, function(displayPath) {
+			if (checkError(deferred)) {
+				return;
+			}
+			deferred.resolve(displayPath);
+		});
+		return deferred.promise;
+	};
+
 	return {
 		MESSAGE_USER_CANCELLED: 'User cancelled',
 
@@ -75,7 +92,6 @@ angular.module('Clockdoc.Utils')
 
 		open: function(options, expectMultiple) {
 			var deferred = $q.defer();
-			var self = this;
 
 			options = options || {};
 
@@ -96,15 +112,7 @@ angular.module('Clockdoc.Utils')
 				var results = [];
 
 				entries.forEach(function(entry) {
-					var entryId = chrome.fileSystem.retainEntry(entry);
-					var result = {
-						entry: entry,
-						entryId: entryId
-					};
-					self.getDisplayPath(entry)
-					.then(function(path) {
-						result.displayPath = path;
-					});
+					var result = new FileSystemResult(entry);
 					results.push(result);
 				});
 
@@ -122,34 +130,16 @@ angular.module('Clockdoc.Utils')
 
 		restore: function(entryId) {
 			var deferred = $q.defer();
-			var self = this;
 			var onRestore = function(entry) {
 				if (checkError(deferred)) {
 					return;
 				}
-
-				var result = {
-					entry: entry,
-					entryId: entryId
-				};
-				self.getDisplayPath(entry)
-				.then(function(path) {
-					result.displayPath = path;
-				});
-
+				var result = new FileSystemResult(entry, entryId);
 				deferred.resolve(result);
 			};
 
 			chrome.fileSystem.restoreEntry(entryId, onRestore);
 
-			return deferred.promise;
-		},
-
-		getDisplayPath: function(entry) {
-			var deferred = $q.defer();
-			chrome.fileSystem.getDisplayPath(entry, function(displayPath) {
-				deferred.resolve(displayPath);
-			});
 			return deferred.promise;
 		},
 
