@@ -1,1 +1,82 @@
-<h1>Clockdocs</h1>
+<html
+<head>
+	<title>Clockwork - Clockdocs App</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<link rel="shortcut icon" href="http://www.clockwork.net/amm/themes/cw_2013/images/favicon.ico"><!-- 16x16 -->
+	<link rel="apple-touch-icon" href="http://www.clockwork.net/amm/themes/cw_2013/images/touch-icon-iphone.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="http://www.clockwork.net/amm/themes/cw_2013/images/touch-icon-ipad.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="http://www.clockwork.net/amm/themes/cw_2013/images/touch-icon-iphone-retina.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="http://www.clockwork.net/amm/themes/cw_2013/images/touch-icon-ipad-retina.png">
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="octicons/octicons.css">
+</head>
+
+<body>
+
+<section class="row row-yellow">
+<div class="row-lead has-content"><div class="inside">
+	<img src="img/cw_logo_by.png" alt="Clockwork Active Media Systems" />
+</div></div>
+</section>
+
+<section class="row row-black inverse">
+<div class="row-lead has-content"><div class="inside">
+	<h1 class="title">Clockdocs</h1>
+	<p>Write client documents like Clockwork.</p>
+	<em>
+		<a href="https://github.com/ClockworkNet/clockdocs"><span class="octicon octicon-mark-github"></span></a>
+		<a href="https://github.com/ClockworkNet/clockdocs">Available On GitHub</a>
+	</em>
+</div></div>
+</section>
+
+<section class="row row-white">
+<div class="row-lead"><div class="inside"></div></div>
+<div class="align">
+	<div class="col_group col-1">
+
+	<h3>Prerequisites for Development</h3>
+
+	<ul class="task-list">
+		<li><a href="http://www.google.com/chrome/">Chrome</a> browser</li>
+		<li><a href="http://nodejs.org/">node.js</a> JavaScript runtime</li>
+		<li><a href="https://www.npmjs.org/">npm</a> Node Packaged Modules</li>
+		<li><a href="http://gruntjs.com/">Grunt</a> task runner</li>
+		<li><a href="http://bower.io/">Bower</a> package manager</li>
+	</ul>
+		
+	<h3>Installation</h3>
+	<ol class="task-list">
+		<li>Install prerequisites.</li>
+		<li>Checkout the repository.
+			<code>git clone https://github.com/ClockworkNet/clockdocs.git &amp;&amp; cd clockdocs</code>
+		</li>
+		<li>Install server-side packages.
+			<code>npm update</code>
+		</li>
+		<li>Install client-side packages.
+			<code>bower update</code>
+		</li>
+		<li>Build the source code. This will create a minified version of the app in <code>./clockdocs/dist</code>
+			<code>grunt build</code>
+		</li>
+		<li>Install the app in Chrome. (See the <a href="https://chrome.google.com/webstore/detail/chrome-apps-extensions-de/ohmmkhmmmpcnpikjeljgnaoabkaalbgc?hl=en-US">Chrome Apps &amp; Extensions Developer Tool</a> for an alternative method.
+			<ol class="task-list">
+				<li>Open the extensions page.</li>
+				<li>Make sure "Developer mode" is checked.</li>
+				<li>Click "Load unpacked extension..." and select the <code>./clockdocs/dist</code> directory.</li>
+			</ol>
+		</li>
+	</ol>
+
+	<h3>Development</h3>
+
+	<p>The Gruntfile.js included with this app has a developer mode. When you run <code>grunt dev</code> from the command line,
+	grunt will watch for changes to certain files in the <code>./clockdocs/app</code> directory and then reload an uncompressed
+	version of the app in the <code>./clockdocs/dist</code> directory.</p>
+	</div>
+</div>
+</section>
+
+</body>
+</html>
