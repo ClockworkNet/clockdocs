@@ -1,13 +1,13 @@
-/*global angular:false */
+/*global $:false, angular:false */
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('RdCtrl', ['$scope', '$filter', '$timeout', '$http', '$q', 'Random', 'Scroll', 'Platform', 'Stylesheet', function($scope, $filter, $timeout, $http, $q, Random, Scroll, Platform, Stylesheet) {
+.controller('RdCtrl', ['$scope', '$filter', '$timeout', 'Random', 'Scroll', 'Stylesheet', function($scope, $filter, $timeout, Random, Scroll, Stylesheet) {
+
+	var ALERT_TIME = 5000;
 
 	$scope.rd = null;
 	$scope.sorting = false;
-
-	Platform.load($scope, 'platform');
 
 	var flagTypes = $scope.flagTypes = [
 		{
@@ -36,13 +36,6 @@ angular.module('Clockdoc.Controllers')
 		'Out of Scope',
 		'Future Phase'
 	];
-
-	function addFileStyle(result) {
-		Stylesheet.addRule(
-			'.' + result.id,
-			'background-image: url(' + result.data + ')'
-		);
-	}
 
 	function createFeature(title) {
 		title = title || 'Untitled';
@@ -130,6 +123,21 @@ angular.module('Clockdoc.Controllers')
 		});
 	}
 
+	$scope.addFileStyle = function(result) {
+		Stylesheet.addRule(
+			'.' + result.id,
+			'background-image: url(' + result.data + ')'
+		);
+	};
+
+	$scope.loadDoc = function(doc) {
+		for (var id in doc.files) {
+			if (!doc.files.hasOwnProperty(id)) {continue;}
+			$scope.addFileStyle(doc.files[id]);
+		}
+		$scope.setRd(doc);
+	};
+
 	$scope.getSampleDoc = function(type) {
 		if (type === 'rd') {
 			return {
@@ -164,6 +172,29 @@ angular.module('Clockdoc.Controllers')
 
 	$scope.setRd = function(rd) {
 		$scope.rd = rd;
+	};
+
+	$scope.setResult = function(result) {
+		$scope.result = result;
+	};
+
+	$scope.setSvnInstalled = function(value) {
+		$scope.svnInstalled = value;
+	};
+
+	$scope.unwarn = function() {
+		$scope.alert = {};
+	};
+
+	$scope.warn = function(title, msg, type) {
+		type = type || 'danger';
+		$scope.alert = {
+			type: type,
+			title: title,
+			content: msg
+		};
+		$('.alert').alert();
+		$timeout($scope.unwarn, ALERT_TIME);
 	};
 
 	/// Section methods ///
@@ -312,7 +343,7 @@ angular.module('Clockdoc.Controllers')
 		}
 		result.id = Random.id();
 		$scope.rd.files[result.id] = result;
-		addFileStyle(result);
+		$scope.addFileStyle(result);
 	};
 
 	$scope.removeFile = function(id) {

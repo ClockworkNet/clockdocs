@@ -2,11 +2,9 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('NavCtrl', ['$scope', '$filter', '$timeout', '$http', '$q', 'FileSystem', 'Storage', 'Svn', 'Platform', 'Stylesheet', 'Ooxml', function($scope, $filter, $timeout, $http, $q, FileSystem, Storage, Svn, Platform, Stylesheet, Ooxml) {
+.controller('NavCtrl', ['$scope', '$filter', '$timeout', '$http', '$q', 'FileSystem', 'Storage', 'Svn', 'Platform', 'Ooxml', function($scope, $filter, $timeout, $http, $q, FileSystem, Storage, Svn, Platform, Ooxml) {
 
 	var EXTENSION = 'cw';
-	var ALERT_TIME = 5000;
-
 	var RECENT_ENTRIES = 'recent_entries';
 	var RECENT_ENTRIES_MAX = 5;
 
@@ -121,12 +119,12 @@ angular.module('Clockdoc.Controllers')
 			return r.entryId !== entryId;
 		});
 		$scope.setWorking(false);
-		$scope.result = null;
+		$scope.setResult(null);
 		storage.set(RECENT_ENTRIES, $scope.recentEntries);
 		console.error('file error', e);
 
 		if (e.message !== FileSystem.MESSAGE_USER_CANCELLED) {
-			warn('Error', 'There was a problem opening your file.');
+			$scope.warn('Error', 'There was a problem opening your file.');
 		}
 	}
 
@@ -160,21 +158,6 @@ angular.module('Clockdoc.Controllers')
 			.then(function() {
 				$scope.recentEntries = entries;
 			});
-	}
-
-	function addFileStyle(result) {
-		Stylesheet.addRule(
-			'.' + result.id,
-			'background-image: url(' + result.data + ')'
-		);
-	}
-
-	function loadDoc(doc) {
-		for (var id in doc.files) {
-			if (!doc.files.hasOwnProperty(id)) {continue;}
-			addFileStyle(doc.files[id]);
-		}
-		$scope.setRd(doc);
 	}
 
 	function flattenDoc(doc) {
@@ -223,29 +206,11 @@ angular.module('Clockdoc.Controllers')
 		return flattened;
 	}
 
-	function unwarn() {
-		$scope.alert = {};
-	}
-
-	function warn(title, msg, type) {
-		type = type || 'danger';
-		$scope.alert = {
-			type: type,
-			title: title,
-			content: msg
-		};
-		$('.alert').alert();
-		$timeout(unwarn, ALERT_TIME);
-	}
-
-	// Used to retain the result of a file open or SVN checkout
-	$scope.result = {};
-
 	/// Filesystem Methods ///
 	$scope.create = function() {
 		var doc = $scope.getSampleDoc('rd');
-		loadDoc(doc);
-		$scope.result = {};
+		$scope.loadDoc(doc);
+		$scope.setResult({});
 	};
 
 	$scope.open = function(entryId) {
@@ -257,13 +222,13 @@ angular.module('Clockdoc.Controllers')
 					return;
 				}
 				try {
-					loadDoc(angular.fromJson(result.content));
-					$scope.result = result;
+					$scope.loadDoc(angular.fromJson(result.content));
+					$scope.setResult(result);
 					rememberEntry(true);
 				}
 				catch (e) {
 					console.error('file open error', e);
-					warn('Error', 'There is a problem with your file.');
+					$scope.warn('Error', 'There is a problem with your file.');
 				}
 			});
 		};
@@ -280,19 +245,6 @@ angular.module('Clockdoc.Controllers')
 		}
 	};
 
-	$scope.save = function() {
-		if (!$scope.result.entryId) {
-			$scope.saveAs();
-			return;
-		}
-		var showMsg = warn.bind(this, 'Saved!', $scope.result.entry.name, 'info');
-		var errMsg = warn.bind(this, 'Error!', $scope.result.entry.name + ' could not be saved');
-		var content = angular.toJson($scope.rd, true);
-		FileSystem.save($scope.result.entryId, content)
-			.then(rememberEntry, errMsg)
-			.then(showMsg);
-	};
-
 	$scope.filename = function() {
 		if ($scope.result && $scope.result.entry) {
 			var name = $scope.result.entry.name;
@@ -301,11 +253,24 @@ angular.module('Clockdoc.Controllers')
 		return $scope.rd && $scope.rd.title;
 	};
 
+	$scope.save = function() {
+		if (!$scope.result.entryId) {
+			$scope.saveAs();
+			return;
+		}
+		var showMsg = $scope.warn.bind(this, 'Saved!', $scope.result.entry.name, 'info');
+		var errMsg = $scope.warn.bind(this, 'Error!', $scope.result.entry.name + ' could not be saved');
+		var content = angular.toJson($scope.rd, true);
+		FileSystem.save($scope.result.entryId, content)
+			.then(rememberEntry, errMsg)
+			.then(showMsg);
+	};
+
 	$scope.saveAs = function() {
 		var rd = $scope.rd;
 		var name = $scope.filename();
-		var showMsg = warn.bind(this, 'Saved!', name, 'info');
-		var errMsg = warn.bind(this, 'Error!', name + ' could not be saved');
+		var showMsg = $scope.warn.bind(this, 'Saved!', name, 'info');
+		var errMsg = $scope.warn.bind(this, 'Error!', name + ' could not be saved');
 		FileSystem.saveAs(name, EXTENSION, angular.toJson(rd, true))
 			.then(rememberEntry, errMsg)
 			.then(showMsg);
@@ -316,8 +281,8 @@ angular.module('Clockdoc.Controllers')
 		var template = TEMPLATES[format];
 		var path = name + '.' + template.extension;
 
-		var showMsg = warn.bind(this, 'Done!', path + ' has been exported', 'info');
-		var errMsg = warn.bind(this, 'Error!', path + ' could not be exported');
+		var showMsg = $scope.warn.bind(this, 'Done!', path + ' has been exported', 'info');
+		var errMsg = $scope.warn.bind(this, 'Error!', path + ' could not be exported');
 
 		var render = function(full) {
 			var output = template.transform(full, $scope.rd);
@@ -326,80 +291,6 @@ angular.module('Clockdoc.Controllers')
 		};
 
 		template.load().then(render);
-	};
-
-	/// SVN ///
-	$scope.svnInstalled = false;
-	$scope.svn = {
-		url: Svn.svnRoot
-	};
-
-	Svn.test().then(function(res) {
-		console.info(res);
-		$scope.svnInstalled = true;
-	}, function(res) {
-		console.info(res);
-		$scope.svnInstalled = false;
-	});
-
-	function svnError(e) {
-		console.error('SVN error', e);
-		warn('A SVN error occurred.', 'Check the console log for details.');
-	}
-
-	function svnRead(result) {
-		console.info('Read from SVN', result);
-
-		$scope.setWorking(false);
-		$scope.result = result;
-		Svn.info(result.svnLocation.full)
-			.then(function(info) {
-				$scope.svn = info;
-			});
-		try {
-			loadDoc(angular.fromJson(result.content));
-			unwarn();
-		}
-		catch (e) {
-			console.error('Error reading file', e, result);
-			warn('File error', 'There was an error reading the SVN file. Check the console log for details');
-		}
-	}
-
-	function svnCommitted(result) {
-		$scope.setWorking(false);
-		$scope.result = result;
-		warn('Committed', 'changes committed to SVN', 'success');
-	}
-
-	$scope.openSvn = function() {
-		$scope.setWorking(true);
-		Svn.open($scope.svn.url)
-			.then(svnRead, svnError);
-	};
-
-	$scope.checkout = function() {
-		$scope.setWorking(true);
-		Svn.checkout($scope.svn.url)
-			.then(svnRead, svnError);
-	};
-
-	$scope.installSvn = function() {
-		$scope.setWorking(true);
-		Svn.install().then(function() {
-			$scope.setWorking(false);
-			$scope.svnInstalled = true;
-		}, function() {
-			// installation was cancelled
-			$scope.setWorking(false);
-		});
-	};
-
-	$scope.commit = function() {
-		$scope.setWorking(true);
-		$scope.result.content = angular.toJson($scope.rd, true);
-		Svn.commit($scope.result, $scope.svn.message)
-			.then(svnCommitted, svnError);
 	};
 
 	$scope.print = function() {
