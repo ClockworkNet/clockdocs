@@ -11,7 +11,7 @@
 	<div class="row doc-container" ng-show="rd">
 		<div class="col-md-3 doc-toc">
 			<div class="box-emp">
-				<h2>Table of Contents <a class="btn" ng-class="{'cw-sorting': sorting}" ng-click="sorting = !sorting"><span class="glyphicon glyphicon-random"></span></a></h2>
+				<h2>Table of Contents <a class="btn" ng-class="{'cw-sorting': sorting}" ng-click="sorting = !sorting"><span class="glyphicon glyphicon-refresh"></span></a></h2>
 				<ul class="nav toc cw-sortable" ng-class="{'cw-sorting': sorting}" cw-sort-on-updated="moveItem(parentGuid, guid, index)" cw-sort-nested="true" cw-sort-tolerance-element="> a">
 					<li class="cw-sorted cw-sorted-section" ng-repeat="section in rd.sections" data-guid="{{section.guid}}">
 						<a class="toc-section" cw-scroller="section.guid"><cw-icon type="move" class="draggable"></cw-icon> {{section.title}}</a>
@@ -89,5 +89,6 @@
 		<div class="col-md-1 doc-gutter"></div>
 	</div>
 	<div id="svn" class="svn" ng-include="'partials/svn.html'"></div>
+	<div id="help" ng-include="'partials/help.html'"></div>
 	<div ng-include="'partials/library.html'"></div>
 </div>

@@ -127,7 +127,11 @@ angular.module('Clockdoc.Controllers')
 	/**
 	 * Remembers a recent entry into LocalStorage¬
 	**/
-	function rememberEntry() {
+	function rememberEntry(result) {
+		if (result) {
+			$scope.setResult(result);
+		}
+
 		if (!$scope.result || !$scope.result.entryId) {
 			return;
 		}
@@ -219,8 +223,7 @@ angular.module('Clockdoc.Controllers')
 				}
 				try {
 					$scope.loadDoc(angular.fromJson(result.content));
-					$scope.setResult(result);
-					rememberEntry(true);
+					rememberEntry(result);
 				}
 				catch (e) {
 					console.error('file open error', e);

@@ -50,6 +50,9 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
 	color: #1E1E1E;
 	font-weight: normal;
 }
+dd {
+	margin-left: 1em;
+}
 
 .navbar-default .navbar-brand {
 	color: #D6D6D6;

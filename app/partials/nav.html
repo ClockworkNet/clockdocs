@@ -11,6 +11,9 @@
 	<cw-hotkey key="P" ctrl="true" action="print()"></cw-hotkey>
 	<cw-hotkey key="P" meta="true" action="print()"></cw-hotkey>
 
+	<cw-hotkey key="E" ctrl="true" action="export('word')"></cw-hotkey>
+	<cw-hotkey key="E" meta="true" action="export('word')"></cw-hotkey>
+
 	<div class="container-fluid">
 		<div class="navbar-right">
 			<div ng-if="alert.content">
@@ -60,6 +63,7 @@
 					</ul>
 				</li>
 				<li ng-show="rd"><a ng-click="print()"><cw-icon type="print"></cw-icon> Print</a></li>
+				<li><a data-toggle="modal" data-target="#help-modal"><cw-icon type="book"></cw-icon> Help</a></li>
 			</ul>
 		</div> <!-- /.navbar-collapse -->
 	</div> <!-- /.container-fluid -->
