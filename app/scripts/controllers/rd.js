@@ -325,18 +325,6 @@ angular.module('Clockdoc.Controllers')
 		});
 	};
 
-	$scope.sortStart = function() {
-		$scope.$apply(function() {
-			$scope.sorting = true;
-		});
-	};
-
-	$scope.sortStop = function() {
-		$scope.$apply(function() {
-			$scope.sorting = false;
-		});
-	};
-
 	$scope.addFile = function(result) {
 		if (!$scope.rd.files) {
 			$scope.rd.files = {};

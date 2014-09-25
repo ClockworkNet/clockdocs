@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('NavCtrl', ['$scope', '$filter', '$timeout', '$http', '$q', 'FileSystem', 'Storage', 'Svn', 'Platform', 'Ooxml', function($scope, $filter, $timeout, $http, $q, FileSystem, Storage, Svn, Platform, Ooxml) {
+.controller('NavCtrl', ['$scope', '$filter', '$timeout', '$http', '$q', 'FileSystem', 'LocalStorage', 'Ooxml', function($scope, $filter, $timeout, $http, $q, FileSystem, LocalStorage, Ooxml) {
 
 	var EXTENSION = 'cw';
 	var RECENT_ENTRIES = 'recent_entries';
@@ -88,10 +88,6 @@ angular.module('Clockdoc.Controllers')
 
 	$scope.recentEntries = [];
 
-	Platform.load($scope, 'platform');
-
-	var storage = new Storage();
-
 	function unique(a, key) {
 		var seen = {}, u = [];
 		a.forEach(function(item) {
@@ -106,7 +102,7 @@ angular.module('Clockdoc.Controllers')
 	}
 
 	// Load up the initial set of recent entries
-	storage.get(RECENT_ENTRIES)
+	LocalStorage.get(RECENT_ENTRIES)
 	.then(function(results) {
 		$scope.recentEntries = unique(results, 'entryId');
 	});
@@ -120,7 +116,7 @@ angular.module('Clockdoc.Controllers')
 		});
 		$scope.setWorking(false);
 		$scope.setResult(null);
-		storage.set(RECENT_ENTRIES, $scope.recentEntries);
+		LocalStorage.set(RECENT_ENTRIES, $scope.recentEntries);
 		console.error('file error', e);
 
 		if (e.message !== FileSystem.MESSAGE_USER_CANCELLED) {
@@ -129,7 +125,7 @@ angular.module('Clockdoc.Controllers')
 	}
 
 	/**
-	 * Remembers a recent entry into storage¬
+	 * Remembers a recent entry into LocalStorage¬
 	**/
 	function rememberEntry() {
 		if (!$scope.result || !$scope.result.entryId) {
@@ -154,7 +150,7 @@ angular.module('Clockdoc.Controllers')
 		// Trim the array of entries
 		entries = unique(entries, 'entryId').slice(0, RECENT_ENTRIES_MAX);
 
-		storage.set(RECENT_ENTRIES, entries)
+		LocalStorage.set(RECENT_ENTRIES, entries)
 			.then(function() {
 				$scope.recentEntries = entries;
 			});

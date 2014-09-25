@@ -1,6 +1,9 @@
 /*global angular:false */
 'use strict';
 
+/**
+ * Provides access to local storage
+**/
 angular.module('Clockdoc.Utils')
 .factory('Storage', ['$q', function($q) {
 	function Storage(type) {
@@ -52,4 +55,9 @@ angular.module('Clockdoc.Utils')
 	};
 
 	return Storage;
+}]);
+
+angular.module('Clockdoc.Utils')
+.factory('LocalStorage', ['Storage', function(Storage) {
+	return new Storage(chrome.storage.local);
 }]);

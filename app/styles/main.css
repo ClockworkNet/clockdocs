@@ -214,6 +214,15 @@ h3 {
 ul.cw-sortable .cw-sorted-empty {
 	height: 0px;
 }
+.doc-toc .btn .glyphicon {
+	-webkit-transition: all 0.2s ease-out;
+}
+a.cw-sorting {
+	color: #990000;
+}
+a.cw-sorting .glyphicon {
+	-webkit-transform: rotate(90deg);
+}
 ul.cw-sortable.cw-sorting li.cw-sorted-feature {
 	border: 1px solid #ccc;
 	margin: 1em;
@@ -342,7 +351,6 @@ section {
 .flag-title {
 	font-family: "ProximaNovaCondSemiBold",Helvetica,Arial,sans-serif;
 	display: block;
-	white-space: nowrap;
 }
 .flag-title:after {
 	content: ':';

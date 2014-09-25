@@ -8,7 +8,10 @@
 				<h4 class="modal-title">SVN Checkout</h4>
 			</div>
 			<div class="modal-body">
-				<input ng-model="svn.url" class="form-control" required />
+				<input ng-model="svn.url" class="form-control" required list="recentSvnUrls" />
+				<datalist id="recentSvnUrls">
+					<option value="{{u}}" ng-repeat="u in recentSvnUrls track by $index">{{u}}</option>
+				</datalist>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

@@ -2,14 +2,42 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('SvnCtrl', ['$scope', 'Svn', 'Platform', function($scope, Svn, Platform) {
+.controller('SvnCtrl', ['$scope', 'Svn', 'Platform', 'LocalStorage', function($scope, Svn, Platform, LocalStorage) {
 
-	Platform.load($scope, 'platform');
+	var RECENT_SVN_URLS = 'svn_recent_urls';
+	var RECENT_SVN_URL_MAX = 10;
 
-	/// SVN ///
 	$scope.svn = {
 		url: Svn.svnRoot
 	};
+
+	// Load up the saved urls
+	LocalStorage.get(RECENT_SVN_URLS)
+	.then(function(urls) {
+		$scope.recentSvnUrls = urls;
+	});
+
+	// Load platform information
+	Platform.load($scope, 'platform');
+
+	function rememberUrl() {
+		var url = $scope.svn && $scope.svn.url;
+		if (!url) {
+			return;
+		}
+
+		var urls = $scope.recentSvnUrls || [];
+		urls.splice(0, 0, url);
+		urls = urls.filter(function(e, i, a) {
+			return a.lastIndexOf(e) === i;
+		});
+		urls = urls.slice(0, RECENT_SVN_URL_MAX);
+
+		LocalStorage.set(RECENT_SVN_URLS, urls)
+		.then(function() {
+			$scope.recentSvnUrls = urls;
+		});
+	}
 
 	Svn.test().then(function(res) {
 		console.info(res);
@@ -31,9 +59,10 @@ angular.module('Clockdoc.Controllers')
 		$scope.setWorking(false);
 		$scope.setResult(result);
 		Svn.info(result.svnLocation.full)
-			.then(function(info) {
-				$scope.svn = info;
-			});
+		.then(function(info) {
+			$scope.svn = info;
+			rememberUrl(info.url);
+		});
 		try {
 			$scope.loadDoc(angular.fromJson(result.content));
 			$scope.unwarn();
