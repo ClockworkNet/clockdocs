@@ -8,10 +8,19 @@
 				<h4 class="modal-title">SVN Checkout</h4>
 			</div>
 			<div class="modal-body">
-				<input ng-model="svn.url" class="form-control" required list="recentSvnUrls" />
-				<datalist id="recentSvnUrls">
-					<option value="{{u}}" ng-repeat="u in recentSvnUrls track by $index">{{u}}</option>
-				</datalist>
+				<div class="input-group">
+					<span class="input-group-addon" ng-show="recentSvnUrls">
+						<div class="dropdown">
+							<span data-toggle="dropdown">
+								URL <span data-toggle="dropdown" class="caret"></span>:
+							</span>
+							<ul class="dropdown-menu">
+								<li ng-repeat="u in recentSvnUrls track by $index"><a title="{{u}}" ng-click="svn.url = u">{{u | shortPath:2}}</a></li>
+							</ul>
+						</div>
+					</span>
+					<input ng-model="svn.url" class="form-control" required />
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

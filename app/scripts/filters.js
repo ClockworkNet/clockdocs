@@ -30,4 +30,16 @@ angular.module('Clockdoc.Filters', ['Clockdoc.Utils'])
 		});
 	};
 })
+.filter('shortPath', function() {
+	return function(input, directories) {
+		if (typeof directories === 'undefined') {
+			directories = 0;
+		}
+		directories++;
+		var parts = input.split('/');
+		var offset = parts.length - directories;
+		var short =  parts.slice(offset);
+		return '.../' + short.join('/');
+	};
+})
 ;
