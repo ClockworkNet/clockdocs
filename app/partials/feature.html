@@ -4,6 +4,10 @@
 		<ul class="dropdown-menu">
 			<li><a ng-click="insertFeature(feature.features)"><cw-icon type="plus"></cw-icon> New Child Feature</a></li>
 
+			<li class="divider">
+			<li ng-show="!collapsed"><a ng-click="collapsed = true"><cw-icon type="collapse-up"></cw-icon> Collapse Content</a></li>
+			<li ng-show="collapsed"><a ng-click="collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Content</a></li>
+
 			<li class="divider"></li>
 			<li ng-repeat="ft in flagTypes"><a ng-click="insertFlag(feature.flags, ft.type)"><cw-icon type="flag"></cw-icon> New {{ft.name}}</a></li>
 
@@ -19,7 +23,7 @@
 	</div>
 	<div class="feature-title cw-counted-item" cw-editable ng-model="feature.title" id="{{feature.guid}}"></div>
 </div>
-<div class="feature-tags">
+<div ng-hide="collapsed" class="feature-tags">
 	<ul>
 		<li ng-repeat="tag in feature.tags">
 			<button ng-click="removeTag(feature, tag)" type="button" class="close">&times;</button>
@@ -27,11 +31,17 @@
 		</li>
 	</ul>
 </div>
-<div class="feature-content" id="{{feature.guid}}-content" ng-class="{'no-print':!feature.content.length}" text-angular ng-model="feature.content"></div>
-<div class="flags" id="{{feature.guid}}-flags" ng-include="'partials/flags.html'" ng-init="flags = feature.flags" />
+<div ng-hide="collapsed" class="feature-content" id="{{feature.guid}}-content" ng-class="{'no-print':!feature.content.length}" text-angular ng-model="feature.content"></div>
+<div ng-hide="collapsed" class="flags" id="{{feature.guid}}-flags" ng-include="'partials/flags.html'" ng-init="flags = feature.flags" />
+
+<div ng-show="collapsed" class="collapsed">
+	<div class="well slideout animated">
+		<a ng-click="collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Content</a>
+	</div>
+</div>
 
 <!-- "{{feature.title}}" Child Features -->
-<div class="cw-counted">
+<div ng-hide="collapsed" class="cw-counted">
 	<div class="feature level_{{$level}}" ng-repeat="feature in feature.features" ng-include="'partials/feature.html'" ng-init="$level = $level + 1;"></div>
 </div>
 <!-- /"{{feature.title}}" Child Features -->
