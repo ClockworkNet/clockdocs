@@ -8,6 +8,13 @@ angular.module('Clockdoc.Controllers')
 	var RECENT_ENTRIES = 'recent_entries';
 	var RECENT_ENTRIES_MAX = 5;
 
+	function saveFirst(nextAction) {
+		// @todo: add confirmation to a dialog on screen
+		$scope.rdChanged = true;
+		$scope.warn('Uh oh', 'You lost your work!');
+		nextAction();
+	}
+
 	function loadTemplate(key) {
 		var deferred = $q.defer();
 
@@ -145,19 +152,25 @@ angular.module('Clockdoc.Controllers')
 		var newEntry = {
 			entryId: $scope.result.entryId,
 			name: $scope.result.entry.name,
+			title: $scope.rd && $scope.rd.title,
 			date: new Date()
 		};
 
-		// Add the entry to the top
-		entries.splice(0, 0, newEntry);
+		$scope.result.getDisplayPath()
+		.then(function(path) {
+			newEntry.path = path;
 
-		// Trim the array of entries
-		entries = unique(entries, 'entryId').slice(0, RECENT_ENTRIES_MAX);
+			// Add the entry to the top
+			entries.splice(0, 0, newEntry);
 
-		LocalStorage.set(RECENT_ENTRIES, entries)
+			// Trim the array of entries
+			entries = unique(entries, 'path').slice(0, RECENT_ENTRIES_MAX);
+
+			LocalStorage.set(RECENT_ENTRIES, entries)
 			.then(function() {
 				$scope.recentEntries = entries;
 			});
+		});
 	}
 
 	function flattenDoc(doc) {
@@ -207,13 +220,20 @@ angular.module('Clockdoc.Controllers')
 	}
 
 	/// Filesystem Methods ///
-	$scope.create = function() {
+	$scope.create = function(skipCheck) {
+		if (!skipCheck && $scope.rdChanged) {
+			saveFirst($scope.create.bind(this, true));
+		}
 		var doc = $scope.getSampleDoc('rd');
 		$scope.loadDoc(doc);
 		$scope.setResult({});
 	};
 
-	$scope.open = function(entryId) {
+	$scope.open = function(entryId, skipCheck) {
+		if (!skipCheck && $scope.rdChanged) {
+			saveFirst($scope.open.bind(this, entryId, true));
+		}
+		var onError = forgetEntry.bind(null, entryId);
 		var readResult = function(result) {
 			FileSystem.read(result)
 			.then(function(result) {
@@ -229,10 +249,9 @@ angular.module('Clockdoc.Controllers')
 					console.error('file open error', e);
 					$scope.warn('Error', 'There is a problem with your file.');
 				}
-			});
+			})
+			.catch(onError);
 		};
-
-		var onError = forgetEntry.bind(null, entryId);
 		$scope.setWorking(true);
 		if (entryId) {
 			FileSystem.restore(entryId)

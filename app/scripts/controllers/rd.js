@@ -2,12 +2,13 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('RdCtrl', ['$scope', '$filter', '$timeout', 'Random', 'Scroll', 'Stylesheet', function($scope, $filter, $timeout, Random, Scroll, Stylesheet) {
+.controller('RdCtrl', ['$scope', '$filter', '$timeout', 'Random', 'Scroll', 'Stylesheet', 'Monitor', function($scope, $filter, $timeout, Random, Scroll, Stylesheet, Monitor) {
 
 	var ALERT_TIME = 5000;
 
 	$scope.rd = null;
 	$scope.sorting = false;
+	$scope.rdChanged = false;
 
 	var flagTypes = $scope.flagTypes = [
 		{
@@ -170,12 +171,27 @@ angular.module('Clockdoc.Controllers')
 		$scope.working = value;
 	};
 
+	$scope.watchForChange = function() {
+		$scope.rdChanged = false;
+
+		if ($scope.changeMonitor) {
+			$scope.changeMonitor.stop();
+		}
+
+		$scope.changeMonitor = new Monitor($scope, 'rd', 1000);
+		$scope.changeMonitor.start()
+		.then(function() {
+			$scope.rdChanged = true;
+		});
+	};
+
 	$scope.setRd = function(rd) {
 		$scope.rd = rd;
 	};
 
 	$scope.setResult = function(result) {
 		$scope.result = result;
+		$scope.watchForChange();
 	};
 
 	$scope.setSvnInstalled = function(value) {

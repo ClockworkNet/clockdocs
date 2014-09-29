@@ -47,12 +47,12 @@
 						<li ng-show="recentEntries" class="divider"></li>
 						<li ng-show="recentEntries" class="dropdown-header">Recent Files</li>
 						<li ng-repeat="re in recentEntries track by $index">
-							<a ng-click="open(re.entryId)"><cw-icon type="file"></cw-icon> {{re.name}}</a>
+							<a ng-click="open(re.entryId)" title="{{re.path}}""><cw-icon type="file"></cw-icon> {{re.title || re.name}}</a>
 						</li>
 					</ul>
 				</li>
 				<li class="dropdown" ng-show="rd">
-					<a class="dropdown-toggle" data-toggle="dropdown"><cw-icon type="floppy-disk"></cw-icon> Save<span class="caret"></span></a>
+					<a class="dropdown-toggle" data-toggle="dropdown"><cw-icon ng-hide="rdChanged" type="floppy-disk"></cw-icon><cw-icon ng-show="rdChanged" type="floppy-save"></cw-icon> Save<span class="caret"></span></a>
 					<ul class="dropdown-menu">
 						<li ng-show="result.entry.name"><a ng-click="save()"><cw-icon type="save"></cw-icon> Save to <em>{{result.entry.name}}</em></a></li>
 						<li ng-show="rd"><a ng-click="saveAs()"><cw-icon type="export"></cw-icon> Save As ...</a></li>
