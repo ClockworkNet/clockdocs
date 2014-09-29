@@ -14,7 +14,7 @@
 				<h2>Table of Contents <a class="btn" ng-class="{'cw-sorting': sorting}" ng-click="sorting = !sorting"><span class="glyphicon glyphicon-refresh"></span></a></h2>
 				<ul class="nav toc cw-sortable" ng-class="{'cw-sorting': sorting}" cw-sort-on-updated="moveItem(parentGuid, guid, index)" cw-sort-nested="true" cw-sort-tolerance-element="> a">
 					<li class="cw-sorted cw-sorted-section" ng-repeat="section in rd.sections" data-guid="{{section.guid}}">
-						<a class="toc-section" cw-scroller="section.guid"><cw-icon type="move" class="draggable"></cw-icon> {{section.title}}</a>
+						<a class="toc-section" cw-scroller="section.guid" cw-scroller-disabled="sorting"><cw-icon type="move" class="draggable"></cw-icon> {{section.title}}</a>
 						<ol class="nav nav-stacked cw-counted">
 							<li class="cw-sorted cw-sorted-feature" ng-repeat="feature in section.features" ng-include="'partials/toc.html'" data-guid="{{feature.guid}}" ng-init="$label = ($index + 1) + '.'"></li>
 						</ol>

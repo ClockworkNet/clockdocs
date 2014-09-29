@@ -8,17 +8,18 @@ angular.module('Clockdoc.Directives')
 .directive('cwScroller', ['Scroll', function(Scroll) {
 	return {
 		restrict: 'A',
+		scope: {
+			targetId: '=cwScroller',
+			disabled: '=cwScrollerDisabled'
+		},
 		link: function(scope, el, attrs) {
-			var targetId = null;
-
 			attrs.cwScrollerSource = el;
 
-			scope.$watch(attrs.cwScroller, function(value) {
-				targetId = value;
-			});
-
-			var scroll = function() {
-				Scroll.to(targetId, attrs);
+			var scroll = function(e) {
+				e.preventDefault();
+				if (!scope.disabled) {
+					Scroll.to(scope.targetId, attrs);
+				}
 			};
 
 			el.on('click', scroll);
