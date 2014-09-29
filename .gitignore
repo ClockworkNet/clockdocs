@@ -1,0 +1,10 @@
+*.vim
+.DS_Store
+.svn
+app/
+test/
+dist/
+node_modules/
+temp
+.tmp
+.sass-cache
