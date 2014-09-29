@@ -140,6 +140,7 @@ h3 {
 }
 .ta-root .ta-editor {
 	min-height: 2em;
+	width: 100%;
 	height: auto;
 	overflow: auto;
 }
@@ -172,6 +173,11 @@ h3 {
 
 	margin-right: .5em;
 	font-size: 0.8em;
+}
+
+.tilter .dropdown-toggle {
+	font-size: 1em;
+	color: rgb(167, 185, 207);
 }
 
 
@@ -393,7 +399,7 @@ section {
 .dropdown-menu {
 	display: block;
 	-webkit-transform-origin: top;
-	-webkit-transition: all 0.2s ease-out;
+	-webkit-transition: all 0.1s ease-out;
 	-webkit-transform: scaleY(0);
 }
 .open > .dropdown-menu {
