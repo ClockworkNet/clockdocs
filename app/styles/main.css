@@ -150,7 +150,7 @@ h3 {
 	display: block;
 }
 .ta-root.focussed .ta-editor {
-	height: 20em;
+
 }
 .ta-toolbar button {
 	height: 30px;
@@ -183,6 +183,8 @@ h3 {
 }
 .doc-toc .box-emp {
 	position: fixed;
+	height: 100%;
+	overflow: scroll;
 }
 @media (max-width: 991px) {
 	.doc-toc .box-emp {
