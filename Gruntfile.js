@@ -371,7 +371,7 @@ module.exports = function (grunt) {
             latest: {
                 options: {
                     archive: 'package/clockdocs-latest.zip'
-                 },
+                },
                 files: [{
                     expand: true,
                     cwd: 'dist/',

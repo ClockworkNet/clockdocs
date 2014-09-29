@@ -8,13 +8,6 @@ angular.module('Clockdoc.Controllers')
 	var RECENT_ENTRIES = 'recent_entries';
 	var RECENT_ENTRIES_MAX = 5;
 
-	function saveFirst(nextAction) {
-		// @todo: add confirmation to a dialog on screen
-		$scope.rdChanged = true;
-		$scope.warn('Uh oh', 'You lost your work!');
-		nextAction();
-	}
-
 	function loadTemplate(key) {
 		var deferred = $q.defer();
 
@@ -222,16 +215,17 @@ angular.module('Clockdoc.Controllers')
 	/// Filesystem Methods ///
 	$scope.create = function(skipCheck) {
 		if (!skipCheck && $scope.rdChanged) {
-			saveFirst($scope.create.bind(this, true));
+			return $scope.speedBump($scope.create.bind(this, true));
 		}
 		var doc = $scope.getSampleDoc('rd');
 		$scope.loadDoc(doc);
 		$scope.setResult({});
+		$scope.setWorking(false);
 	};
 
 	$scope.open = function(entryId, skipCheck) {
 		if (!skipCheck && $scope.rdChanged) {
-			saveFirst($scope.open.bind(this, entryId, true));
+			return $scope.speedBump($scope.open.bind(this, entryId, true));
 		}
 		var onError = forgetEntry.bind(null, entryId);
 		var readResult = function(result) {

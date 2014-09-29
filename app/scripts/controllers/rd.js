@@ -198,6 +198,13 @@ angular.module('Clockdoc.Controllers')
 		$scope.svnInstalled = value;
 	};
 
+	$scope.speedBump = function(nextAction) {
+		$scope.nextAction = nextAction;
+		$scope.rdChanged = true;
+		$('#speedBump').modal();
+		return false;
+	};
+
 	$scope.unwarn = function() {
 		$scope.alert = {};
 	};

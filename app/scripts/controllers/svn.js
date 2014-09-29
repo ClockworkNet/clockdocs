@@ -79,13 +79,19 @@ angular.module('Clockdoc.Controllers')
 		$scope.warn('Committed', 'changes committed to SVN', 'success');
 	}
 
-	$scope.openSvn = function() {
+	$scope.openSvn = function(skipCheck) {
+		if (!skipCheck && $scope.rdChanged) {
+			return $scope.speedBump($scope.openSvn.bind(this, true));
+		}
 		$scope.setWorking(true);
 		Svn.open($scope.svn.url)
 			.then(svnRead, svnError);
 	};
 
-	$scope.checkout = function() {
+	$scope.checkout = function(skipCheck) {
+		if (!skipCheck && $scope.rdChanged) {
+			return $scope.speedBump($scope.checkout.bind(this, true));
+		}
 		$scope.setWorking(true);
 		Svn.checkout($scope.svn.url)
 			.then(svnRead, svnError);
