@@ -341,7 +341,7 @@ module.exports = function (grunt) {
                 options: {
                     archive: function() {
                         var manifest = grunt.file.readJSON('app/manifest.json');
-                        return 'package/clockdocs min-' + manifest.version + '.zip';
+                        return 'package/clockdocs-' + manifest.version + '.zip';
                     }
                 },
                 files: [{
