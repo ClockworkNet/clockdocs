@@ -297,6 +297,23 @@ module.exports = function (grunt) {
                 cwd: '<%= config.app %>/styles',
                 dest: '.tmp/styles/',
                 src: '{,*/}*.css'
+            },
+            latest: {
+                expand: false,
+                dot: true,
+                cwd: 'package',
+                src: ['*.zip'],
+                dest: 'package/',
+                rename: function(dest, src) {
+                    var manifest = grunt.file.readJSON('app/manifest.json');
+                    var latest = 'clockdocs-' + manifest.version + '.zip';
+                    grunt.log.writeln(src);
+                    grunt.log.writeln(latest);
+                    if (latest === src) {
+                        return dest + 'clockdocs-latest.zip';
+                    }
+                    return dest + src;
+                },
             }
         },
 
@@ -344,6 +361,17 @@ module.exports = function (grunt) {
                         return 'package/clockdocs-' + manifest.version + '.zip';
                     }
                 },
+                files: [{
+                    expand: true,
+                    cwd: 'dist/',
+                    src: ['**'],
+                    dest: ''
+                }]
+            },
+            latest: {
+                options: {
+                    archive: 'package/clockdocs-latest.zip'
+                 },
                 files: [{
                     expand: true,
                     cwd: 'dist/',
@@ -400,7 +428,8 @@ module.exports = function (grunt) {
         'uglify',
         'copy:dist',
         'usemin',
-        'compress'
+        'compress:dist',
+        'compress:latest'
     ]);
 
     grunt.registerTask('default', [
