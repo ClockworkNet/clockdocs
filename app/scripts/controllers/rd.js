@@ -2,7 +2,10 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('RdCtrl', ['$scope', '$filter', '$timeout', 'Random', 'Scroll', 'Stylesheet', 'Monitor', function($scope, $filter, $timeout, Random, Scroll, Stylesheet, Monitor) {
+.controller('RdCtrl', ['$scope', '$filter', '$timeout', 'Random', 'Scroll', 'Stylesheet', 'Monitor', 'Platform', function($scope, $filter, $timeout, Random, Scroll, Stylesheet, Monitor, Platform) {
+
+	// Load platform information
+	Platform.load($scope, 'platform');
 
 	var ALERT_TIME = 5000;
 

@@ -516,3 +516,8 @@ section {
 	margin-top: 5px;
 	margin-bottom: 5px;
 }
+
+.panel-title {
+	display: block;
+	width: 100%;
+}

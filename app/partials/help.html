@@ -7,23 +7,55 @@
 			</div>
 			<div class="modal-body">
 				<p class="well">Welcome to Clockdocs, your friendly structured document editor.</p>
-				<h2>Hotkeys</h2>
-				<dl>
-					<dt>Ctrl+N</dt>
-					<dd>Create a new document</dd>
+				<div class="panel-group" id="help-accordion">
+					<div class="panel panel-info">
+						<div class="panel-heading">
+							<a class="panel-title" data-toggle="collapse" data-parent="#help-accordion" href="#help-hotkeys">Hotkeys</a>
+						</div>
+						<div class="panel-collapse collapse" id="help-hotkeys">
+							<div class="panel-body">
+								<dl>
+									<dt>Ctrl+N</dt>
+									<dd>Create a new document</dd>
 
-					<dt>Ctrl+O</dt>
-					<dd>Open a document</dd>
+									<dt>Ctrl+O</dt>
+									<dd>Open a document</dd>
 
-					<dt>Ctrl+S</dt>
-					<dd>Saves the current document</dd>
+									<dt>Ctrl+S</dt>
+									<dd>Saves the current document</dd>
 
-					<dt>Ctrl+P</dt>
-					<dd>Print the current document</dd>
+									<dt>Ctrl+P</dt>
+									<dd>Print the current document</dd>
 
-					<dt>Ctrl+E</dt>
-					<dd>Export the current document to Word</dd>
-				</dl>
+									<dt>Ctrl+E</dt>
+									<dd>Export the current document to Word</dd>
+								</dl>
+							</div>
+						</div>
+					</div>
+					<div ng-show="platform.mac" class="panel panel-info">
+						<div class="panel-heading">
+							<a class="panel-title" data-toggle="collapse" data-parent="#help-accordion" href="#help-file-associations">File Association</a>
+						</div>
+						<div class="panel-collapse collapse" id="help-file-associations">
+							<div class="panel-body">
+								<p>Hey! You're using a Mac. That means you can associate the 'cw' extension with Clockdocs.</p>
+								<ol>
+									<li>Open up a Chrome window</li>
+									<li>Enable the flag: <code>chrome://flags/#enable-apps-file-associations</code></li>
+									<li>Ctrl+click on a <em>*.cw</em> file</li>
+									<li>Choose "Open With" &gt; "Other"</li>
+									<li>Search for "clockdocs"</li>
+									<li>Change "Enable" to "All Applications"</li>
+									<li>Check "Always Open With"</li>
+									<li>Click "Home" when displayed the option</li>
+									<li>Find and select "Clockdocs" from the list of applications</li>
+									<li>Click "Open"</li>
+								</ol>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Okay</button>

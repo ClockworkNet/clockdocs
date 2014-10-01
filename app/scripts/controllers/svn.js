@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('SvnCtrl', ['$scope', 'Svn', 'Platform', 'LocalStorage', function($scope, Svn, Platform, LocalStorage) {
+.controller('SvnCtrl', ['$scope', 'Svn', 'LocalStorage', function($scope, Svn, LocalStorage) {
 
 	var RECENT_SVN_URLS = 'svn_recent_urls';
 	var RECENT_SVN_URL_MAX = 10;
@@ -16,9 +16,6 @@ angular.module('Clockdoc.Controllers')
 	.then(function(urls) {
 		$scope.recentSvnUrls = urls;
 	});
-
-	// Load platform information
-	Platform.load($scope, 'platform');
 
 	function rememberUrl() {
 		var url = $scope.svn && $scope.svn.url;
