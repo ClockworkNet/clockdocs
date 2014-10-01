@@ -32,6 +32,7 @@ angular.module('Clockdoc.Utils')
 	};
 
 	return {
+		Result: FileSystemResult,
 		MESSAGE_USER_CANCELLED: 'User cancelled',
 
 		/*

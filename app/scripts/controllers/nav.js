@@ -2,11 +2,21 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('NavCtrl', ['$scope', '$filter', '$timeout', '$http', '$q', 'FileSystem', 'LocalStorage', 'Ooxml', function($scope, $filter, $timeout, $http, $q, FileSystem, LocalStorage, Ooxml) {
+.controller('NavCtrl', ['$scope', '$filter', '$timeout', '$http', '$q', '$window', 'FileSystem', 'LocalStorage', 'Ooxml', function($scope, $filter, $timeout, $http, $q, $window, FileSystem, LocalStorage, Ooxml) {
 
 	var EXTENSION = 'cw';
 	var RECENT_ENTRIES = 'recent_entries';
 	var RECENT_ENTRIES_MAX = 5;
+
+	// Look for a file to open from the launch
+	$($window).on('load', function() {
+		if (!this.launchData || !this.launchData.entry) {
+			return;
+		}
+		var entry = this.launchData.entry;
+		var result = new FileSystem.Result(entry);
+		readResult(result);
+	});
 
 	function loadTemplate(key) {
 		var deferred = $q.defer();
@@ -106,6 +116,28 @@ angular.module('Clockdoc.Controllers')
 	.then(function(results) {
 		$scope.recentEntries = unique(results, 'entryId');
 	});
+
+	/*
+	 * Reads the FileSystemEntry result contents and sets it on the app
+	 */
+	function readResult(result) {
+		FileSystem.read(result)
+		.then(function(result) {
+			$scope.setWorking(false);
+			if (!result || !result.content) {
+				return;
+			}
+			try {
+				$scope.loadDoc(angular.fromJson(result.content));
+				rememberEntry(result);
+			}
+			catch (e) {
+				console.error('file open error', e);
+				$scope.warn('Error', 'There is a problem with your file.');
+			}
+		})
+		.catch(forgetEntry.bind(null, result.entryId));
+	}
 
 	/**
 	 *¬Forgets the specified entry and shows an error message
@@ -228,24 +260,6 @@ angular.module('Clockdoc.Controllers')
 			return $scope.speedBump($scope.open.bind(this, entryId, true));
 		}
 		var onError = forgetEntry.bind(null, entryId);
-		var readResult = function(result) {
-			FileSystem.read(result)
-			.then(function(result) {
-				$scope.setWorking(false);
-				if (!result || !result.content) {
-					return;
-				}
-				try {
-					$scope.loadDoc(angular.fromJson(result.content));
-					rememberEntry(result);
-				}
-				catch (e) {
-					console.error('file open error', e);
-					$scope.warn('Error', 'There is a problem with your file.');
-				}
-			})
-			.catch(onError);
-		};
 		$scope.setWorking(true);
 		if (entryId) {
 			FileSystem.restore(entryId)
