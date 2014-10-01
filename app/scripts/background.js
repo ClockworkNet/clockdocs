@@ -13,7 +13,7 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
 		if (!entry) {
 			return;
 		}
-		this.id = 'clockdocs' + entry.id;
+		this.id = entry.name;
 		this.entry = entry;
 	}
 
