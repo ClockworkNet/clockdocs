@@ -16,14 +16,6 @@
 	<cw-hotkey key="E" meta="true" action="export('word')"></cw-hotkey>
 
 	<div class="container-fluid">
-		<div class="navbar-right">
-			<div ng-if="alert.content">
-				<div class="alert alert-{{alert.type}} alert-dismissable">
-					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>	
-					<strong>{{alert.title}}</strong> {{alert.content}}
-				</div>
-			</div>
-		</div> <!-- /.navbar-right -->
 		<div class="navbar-header">
 			<span class="navbar-brand">Clockdocs
 				<i ng-show="working" class="fa fa-spinner fa-spin"></i>
@@ -48,7 +40,7 @@
 						<li ng-show="recentEntries" class="divider"></li>
 						<li ng-show="recentEntries" class="dropdown-header">Recent Files</li>
 						<li ng-repeat="re in recentEntries track by $index">
-							<a ng-click="open(re.entryId)" title="{{re.path}}""><cw-icon type="file"></cw-icon> {{re.title || re.name}}</a>
+							<a ng-click="open(re.entryId)" title="{{re.path}}"><cw-icon type="file"></cw-icon> {{re.title || re.name}}</a>
 						</li>
 					</ul>
 				</li>
@@ -65,6 +57,18 @@
 				</li>
 				<li ng-show="rd"><a ng-click="print()"><cw-icon type="print"></cw-icon> Print</a></li>
 				<li><a data-toggle="modal" data-target="#help-modal"><cw-icon type="book"></cw-icon> Help</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li ng-show="alert.content">
+					<div class="alert alert-{{alert.type}} alert-dismissable">
+						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>	
+						<strong>{{alert.title}}</strong> {{alert.content}}
+					</div>
+				</li>
+				<li ng-show="rd" class="btn-group">
+					<a class="btn btn-link" ng-class="{active: readonly}" title="Switch to Read-Only Mode" ng-click="setReadonly(true)"><cw-icon type="lock"></cw-icon></a>
+					<a class="btn btn-link" ng-class="{active: !readonly}" title="Switch to Edit Mode" ng-click="setReadonly(false)"><cw-icon type="edit"></cw-icon></a>
+				</li>
 			</ul>
 		</div> <!-- /.navbar-collapse -->
 	</div> <!-- /.container-fluid -->

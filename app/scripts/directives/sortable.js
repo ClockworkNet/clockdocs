@@ -24,6 +24,11 @@ angular.module('Clockdoc.Directives')
 
 			var dragParentGuid = null;
 
+			scope.$watch('readonly', function() {
+				var toggle = scope.readonly ? 'enable' : 'disable';
+				$(el).sortable(toggle);
+			});
+
 			var getParentGuid = function(item) {
 				var parent = item.parent();
 				while (parent.length) {

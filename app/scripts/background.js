@@ -18,7 +18,9 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
 	}
 
 	function launch(data) {
-		var opts = {};
+		var opts = {
+			'state': 'maximized'
+		};
 		if (typeof data !== 'undefined') {
 			opts.id = data.id;
 		}

@@ -120,18 +120,18 @@ h3 {
 	cursor: hand;
 }
 
-[cw-editable], .ta-editor {
+[contenteditable=true], .ta-editor {
 	margin: 1px;
 	padding-left: 0;
 	padding-right: 0;
 }
 
-[cw-editable]:hover, .ta-editor:hover {
+[contenteditable=true]:hover:not([disabled]), .ta-root:not(.disabled) .ta-editor:hover {
 	box-shadow: 0 0 10px #9ecaed;
 	cursor: text;
 }
 
-[cw-editable]:focus, .ta-editor:focus {
+[contenteditable=true]:focus:not([disabled]), .ta-root:not(.disabled) .ta-editor:focus {
 	border: solid 1px #00c;
 }
 
@@ -147,7 +147,7 @@ h3 {
 .ta-root .ta-toolbar {
 	display: none;
 }
-.ta-root.focussed .ta-toolbar {
+.ta-root.focussed:not(.disabled) .ta-toolbar {
 	display: block;
 }
 .ta-root.focussed .ta-editor {

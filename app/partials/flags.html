@@ -2,7 +2,7 @@
 	<div ng-repeat="flag in flags" class="flag flag-{{flag.type}}" id="{{flag.guid}}" data-guid="{{flag.guid}}">
 		<div class="row">
 			<div class="col-sm-2">
-				<div class="dropdown pull-left tilter">
+				<div ng-hide="readonly" class="dropdown pull-left tilter">
 					<a class="btn dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></a>
 					<ul class="dropdown-menu">
 						<li><a class="handle pull-left"><cw-icon type="move draggable"></cw-icon> Drag Me</a></li>

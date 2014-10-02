@@ -1,5 +1,5 @@
 <div class="feature-header">
-	<div class="dropdown pull-left tilter">
+	<div ng-hide="readonly" class="dropdown pull-left tilter">
 		<a class="btn dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></a>
 		<ul class="dropdown-menu">
 			<li><a ng-click="insertFeature(feature.features)"><cw-icon type="plus"></cw-icon> New Child Feature</a></li>
@@ -31,7 +31,7 @@
 		</li>
 	</ul>
 </div>
-<div ng-hide="collapsed" class="feature-content" id="{{feature.guid}}-content" ng-class="{'no-print':!feature.content.length}" text-angular ng-model="feature.content"></div>
+<div ng-hide="collapsed || (readonly && !feature.content.length)" class="feature-content" id="{{feature.guid}}-content" ng-class="{'no-print':!feature.content.length}" text-angular ta-disabled="readonly" ng-model="feature.content"></div>
 <div ng-hide="collapsed" class="flags" id="{{feature.guid}}-flags" ng-include="'partials/flags.html'" ng-init="flags = feature.flags" />
 
 <div ng-show="collapsed" class="collapsed">

@@ -8,16 +8,26 @@ angular.module('Clockdoc.Directives')
 		restrict: 'A',
 		require: '?ngModel',
 		link: function($scope, el, attrs, ngModel) {
-			el.attr('contenteditable', true);
 			if (!ngModel) {return;}
+
+			if (!$scope.readonly) {
+				el.attr('contenteditable', true);
+			}
+
+			$scope.$watch('readonly', function() {
+				el.attr('contenteditable', !$scope.readonly);
+			});
+
 			ngModel.$render = function() {
 				el.html(ngModel.$viewValue || '');
 			};
+
 			var update = function() {
 				$scope.$apply(function() {
 					ngModel.$setViewValue(el.html());
 				});
 			};
+
 			el.on('blur keyup change', update);
 		}
 	};

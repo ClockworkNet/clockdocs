@@ -404,4 +404,8 @@ angular.module('Clockdoc.Controllers')
 		if (!$scope.rd.revisions) {return;}
 		$scope.rd.revisions.splice(i, 1);
 	};
+
+	$scope.setReadonly = function(value) {
+		$scope.readonly = value;
+	};
 }]);

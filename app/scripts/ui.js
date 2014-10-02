@@ -26,7 +26,6 @@ angular.module('Clockdoc.Utils')
 
 			$('body').animate({scrollTop: destination}, time, function() {
 				targetEl.focus();
-				document.execCommand('selectAll', false, null);
 			});
 		}, delay);
 

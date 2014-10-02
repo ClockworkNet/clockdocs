@@ -11,7 +11,7 @@
 	<div class="row doc-container" ng-show="rd">
 		<div class="col-md-3 doc-toc">
 			<div class="box-emp">
-				<h2>Table of Contents <a class="btn" ng-class="{'cw-sorting': sorting}" ng-click="sorting = !sorting"><span class="glyphicon glyphicon-refresh"></span></a></h2>
+				<h2>Table of Contents <a class="btn" ng-hide="readonly" ng-class="{'cw-sorting': sorting}" ng-click="sorting = !sorting"><span class="glyphicon glyphicon-refresh"></span></a></h2>
 				<ul class="nav toc cw-sortable" ng-class="{'cw-sorting': sorting}" cw-sort-on-updated="moveItem(parentGuid, guid, index)" cw-sort-nested="true" cw-sort-tolerance-element="> a">
 					<li class="cw-sorted cw-sorted-section" ng-repeat="section in rd.sections" data-guid="{{section.guid}}">
 						<a class="toc-section" cw-scroller="section.guid" cw-scroller-disabled="sorting"><cw-icon type="move" class="draggable"></cw-icon> {{section.title}}</a>
@@ -38,7 +38,7 @@
 			</table>
 			<table class="table table-striped revisions">
 				<thead>
-					<th></th>
+					<th ng-hide="readonly"></th>
 					<th width="10%">Revision</th>
 					<th width="20%">Date</th>
 					<th width="60%">Notes</th>
@@ -46,14 +46,14 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="rev in rd.revisions track by $index">
-						<td style="vertical-align: middle"><a ng-click="removeRevision($index)"><i class="glyphicon glyphicon-trash"></i></a></td>
+						<td ng-hide="readonly" style="vertical-align: middle"><a ng-click="removeRevision($index)"><i class="glyphicon glyphicon-trash"></i></a></td>
 						<td ng-model="rev.revision" cw-editable></td>
 						<td ng-model="rev.date" cw-editable></td>
 						<td ng-model="rev.notes" cw-editable></td>
 						<td ng-model="rev.author" cw-editable></td>
 					</tr>
 				</tbody>
-				<tfoot>
+				<tfoot ng-hide="readonly">
 					<td colspan="100%">
 						<a class="btn btn-link" ng-click="addRevision()"><cw-icon type="plus"></cw-icon> New Revision</a> 
 					</td>
@@ -61,7 +61,7 @@
 			</table>
 
 			<section ng-repeat="section in rd.sections">
-				<div class="dropdown pull-left tilter">
+				<div ng-hide="readonly" class="dropdown pull-left tilter">
 					<a class="btn dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></a>
 					<ul class="dropdown-menu">
 						<li><a ng-click="insertFeature(section.features)"><cw-icon type="plus"></cw-icon> New Feature</a></li>
@@ -80,7 +80,7 @@
 					</ul>
 				</div>
 				<div class="section-title" cw-editable id="{{section.guid}}" ng-model="section.title"></div>
-				<div ng-hide="collapsed" class="section-content" text-angular ng-class="{'no-print':!feature.content.length}" ng-model="section.content"></div>
+				<div ng-hide="collapsed || (readonly && !section.content.length)" class="section-content" text-angular ta-disabled="readonly" ng-class="{'no-print':!feature.content.length}" ng-model="section.content"></div>
 				<div ng-hide="collapsed" class="flags" ng-include="'partials/flags.html'" ng-init="flags = section.flags" />
 				<div ng-hide="collapsed" class="features cw-counted">
 					<div class="feature level_0" ng-repeat="feature in section.features" ng-include="'partials/feature.html'" ng-init="$level = 0"></div>
@@ -94,7 +94,7 @@
 
 				<hr />
 			</section>
-			<div class="well slideout animated">
+			<div ng-hide="readonly" class="well slideout animated">
 				<a ng-click="insertSection(rd.sections.length)"><cw-icon type="th-large"></cw-icon> New Section</a>
 			</div>
 		</div> <!-- /.doc-content -->
