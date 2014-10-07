@@ -191,6 +191,7 @@ h3 {
 	position: fixed;
 	height: 100%;
 	overflow: scroll;
+	padding-bottom: 20%;
 }
 @media (max-width: 991px) {
 	.doc-toc .box-emp {
