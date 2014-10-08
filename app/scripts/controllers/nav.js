@@ -113,7 +113,7 @@ angular.module('Clockdoc.Controllers')
 				$scope.warn('Error', 'There is a problem with your file.');
 			}
 		})
-		.catch($scope.forgetResult.bind(null, result.entryId));
+		.catch($scope.forgetResult.bind(null, result));
 	}
 
 	function flattenDoc(doc) {
@@ -172,12 +172,26 @@ angular.module('Clockdoc.Controllers')
 		$scope.setResult({});
 	};
 
-	$scope.open = function(entryId, skipCheck) {
+	$scope.open = function(remembered, skipCheck) {
 		if (!skipCheck && $scope.rdChanged) {
-			return $scope.speedBump($scope.open.bind(this, entryId, true));
+			return $scope.speedBump($scope.open.bind(this, remembered, true));
 		}
-		var onError = $scope.forgetResult.bind(null, entryId);
+
+		var result = remembered && remembered.result;
+		var entryId = result && result.entryId;
+
+		var onError = function(e) {
+			$scope.setWorking(false);
+			$scope.forgetResult(result);
+			$scope.setResult(null);
+			if (e.message !== FileSystem.MESSAGE_USER_CANCELLED) {
+				console.error(e);
+				$scope.warn('Error', 'An error occurred.');
+			}
+		};
+
 		$scope.setWorking(true);
+
 		if (entryId) {
 			FileSystem.restore(entryId)
 			.then(readResult, onError);
@@ -206,6 +220,7 @@ angular.module('Clockdoc.Controllers')
 		var content = angular.toJson($scope.rd, true);
 		FileSystem.save($scope.result.entryId, content)
 			.then($scope.rememberResult, errMsg)
+			.then($scope.watchForChange, errMsg)
 			.then(showMsg);
 	};
 
@@ -215,7 +230,8 @@ angular.module('Clockdoc.Controllers')
 		var showMsg = $scope.warn.bind(this, 'Saved!', name, 'info');
 		var errMsg = $scope.warn.bind(this, 'Error!', name + ' could not be saved');
 		FileSystem.saveAs(name, EXTENSION, angular.toJson(rd, true))
-			.then($scope.rememberResult, errMsg)
+			.then($scope.setResult, errMsg)
+			.then($scope.watchForChange, errMsg)
 			.then(showMsg);
 	};
 

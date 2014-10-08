@@ -40,7 +40,7 @@
 						<li ng-show="recentEntries" class="divider"></li>
 						<li ng-show="recentEntries" class="dropdown-header">Recent Files</li>
 						<li ng-repeat="re in recentEntries track by $index">
-							<a ng-click="open(re.entryId)" title="{{re.path}}">
+							<a ng-click="open(re)" title="{{re.path}}">
 								<cw-icon type="file"></cw-icon> {{re.title || re.name}}
 								<em ng-show="re.result && re.result.svnLocation">(SVN checkout)</em>
 							</a>

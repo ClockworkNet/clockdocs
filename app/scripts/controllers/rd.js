@@ -11,8 +11,13 @@ angular.module('Clockdoc.Controllers')
 	var RECENT_ENTRIES_MAX = 10;
 	var ALERT_TIME = 5000;
 
+	/* The in-memory file being manipulated */
 	$scope.rd = null;
-	$scope.sorting = false;
+
+	/* A refenence to the file's source (filesystem and/or svn) */
+	$scope.result = null;
+
+	/* Tracks whether the rd has changed */
 	$scope.rdChanged = false;
 
 	var flagTypes = $scope.flagTypes = [
@@ -207,7 +212,7 @@ angular.module('Clockdoc.Controllers')
 		var seen = {}, u = [];
 		a.forEach(function(item) {
 			var value = item[key];
-			if (seen[value]) {
+			if (!value || seen[value]) {
 				return;
 			}
 			seen[value] = 1;
@@ -219,24 +224,18 @@ angular.module('Clockdoc.Controllers')
 	// Load up the initial set of recent entries
 	LocalStorage.get(RECENT_ENTRIES)
 	.then(function(results) {
-		$scope.recentEntries = unique(results, 'entryId');
+		$scope.recentEntries = unique(results, 'path');
 	});
 
 	/**
 	 *¬Forgets the specified entry and shows an error message
 	**/
-	$scope.forgetResult = function(entryId, e) {
+	$scope.forgetResult = function(result) {
+		var path = result && result.path;
 		$scope.recentEntries = $scope.recentEntries.filter(function(r) {
-			return r.entryId !== entryId;
+			return r.path !== path;
 		});
-		$scope.setWorking(false);
-		$scope.setResult(null);
 		LocalStorage.set(RECENT_ENTRIES, $scope.recentEntries);
-
-		if (e) {
-			console.error('file error', e);
-			$scope.warn('Error', e.message);
-		}
 	};
 
 	/**
@@ -254,7 +253,6 @@ angular.module('Clockdoc.Controllers')
 		}
 
 		var newEntry = {
-			entryId: result.entryId,
 			name: result.entry.name,
 			title: $scope.rd && $scope.rd.title,
 			result: result,
