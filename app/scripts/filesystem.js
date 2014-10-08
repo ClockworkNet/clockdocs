@@ -13,12 +13,31 @@ angular.module('Clockdoc.Utils')
 	}
 
 	function FileSystemResult(entry, entryId) {
-		entryId = entryId || chrome.fileSystem.retainEntry(entry);
 		this.entry = entry;
-		this.entryId = entryId;
+		if (entry && entryId) {
+			this.entry.entryId = entryId;
+		}
 		this.event = null;
 		this.content = null;
 	}
+
+	Object.defineProperty(FileSystemResult.prototype, 'entryId', {
+		get: function() {
+			if (!this.entry) {
+				return null;
+			}
+			if (!this.entry.entryId) {
+				this.entry.entryId = chrome.fileSystem.retainEntry(this.entry);
+			}
+			return this.entry.entryId;
+		},
+		set: function(id) {
+			if (!this.entry) {
+				this.entry = {};
+			}
+			this.entry.entryId = id;
+		}
+	});
 
 	FileSystemResult.prototype.getDisplayPath = function() {
 		var deferred = $q.defer();
@@ -197,8 +216,7 @@ angular.module('Clockdoc.Utils')
 			var startWrite = function() {
 				var writer = this;
 				writer.onwriteend = function() {
-					var entryId = chrome.fileSystem.retainEntry(entry);
-					var result = new FileSystemResult(entry, entryId);
+					var result = new FileSystemResult(entry);
 					result.writer = writer;
 					result.content = data;
 

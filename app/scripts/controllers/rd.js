@@ -2,11 +2,13 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('RdCtrl', ['$scope', '$filter', '$timeout', 'Random', 'Scroll', 'Stylesheet', 'Monitor', 'Platform', function($scope, $filter, $timeout, Random, Scroll, Stylesheet, Monitor, Platform) {
+.controller('RdCtrl', ['$scope', '$filter', '$timeout', 'Random', 'Scroll', 'Stylesheet', 'Monitor', 'Platform', 'LocalStorage', function($scope, $filter, $timeout, Random, Scroll, Stylesheet, Monitor, Platform, LocalStorage) {
 
 	// Load platform information
 	Platform.load($scope, 'platform');
 
+	var RECENT_ENTRIES = 'recent_entries';
+	var RECENT_ENTRIES_MAX = 10;
 	var ALERT_TIME = 5000;
 
 	$scope.rd = null;
@@ -194,7 +196,86 @@ angular.module('Clockdoc.Controllers')
 
 	$scope.setResult = function(result) {
 		$scope.result = result;
+		$scope.working = false;
+		if (result && result.entryId) {
+			$scope.rememberResult(result);
+		}
 		$scope.watchForChange();
+	};
+
+	function unique(a, key) {
+		var seen = {}, u = [];
+		a.forEach(function(item) {
+			var value = item[key];
+			if (seen[value]) {
+				return;
+			}
+			seen[value] = 1;
+			u.push(item);
+		});
+		return u;
+	}
+
+	// Load up the initial set of recent entries
+	LocalStorage.get(RECENT_ENTRIES)
+	.then(function(results) {
+		$scope.recentEntries = unique(results, 'entryId');
+	});
+
+	/**
+	 *¬Forgets the specified entry and shows an error message
+	**/
+	$scope.forgetResult = function(entryId, e) {
+		$scope.recentEntries = $scope.recentEntries.filter(function(r) {
+			return r.entryId !== entryId;
+		});
+		$scope.setWorking(false);
+		$scope.setResult(null);
+		LocalStorage.set(RECENT_ENTRIES, $scope.recentEntries);
+
+		if (e) {
+			console.error('file error', e);
+			$scope.warn('Error', e.message);
+		}
+	};
+
+	/**
+	 * Remembers a recent entry into LocalStorage¬
+	**/
+	$scope.rememberResult = function(result) {
+		if (!result || !result.entryId) {
+			return;
+		}
+
+		var entries = $scope.recentEntries;
+
+		if (!entries) {
+			entries = [];
+		}
+
+		var newEntry = {
+			entryId: result.entryId,
+			name: result.entry.name,
+			title: $scope.rd && $scope.rd.title,
+			result: result,
+			date: new Date()
+		};
+
+		result.getDisplayPath()
+		.then(function(path) {
+			newEntry.path = path;
+
+			// Add the entry to the top
+			entries.splice(0, 0, newEntry);
+
+			// Trim the array of entries
+			entries = unique(entries, 'path').slice(0, RECENT_ENTRIES_MAX);
+
+			LocalStorage.set(RECENT_ENTRIES, entries)
+			.then(function() {
+				$scope.recentEntries = entries;
+			});
+		});
 	};
 
 	$scope.setSvnInstalled = function(value) {

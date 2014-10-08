@@ -8,7 +8,7 @@ angular.module('Clockdoc.Controllers')
 	var RECENT_SVN_URL_MAX = 10;
 
 	$scope.svn = {
-		url: Svn.svnRoot
+		url: Svn.root
 	};
 
 	// Load up the saved urls
@@ -53,7 +53,6 @@ angular.module('Clockdoc.Controllers')
 	function svnRead(result) {
 		console.info('Read from SVN', result);
 
-		$scope.setWorking(false);
 		$scope.setResult(result);
 		Svn.info(result.svnLocation.full)
 		.then(function(info) {
@@ -71,7 +70,6 @@ angular.module('Clockdoc.Controllers')
 	}
 
 	function svnCommitted(result) {
-		$scope.setWorking(false);
 		$scope.setResult(result);
 		$scope.warn('Committed', 'changes committed to SVN', 'success');
 	}
@@ -110,5 +108,11 @@ angular.module('Clockdoc.Controllers')
 		$scope.result.content = angular.toJson($scope.rd, true);
 		Svn.commit($scope.result, $scope.svn.message)
 			.then(svnCommitted, svnError);
+	};
+
+	$scope.update = function() {
+		$scope.setWorking(true);
+		Svn.update($scope.result)
+			.then(svnRead, svnError);
 	};
 }]);

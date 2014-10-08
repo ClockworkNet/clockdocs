@@ -2,11 +2,9 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('NavCtrl', ['$scope', '$filter', '$timeout', '$http', '$q', '$window', 'FileSystem', 'LocalStorage', 'Ooxml', function($scope, $filter, $timeout, $http, $q, $window, FileSystem, LocalStorage, Ooxml) {
+.controller('NavCtrl', ['$scope', '$filter', '$timeout', '$http', '$q', '$window', 'FileSystem', 'Ooxml', function($scope, $filter, $timeout, $http, $q, $window, FileSystem, Ooxml) {
 
 	var EXTENSION = 'cw';
-	var RECENT_ENTRIES = 'recent_entries';
-	var RECENT_ENTRIES_MAX = 5;
 
 	// Look for a file to open from the launch
 	$($window).on('load', function() {
@@ -96,27 +94,6 @@ angular.module('Clockdoc.Controllers')
 		}
 	};
 
-	$scope.recentEntries = [];
-
-	function unique(a, key) {
-		var seen = {}, u = [];
-		a.forEach(function(item) {
-			var value = item[key];
-			if (seen[value]) {
-				return;
-			}
-			seen[value] = 1;
-			u.push(item);
-		});
-		return u;
-	}
-
-	// Load up the initial set of recent entries
-	LocalStorage.get(RECENT_ENTRIES)
-	.then(function(results) {
-		$scope.recentEntries = unique(results, 'entryId');
-	});
-
 	/*
 	 * Reads the FileSystemEntry result contents and sets it on the app
 	 */
@@ -129,73 +106,14 @@ angular.module('Clockdoc.Controllers')
 			}
 			try {
 				$scope.loadDoc(angular.fromJson(result.content));
-				rememberEntry(result);
+				$scope.setResult(result);
 			}
 			catch (e) {
 				console.error('file open error', e);
 				$scope.warn('Error', 'There is a problem with your file.');
 			}
 		})
-		.catch(forgetEntry.bind(null, result.entryId));
-	}
-
-	/**
-	 *¬Forgets the specified entry and shows an error message
-	**/
-	function forgetEntry(entryId, e) {
-		$scope.recentEntries = $scope.recentEntries.filter(function(r) {
-			return r.entryId !== entryId;
-		});
-		$scope.setWorking(false);
-		$scope.setResult(null);
-		LocalStorage.set(RECENT_ENTRIES, $scope.recentEntries);
-		console.error('file error', e);
-
-		if (e.message !== FileSystem.MESSAGE_USER_CANCELLED) {
-			$scope.warn('Error', 'There was a problem opening your file.');
-		}
-	}
-
-	/**
-	 * Remembers a recent entry into LocalStorage¬
-	**/
-	function rememberEntry(result) {
-		if (result) {
-			$scope.setResult(result);
-		}
-
-		if (!$scope.result || !$scope.result.entryId) {
-			return;
-		}
-
-		var entries = $scope.recentEntries;
-
-		if (!entries) {
-			entries = [];
-		}
-
-		var newEntry = {
-			entryId: $scope.result.entryId,
-			name: $scope.result.entry.name,
-			title: $scope.rd && $scope.rd.title,
-			date: new Date()
-		};
-
-		$scope.result.getDisplayPath()
-		.then(function(path) {
-			newEntry.path = path;
-
-			// Add the entry to the top
-			entries.splice(0, 0, newEntry);
-
-			// Trim the array of entries
-			entries = unique(entries, 'path').slice(0, RECENT_ENTRIES_MAX);
-
-			LocalStorage.set(RECENT_ENTRIES, entries)
-			.then(function() {
-				$scope.recentEntries = entries;
-			});
-		});
+		.catch($scope.forgetResult.bind(null, result.entryId));
 	}
 
 	function flattenDoc(doc) {
@@ -252,14 +170,13 @@ angular.module('Clockdoc.Controllers')
 		var doc = $scope.getSampleDoc('rd');
 		$scope.loadDoc(doc);
 		$scope.setResult({});
-		$scope.setWorking(false);
 	};
 
 	$scope.open = function(entryId, skipCheck) {
 		if (!skipCheck && $scope.rdChanged) {
 			return $scope.speedBump($scope.open.bind(this, entryId, true));
 		}
-		var onError = forgetEntry.bind(null, entryId);
+		var onError = $scope.forgetResult.bind(null, entryId);
 		$scope.setWorking(true);
 		if (entryId) {
 			FileSystem.restore(entryId)
@@ -288,7 +205,7 @@ angular.module('Clockdoc.Controllers')
 		var errMsg = $scope.warn.bind(this, 'Error!', $scope.result.entry.name + ' could not be saved');
 		var content = angular.toJson($scope.rd, true);
 		FileSystem.save($scope.result.entryId, content)
-			.then(rememberEntry, errMsg)
+			.then($scope.rememberResult, errMsg)
 			.then(showMsg);
 	};
 
@@ -298,7 +215,7 @@ angular.module('Clockdoc.Controllers')
 		var showMsg = $scope.warn.bind(this, 'Saved!', name, 'info');
 		var errMsg = $scope.warn.bind(this, 'Error!', name + ' could not be saved');
 		FileSystem.saveAs(name, EXTENSION, angular.toJson(rd, true))
-			.then(rememberEntry, errMsg)
+			.then($scope.rememberResult, errMsg)
 			.then(showMsg);
 	};
 

@@ -40,10 +40,14 @@
 						<li ng-show="recentEntries" class="divider"></li>
 						<li ng-show="recentEntries" class="dropdown-header">Recent Files</li>
 						<li ng-repeat="re in recentEntries track by $index">
-							<a ng-click="open(re.entryId)" title="{{re.path}}"><cw-icon type="file"></cw-icon> {{re.title || re.name}}</a>
+							<a ng-click="open(re.entryId)" title="{{re.path}}">
+								<cw-icon type="file"></cw-icon> {{re.title || re.name}}
+								<em ng-show="re.result && re.result.svnLocation">(SVN checkout)</em>
+							</a>
 						</li>
 					</ul>
 				</li>
+				<li ng-show="rd && result.svnLocation && result.localLocation"><a data-toggle="modal" data-target="#svn-update"><cw-icon type="cloud-upload"></cw-icon> Update</a></li>
 				<li class="dropdown" ng-show="rd">
 					<a class="dropdown-toggle" data-toggle="dropdown"><cw-icon ng-hide="rdChanged" type="floppy-disk"></cw-icon><cw-icon ng-show="rdChanged" type="floppy-save"></cw-icon> Save<span class="caret"></span></a>
 					<ul class="dropdown-menu">

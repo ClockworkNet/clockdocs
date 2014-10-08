@@ -31,6 +31,26 @@
 	</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<div class="modal" id="svn-update">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Update from SVN</h4>
+			</div>
+			<div class="modal-body">
+				<p>Would you like to update your local copy with the latest version from SVN?</p>
+				<strong>Local Revision:</strong>
+				<pre>{{svn.url}}@{{svn.revision}}</pre>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-primary btn-action" data-dismiss="modal" ng-click="update()"><cw-icon type="cloud-upload"></cw-icon> Yes! Update Me.</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <div class="modal" id="svn-form-commit">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -40,7 +60,7 @@
 			</div>
 			<div class="modal-body">
 				<div class="input-group">
-					<input ng-model="svn.url" class="form-control" placeholder="svn+ssh://svn.pozitronic.com/svnroot/" />
+					<input ng-model="svn.url" class="form-control" placeholder="svn.url" />
 					<span class="input-group-addon">@{{svn.revision}}</span>
 				</div>
 				<textarea ng-model="svn.message" class="form-control" placeholder="Enter a commit message" required></textarea>
