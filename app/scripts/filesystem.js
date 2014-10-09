@@ -13,31 +13,27 @@ angular.module('Clockdoc.Utils')
 	}
 
 	function FileSystemResult(entry, entryId) {
-		this.entry = entry;
-		if (entry && entryId) {
-			this.entry.entryId = entryId;
-		}
+		this.setEntry(entry, entryId);
 		this.event = null;
 		this.content = null;
 	}
 
-	Object.defineProperty(FileSystemResult.prototype, 'entryId', {
-		get: function() {
-			if (!this.entry) {
-				return null;
-			}
-			if (!this.entry.entryId) {
-				this.entry.entryId = chrome.fileSystem.retainEntry(this.entry);
-			}
-			return this.entry.entryId;
-		},
-		set: function(id) {
-			if (!this.entry) {
-				this.entry = {};
-			}
-			this.entry.entryId = id;
+	FileSystemResult.prototype.setEntry = function(entry, entryId) {
+		this.entry = entry;
+		if (entryId) {
+			this.entryId = entryId;
 		}
-	});
+		else {
+			this.retainEntry();
+		}
+	}
+
+	FileSystemResult.prototype.retainEntry = function() {
+		if (this.entry) {
+			this.entryId = chrome.fileSystem.retainEntry(this.entry);
+		}
+		return this.entryId;
+	};
 
 	FileSystemResult.prototype.getDisplayPath = function() {
 		var deferred = $q.defer();

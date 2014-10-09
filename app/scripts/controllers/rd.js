@@ -209,6 +209,9 @@ angular.module('Clockdoc.Controllers')
 	};
 
 	function unique(a, key) {
+		if (!a || !a.forEach) {
+			return [];
+		}
 		var seen = {}, u = [];
 		a.forEach(function(item) {
 			var value = item[key];
@@ -223,8 +226,8 @@ angular.module('Clockdoc.Controllers')
 
 	// Load up the initial set of recent entries
 	LocalStorage.get(RECENT_ENTRIES)
-	.then(function(results) {
-		$scope.recentEntries = unique(results, 'path');
+	.then(function(items) {
+		$scope.recentEntries = unique(items, 'path');
 	});
 
 	/**

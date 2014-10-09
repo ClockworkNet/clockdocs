@@ -80,7 +80,8 @@ angular.module('Clockdoc.Controllers')
 		}
 		$scope.setWorking(true);
 		Svn.open($scope.svn.url)
-			.then(svnRead, svnError);
+			.then(svnRead, svnError)
+			.then($scope.watchForChange, svnError);
 	};
 
 	$scope.checkout = function(skipCheck) {
@@ -89,7 +90,8 @@ angular.module('Clockdoc.Controllers')
 		}
 		$scope.setWorking(true);
 		Svn.checkout($scope.svn.url)
-			.then(svnRead, svnError);
+			.then(svnRead, svnError)
+			.then($scope.watchForChange, svnError);
 	};
 
 	$scope.installSvn = function() {

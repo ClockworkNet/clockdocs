@@ -161,7 +161,7 @@ angular.module('Clockdoc.Utils')
 
 			console.log('Selected directory', localDir);
 			if (!localDir || !localDir.entry) {
-				return null;
+				deferred.reject();
 			}
 
 			var localLocation = new Svn.Location();
@@ -198,7 +198,7 @@ angular.module('Clockdoc.Utils')
 					console.log('trying to get file from svn result', result);
 
 					localDir.entry.getFile(localLocation.file, {create: false}, function(entry) {
-						result.entry = entry;
+						result.setEntry(entry);
 						deferred.resolve(result);
 					}, function(e) {
 						deferred.reject(e);
