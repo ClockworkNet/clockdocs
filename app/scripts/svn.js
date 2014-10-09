@@ -16,8 +16,7 @@ angular.module('Clockdoc.Utils')
 	}
 
 	function Result(response, svnLocation, localLocation) {
-		this.result = angular.fromJson(response);
-		this.content = this.result && this.result.response;
+		this.setResponse(response);
 		this.svnLocation = svnLocation;
 		this.localLocation = localLocation;
 	}
@@ -26,6 +25,11 @@ angular.module('Clockdoc.Utils')
 	Result.prototype = Object.create(FileSystem.Result.prototype, {
 		constructor: {value: FileSystem.Result}
 	});
+
+	Result.prototype.setResponse = function(response) {
+		this.result = response && angular.fromJson(response);
+		this.content = this.result && this.result.response;
+	};
 
 	// Holds helpful information about a location
 	Svn.Location = Location;
@@ -176,6 +180,35 @@ angular.module('Clockdoc.Utils')
 				deferred.reject(e);
 			};
 
+			// Stores the extensive steps required for an initial checkout
+			var checkout = function() {
+				// We have the display path, now chaing together SVN calls
+				self.exec(['svn', 'co', '--depth=empty', svnLocation.dir, localLocation.dir])
+				.then(run(['svn', 'up', localLocation.full]))
+				.then(run(['cat', localLocation.full]))
+				.then(function(response) {
+					var result = new Svn.Result(response, svnLocation, localLocation);
+					console.log('trying to get file from svn result', result);
+
+					localDir.entry.getFile(localLocation.file, {create: false}, function(entry) {
+						result.setEntry(entry);
+						deferred.resolve(result);
+					}, function(e) {
+						deferred.reject(e);
+					});
+				})
+				.catch(fail);
+			};
+
+			var update = function() {
+				var result = new Svn.Result(null, svnLocation, localLocation);
+				self.update(result)
+				.then(function(result) {
+					deferred.resolve(result);
+				});
+			};
+
+			// Get the display path of the local directory
 			localDir.getDisplayPath()
 			.then(function(displayPath) {
 				// The display path typically has a "~" indication 
@@ -188,24 +221,18 @@ angular.module('Clockdoc.Utils')
 				displayPath += svnLocation.file;
 				localLocation = new Svn.Location(displayPath, localDir);
 			})
-			.then(function() {
-				// We have the display path, now chaing together SVN calls
-				self.exec(['svn', 'co', '--depth=empty', svnLocation.dir, localLocation.dir])
-				.then(run(['svn', 'up', localLocation.full]))
-				.then(run(['cat', localLocation.full]))
-				.then(function(response) {
-					var result = new Svn.Result(response, new Svn.Location(svnPath), localLocation);
-					console.log('trying to get file from svn result', result);
-
-					localDir.entry.getFile(localLocation.file, {create: false}, function(entry) {
-						result.setEntry(entry);
-						deferred.resolve(result);
-					}, function(e) {
-						deferred.reject(e);
-					});
-				})
-				.catch(fail);
-			}).catch(fail);
+			// Then test the directory to see if it's already a checkout.
+			.then(self.info.bind(self, svnPath))
+			.then(function(info) {
+				// If it is, run an update instead and then return the result.
+				if (info && info.revision) {
+					update();
+				}
+				// Otherwise, perform the checkout.
+				else {
+					checkout();
+				}
+			});
 		});
 
 		return deferred.promise;

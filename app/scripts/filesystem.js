@@ -26,7 +26,7 @@ angular.module('Clockdoc.Utils')
 		else {
 			this.retainEntry();
 		}
-	}
+	};
 
 	FileSystemResult.prototype.retainEntry = function() {
 		if (this.entry) {
