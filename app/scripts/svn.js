@@ -93,6 +93,18 @@ angular.module('Clockdoc.Utils')
 		return deferred.promise;
 	};
 
+	Svn.prototype.status = function(local) {
+		var self = this,
+			args = ['svn', 'status', local.full],
+			deferred = $q.defer();
+
+		self.exec(args)
+		.then(function(result) {
+			deferred.resolve(result && result.response);
+		}, deferred.reject.bind(self));
+		return deferred.promise;
+	};
+
 	Svn.prototype.open = function(svnPath) {
 		var self = this;
 		var args = ['svn', 'cat', svnPath];
@@ -229,19 +241,23 @@ angular.module('Clockdoc.Utils')
 				}
 				displayPath += svnLocation.file;
 				localLocation = new File.Location(displayPath);
+				return localLocation;
 			})
 			// Then test the directory to see if it's already a checkout.
-			.then(self.info.bind(self, svnPath))
-			.then(function(info) {
-				// If it is, run an update instead and then return the result.
-				if (info && info.revision) {
-					update();
-				}
-				// Otherwise, perform the checkout.
-				else {
-					checkout();
-				}
-			});
+			.then(function(localLocation) {
+				self.status(localLocation)
+				.then(function(stats) {
+					// If it is, run an update instead and then return the result.
+					if (stats) {
+						update();
+					}
+					// Otherwise, perform the checkout.
+					else {
+						checkout();
+					}
+				});
+			})
+			.catch(deferred.reject.bind(self));
 		});
 
 		return deferred.promise;
@@ -284,13 +300,15 @@ angular.module('Clockdoc.Utils')
 
 		var resolveResponse = function(response) {
 			if (chrome.runtime.lastError) {
+				console.error('Chrome error running', args, chrome.runtime.lastError);
 				deferred.reject(chrome.runtime.lastError);
 			}
+			console.log('received response', response);
 			deferred.resolve(response);
 		};
 
 		try {
-			console.info('executing', args);
+			console.log('executing', args);
 			chrome.runtime.sendNativeMessage(
 				this.nativeSvnApp,
 				{ command: args },
@@ -298,6 +316,7 @@ angular.module('Clockdoc.Utils')
 			);
 		}
 		catch (e) {
+			console.error('Native error running', args, e);
 			deferred.reject(e);
 		}
 
