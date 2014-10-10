@@ -182,19 +182,27 @@ angular.module('Clockdoc.Controllers')
 		var entryId = file && file.entryId;
 
 		var onError = function(e) {
-			$scope.setWorking(false);
-			$scope.setFile(null);
-			$scope.forgetFile(file);
 			if (e.message !== FileSystem.MESSAGE_USER_CANCELLED) {
 				console.error(e);
+				$scope.clearFile(file);
 				$scope.warn('Error', 'An error occurred.');
 			}
+			else {
+				$scope.setWorking(false);
+			}
+		};
+
+		var addLocations = function(restoredFile) {
+			restoredFile.remote = file.remote;
+			restoredFile.local = file.local;
+			return restoredFile;
 		};
 
 		$scope.setWorking(true);
 
 		if (entryId) {
 			FileSystem.restore(entryId)
+			.then(addLocations, onError)
 			.then(readFile, onError);
 		}
 		else {
@@ -207,29 +215,30 @@ angular.module('Clockdoc.Controllers')
 		if ($scope.rd && $scope.rd.title) {
 			return $scope.rd.title;
 		}
-		if ($scope.file && $scope.file.entry && $scope.file.entry.name) {
-			return $scope.file.entry.name;
+		var file = $scope.files.current;
+		if (file && file.entry && file.entry.name) {
+			return file.entry.name;
 		}
 		return 'Untitled';
 	};
 
 	$scope.filename = function() {
-		if ($scope.file && $scope.file.entry) {
-			var name = $scope.file.entry.name;
+		if ($scope.files.current && $scope.files.current.entry) {
+			var name = $scope.files.current.entry.name;
 			return name.substring(0, name.lastIndexOf('.'));
 		}
 		return $scope.rd && $scope.rd.title;
 	};
 
 	$scope.save = function() {
-		if (!$scope.file.entryId) {
+		if (!$scope.files.current.entryId) {
 			$scope.saveAs();
 			return;
 		}
-		var showMsg = $scope.warn.bind(this, 'Saved!', $scope.file.entry.name, 'info');
-		var errMsg = $scope.warn.bind(this, 'Error!', $scope.file.entry.name + ' could not be saved');
+		var showMsg = $scope.warn.bind(this, 'Saved!', $scope.files.current.entry.name, 'info');
+		var errMsg = $scope.warn.bind(this, 'Error!', $scope.files.current.entry.name + ' could not be saved');
 		var content = angular.toJson($scope.rd, true);
-		FileSystem.save($scope.file.entryId, content)
+		FileSystem.save($scope.files.current.entryId, content)
 			.then($scope.rememberFile, errMsg)
 			.then($scope.watchForChange, errMsg)
 			.then(showMsg);

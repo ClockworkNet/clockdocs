@@ -135,7 +135,20 @@ angular.module('Clockdoc.Utils')
 				result.content = self.getContentFromResponse(response);
 				result.remote = svnResult.remote;
 				result.local = svnResult.local;
-				deferred.resolve(result);
+
+				// If the update was called on the file itself, just return it
+				if (svnResult.entry.isFile) {
+					return deferred.resolve(result);
+				}
+
+				// Otherwise the update was called on the parent directory. Get a reference to the
+				// FileEntry and set it on the result before returning
+				svnResult.entry.getFile(svnResult.local.file, {create: false}, function(entry) {
+					result.entry = entry;
+					deferred.resolve(result);
+				}, function(e) {
+					deferred.reject(e);
+				});
 			});
 		});
 
@@ -183,7 +196,7 @@ angular.module('Clockdoc.Utils')
 					console.log('trying to get file from svn result', result);
 
 					localDir.entry.getFile(localLocation.file, {create: false}, function(entry) {
-						result.setEntry(entry);
+						result.entry = entry;
 						deferred.resolve(result);
 					}, function(e) {
 						deferred.reject(e);
@@ -194,6 +207,7 @@ angular.module('Clockdoc.Utils')
 
 			var update = function() {
 				var result = new File();
+				result.entry = localDir.entry;
 				result.remote = svnLocation;
 				result.local = localLocation;
 

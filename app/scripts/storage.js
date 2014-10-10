@@ -47,7 +47,7 @@ angular.module('Clockdoc.Utils')
 				deferred.reject(chrome.runtime.lastError);
 			}
 			else {
-				deferred.resolve();
+				deferred.resolve(items);
 			}
 		};
 		this.storage.set(items, callback);

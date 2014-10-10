@@ -11,8 +11,11 @@ angular.module('Clockdoc.Controllers')
 	/* The in-memory file being manipulated */
 	$scope.rd = null;
 
-	/* A refenence to the file's source (filesystem and/or svn) */
-	$scope.file = null;
+	/* A reference to the file current and most recent sources (filesystem and/or svn) */
+	$scope.files = {
+		current: {},
+		recent: []
+	};
 
 	/* Tracks whether the rd has changed */
 	$scope.rdChanged = false;
@@ -196,15 +199,22 @@ angular.module('Clockdoc.Controllers')
 		$scope.rd = rd;
 	};
 
+	$scope.clearFile = function(file) {
+		$scope.files.current = {};
+		$scope.working = false;
+		$scope.forgetFile(file);
+		$scope.watchForChange();
+	};
+
 	$scope.setFile = function(file) {
-		$scope.file = file;
+		$scope.files.current = file;
 		$scope.working = false;
 		$scope.rememberFile(file);
 		$scope.watchForChange();
 	};
 
 	$scope.setRecentFiles = function(files) {
-		$scope.recentFiles = files;
+		$scope.files.recent = files;
 	};
 
 	$scope.forgetFile = function(file) {

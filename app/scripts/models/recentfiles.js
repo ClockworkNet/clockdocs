@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('Clockdoc.Models')
-.service('RecentFiles', ['$q', 'FileSystem', 'LocalStorage', function($q, FileSystem, LocalStorage) {
+.service('RecentFiles', ['$q', 'LocalStorage', 'FileSystem', 'File', function($q, LocalStorage, FileSystem, File) {
 	function RecentFiles() {
 		this.key = 'recent_entries';
 		this.max = 10;
@@ -17,10 +17,11 @@ angular.module('Clockdoc.Models')
 		var paths = {};
 		for (var i=0; i<items.length; i++) {
 			var item = items[i];
-			var path = item.local && item.local.full;
+			var file = item.file;
+			var path = file.local && file.local.full;
 
-			// exclude items without file references
-			if (!item.entry || !item.path) {
+			// exclude items without local file references
+			if (!path) {
 				continue;
 			}
 
@@ -28,6 +29,7 @@ angular.module('Clockdoc.Models')
 			if (paths[path] && !item.remote) {
 				continue;
 			}
+
 			paths[path] = item;
 		}
 
@@ -55,27 +57,28 @@ angular.module('Clockdoc.Models')
 	RecentFiles.prototype.set = function(items) {
 		var deferred = $q.defer();
 
-		items = this.filter(items);
-		items = items.slice(0, this.max);
+		this.items = this.filter(items).slice(0, this.max);
 
-		var onset = function(items) {
-			this.items = items;
-			deferred.resolve(items);
-		};
-
-		LocalStorage.set(this.key, items)
-		.then(onset.bind(this));
+		LocalStorage.set(this.key, this.items)
+		.then(deferred.resolve.bind(this, this.items));
 
 		return deferred.promise;
+	};
+
+
+	RecentFiles.prototype.add = function(memory) {
+		// Add the entry to the top
+		this.items.splice(0, 0, memory);
+		return this.set(this.items);
 	};
 
 	/**
 	 *¬Forgets the specified entry and shows an error message
 	**/
 	RecentFiles.prototype.forget = function(file) {
-		var path = file && file.path;
+		var path = file && file.local && file.local.full;
 		var items = this.items.filter(function(r) {
-			return r.path !== path;
+			return r.file && r.file.local && r.file.local.full !== path;
 		});
 		return this.set(items);
 	};
@@ -84,11 +87,12 @@ angular.module('Clockdoc.Models')
 	 * Remembers a recent entry into LocalStorage¬
 	**/
 	RecentFiles.prototype.remember = function(file, title) {
-		if (!file || !file.entry) {
-			return this.set(this.items);
-		}
+		var deferred = $q.defer();
 
-		var items = this.items || [];
+		if (!file || !file.entry) {
+			deferred.resolve(this.items);
+			return deferred.promise;
+		}
 
 		if (!file.entryId) {
 			file.entryId = FileSystem.retain(file.entry);
@@ -101,20 +105,12 @@ angular.module('Clockdoc.Models')
 			date: new Date()
 		};
 
-		var deferred = $q.defer();
-
 		var self = this;
 
 		FileSystem.getDisplayPath(file.entry)
 		.then(function(path) {
-			memory.path = path;
-
-			// Add the entry to the top
-			items.splice(0, 0, memory);
-
-			// Trim the array of items 
-			self.set(items)
-			.then(deferred.resolve.bind(self, items));
+			memory.file.local = new File.Location(path);
+			self.add(memory).then(deferred.resolve.bind(self));
 		});
 
 		return deferred.promise;
