@@ -2,20 +2,17 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('RdCtrl', ['$scope', '$filter', '$timeout', 'Random', 'Scroll', 'Stylesheet', 'Monitor', 'Platform', 'LocalStorage', function($scope, $filter, $timeout, Random, Scroll, Stylesheet, Monitor, Platform, LocalStorage) {
+.controller('RdCtrl', ['$scope', '$filter', '$timeout', 'Random', 'Scroll', 'Stylesheet', 'Monitor', 'Platform', 'RecentFiles', function($scope, $filter, $timeout, Random, Scroll, Stylesheet, Monitor, Platform, RecentFiles) {
 
 	// Load platform information
 	Platform.load($scope, 'platform');
-
-	var RECENT_ENTRIES = 'recent_entries';
-	var RECENT_ENTRIES_MAX = 10;
 	var ALERT_TIME = 5000;
 
 	/* The in-memory file being manipulated */
 	$scope.rd = null;
 
 	/* A refenence to the file's source (filesystem and/or svn) */
-	$scope.result = null;
+	$scope.file = null;
 
 	/* Tracks whether the rd has changed */
 	$scope.rdChanged = false;
@@ -134,10 +131,10 @@ angular.module('Clockdoc.Controllers')
 		});
 	}
 
-	$scope.addFileStyle = function(result) {
+	$scope.addFileStyle = function(file) {
 		Stylesheet.addRule(
-			'.' + result.id,
-			'background-image: url(' + result.data + ')'
+			'.' + file.id,
+			'background-image: url(' + file.data + ')'
 		);
 	};
 
@@ -199,85 +196,31 @@ angular.module('Clockdoc.Controllers')
 		$scope.rd = rd;
 	};
 
-	$scope.setResult = function(result) {
-		$scope.result = result;
+	$scope.setFile = function(file) {
+		$scope.file = file;
 		$scope.working = false;
-		if (result && result.entryId) {
-			$scope.rememberResult(result);
-		}
+		$scope.rememberFile(file);
 		$scope.watchForChange();
 	};
 
-	function unique(a, key) {
-		if (!a || !a.forEach) {
-			return [];
-		}
-		var seen = {}, u = [];
-		a.forEach(function(item) {
-			var value = item[key];
-			if (!value || seen[value]) {
-				return;
-			}
-			seen[value] = 1;
-			u.push(item);
-		});
-		return u;
-	}
-
-	// Load up the initial set of recent entries
-	LocalStorage.get(RECENT_ENTRIES)
-	.then(function(items) {
-		$scope.recentEntries = unique(items, 'path');
-	});
-
-	/**
-	 *¬Forgets the specified entry and shows an error message
-	**/
-	$scope.forgetResult = function(result) {
-		var path = result && result.path;
-		$scope.recentEntries = $scope.recentEntries.filter(function(r) {
-			return r.path !== path;
-		});
-		LocalStorage.set(RECENT_ENTRIES, $scope.recentEntries);
+	$scope.setRecentFiles = function(files) {
+		$scope.recentFiles = files;
 	};
 
-	/**
-	 * Remembers a recent entry into LocalStorage¬
-	**/
-	$scope.rememberResult = function(result) {
-		if (!result || !result.entryId) {
+	$scope.forgetFile = function(file) {
+		RecentFiles.forget(file)
+		.then($scope.setRecentFiles.bind(this));
+	};
+
+	$scope.rememberFile = function(file) {
+		if (!file) {
 			return;
 		}
-
-		var entries = $scope.recentEntries;
-
-		if (!entries) {
-			entries = [];
-		}
-
-		var newEntry = {
-			name: result.entry.name,
-			title: $scope.rd && $scope.rd.title,
-			result: result,
-			date: new Date()
-		};
-
-		result.getDisplayPath()
-		.then(function(path) {
-			newEntry.path = path;
-
-			// Add the entry to the top
-			entries.splice(0, 0, newEntry);
-
-			// Trim the array of entries
-			entries = unique(entries, 'path').slice(0, RECENT_ENTRIES_MAX);
-
-			LocalStorage.set(RECENT_ENTRIES, entries)
-			.then(function() {
-				$scope.recentEntries = entries;
-			});
-		});
+		RecentFiles.remember(file, $scope.rd && $scope.rd.title)
+		.then($scope.setRecentFiles.bind(this));
 	};
+
+	RecentFiles.load().then($scope.setRecentFiles.bind(this));
 
 	$scope.setSvnInstalled = function(value) {
 		$scope.svnInstalled = value;
@@ -433,13 +376,13 @@ angular.module('Clockdoc.Controllers')
 		});
 	};
 
-	$scope.addFile = function(result) {
+	$scope.addFile = function(file) {
 		if (!$scope.rd.files) {
 			$scope.rd.files = {};
 		}
-		result.id = Random.id();
-		$scope.rd.files[result.id] = result;
-		$scope.addFileStyle(result);
+		file.id = Random.id();
+		$scope.rd.files[file.id] = file;
+		$scope.addFileStyle(file);
 	};
 
 	$scope.removeFile = function(id) {

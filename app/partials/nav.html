@@ -37,25 +37,25 @@
 						<li><a ng-click="open()"><cw-icon type="open"></cw-icon> Open File</a></li>
 						<li ng-hide="svnInstalled"><a data-toggle="modal" data-target="#svn-form-install"><cw-icon type="folder-close"></cw-icon> Install SVN Support</a></li>
 						<li ng-show="svnInstalled"><a data-toggle="modal" data-target="#svn-form"><cw-icon type="cloud-download"></cw-icon> Open from SVN</a></li>
-						<li ng-show="recentEntries" class="divider"></li>
-						<li ng-show="recentEntries" class="dropdown-header">Recent Files</li>
-						<li ng-repeat="re in recentEntries track by $index">
-							<a ng-click="open(re)" title="{{re.path}}">
-								<cw-icon type="file"></cw-icon> {{re.title || re.name}}
-								<em ng-show="re.result && re.result.svnLocation">(SVN checkout)</em>
+						<li ng-show="recentFiles" class="divider"></li>
+						<li ng-show="recentFiles" class="dropdown-header">Recent Files</li>
+						<li ng-repeat="rf in recentFiles track by $index">
+							<a ng-click="open(rf.file)" title="{{rf.path}}">
+								<cw-icon type="file"></cw-icon> {{rf.title || rf.name}}
+								<em ng-show="rf.file && rf.file.remote">(SVN checkout)</em>
 							</a>
 						</li>
 					</ul>
 				</li>
-				<li ng-show="rd && result.svnLocation && result.localLocation"><a data-toggle="modal" data-target="#svn-update"><cw-icon type="cloud-upload"></cw-icon> Update</a></li>
+				<li ng-show="rd && file.remote && file.local"><a data-toggle="modal" data-target="#svn-update"><cw-icon type="cloud-upload"></cw-icon> Update</a></li>
 				<li class="dropdown" ng-show="rd">
 					<a class="dropdown-toggle" data-toggle="dropdown"><cw-icon ng-hide="rdChanged" type="floppy-disk"></cw-icon><cw-icon ng-show="rdChanged" type="floppy-save"></cw-icon> Save<span class="caret"></span></a>
 					<ul class="dropdown-menu">
-						<li ng-show="result.entry.name"><a ng-click="save()"><cw-icon type="save"></cw-icon> Save to <em>{{result.entry.name}}</em></a></li>
+						<li ng-show="file.entry.name"><a ng-click="save()"><cw-icon type="save"></cw-icon> Save to <em>{{file.entry.name}}</em></a></li>
 						<li ng-show="rd"><a ng-click="saveAs()"><cw-icon type="export"></cw-icon> Save As ...</a></li>
 						<li ng-show="rd" class="divider"></li>
 						<li ng-show="rd" class="dropdown-header">Export</li>
-						<li ng-show="result.svnLocation && result.entry"><a data-toggle="modal" data-target="#svn-form-commit"><cw-icon type="cloud-upload"></cw-icon> Commit to SVN</a></li>
+						<li ng-show="file.remote && file.entry"><a data-toggle="modal" data-target="#svn-form-commit"><cw-icon type="cloud-upload"></cw-icon> Commit to SVN</a></li>
 						<li ng-show="rd"><a ng-click="export('word')"><cw-icon type="file"></cw-icon> Export As Word Document</a></li>
 					</ul>
 				</li>

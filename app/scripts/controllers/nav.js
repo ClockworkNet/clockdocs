@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('NavCtrl', ['$scope', '$filter', '$timeout', '$http', '$q', '$window', 'FileSystem', 'Ooxml', function($scope, $filter, $timeout, $http, $q, $window, FileSystem, Ooxml) {
+.controller('NavCtrl', ['$scope', '$filter', '$timeout', '$http', '$q', '$window', 'FileSystem', 'File', 'Ooxml', function($scope, $filter, $timeout, $http, $q, $window, FileSystem, File, Ooxml) {
 
 	var EXTENSION = 'cw';
 
@@ -12,8 +12,9 @@ angular.module('Clockdoc.Controllers')
 			return;
 		}
 		var entry = this.launchData.entry;
-		var result = new FileSystem.Result(entry);
-		readResult(result);
+		var id = FileSystem.retain(entry);
+		var file = new File(entry, id);
+		readFile(file);
 	});
 
 	function loadTemplate(key) {
@@ -95,25 +96,26 @@ angular.module('Clockdoc.Controllers')
 	};
 
 	/*
-	 * Reads the FileSystemEntry result contents and sets it on the app
+	 * Reads the FileSystemEntry file contents and sets it on the app
 	 */
-	function readResult(result) {
-		FileSystem.read(result)
-		.then(function(result) {
+	function readFile(file) {
+		FileSystem.read(file)
+		.then(function(file) {
 			$scope.setWorking(false);
-			if (!result || !result.content) {
+			if (!file || !file.content) {
 				return;
 			}
 			try {
-				$scope.loadDoc(angular.fromJson(result.content));
-				$scope.setResult(result);
+				var doc = angular.fromJson(file.content);
+				$scope.loadDoc(doc);
+				$scope.setFile(file);
 			}
 			catch (e) {
 				console.error('file open error', e);
 				$scope.warn('Error', 'There is a problem with your file.');
 			}
 		})
-		.catch($scope.forgetResult.bind(null, result));
+		.catch($scope.forgetFile.bind(null, file));
 	}
 
 	function flattenDoc(doc) {
@@ -169,21 +171,20 @@ angular.module('Clockdoc.Controllers')
 		}
 		var doc = $scope.getSampleDoc('rd');
 		$scope.loadDoc(doc);
-		$scope.setResult({});
+		$scope.setFile({});
 	};
 
-	$scope.open = function(remembered, skipCheck) {
+	$scope.open = function(file, skipCheck) {
 		if (!skipCheck && $scope.rdChanged) {
-			return $scope.speedBump($scope.open.bind(this, remembered, true));
+			return $scope.speedBump($scope.open.bind(this, file, true));
 		}
 
-		var result = remembered && remembered.result;
-		var entryId = result && result.entryId;
+		var entryId = file && file.entryId;
 
 		var onError = function(e) {
 			$scope.setWorking(false);
-			$scope.forgetResult(result);
-			$scope.setResult(null);
+			$scope.setFile(null);
+			$scope.forgetFile(file);
 			if (e.message !== FileSystem.MESSAGE_USER_CANCELLED) {
 				console.error(e);
 				$scope.warn('Error', 'An error occurred.');
@@ -194,32 +195,42 @@ angular.module('Clockdoc.Controllers')
 
 		if (entryId) {
 			FileSystem.restore(entryId)
-			.then(readResult, onError);
+			.then(readFile, onError);
 		}
 		else {
 			FileSystem.openFile([EXTENSION, 'json'])
-			.then(readResult, onError);
+			.then(readFile, onError);
 		}
 	};
 
+	$scope.title = function() {
+		if ($scope.rd && $scope.rd.title) {
+			return $scope.rd.title;
+		}
+		if ($scope.file && $scope.file.entry && $scope.file.entry.name) {
+			return $scope.file.entry.name;
+		}
+		return 'Untitled';
+	};
+
 	$scope.filename = function() {
-		if ($scope.result && $scope.result.entry) {
-			var name = $scope.result.entry.name;
+		if ($scope.file && $scope.file.entry) {
+			var name = $scope.file.entry.name;
 			return name.substring(0, name.lastIndexOf('.'));
 		}
 		return $scope.rd && $scope.rd.title;
 	};
 
 	$scope.save = function() {
-		if (!$scope.result.entryId) {
+		if (!$scope.file.entryId) {
 			$scope.saveAs();
 			return;
 		}
-		var showMsg = $scope.warn.bind(this, 'Saved!', $scope.result.entry.name, 'info');
-		var errMsg = $scope.warn.bind(this, 'Error!', $scope.result.entry.name + ' could not be saved');
+		var showMsg = $scope.warn.bind(this, 'Saved!', $scope.file.entry.name, 'info');
+		var errMsg = $scope.warn.bind(this, 'Error!', $scope.file.entry.name + ' could not be saved');
 		var content = angular.toJson($scope.rd, true);
-		FileSystem.save($scope.result.entryId, content)
-			.then($scope.rememberResult, errMsg)
+		FileSystem.save($scope.file.entryId, content)
+			.then($scope.rememberFile, errMsg)
 			.then($scope.watchForChange, errMsg)
 			.then(showMsg);
 	};
@@ -230,7 +241,7 @@ angular.module('Clockdoc.Controllers')
 		var showMsg = $scope.warn.bind(this, 'Saved!', name, 'info');
 		var errMsg = $scope.warn.bind(this, 'Error!', name + ' could not be saved');
 		FileSystem.saveAs(name, EXTENSION, angular.toJson(rd, true))
-			.then($scope.setResult, errMsg)
+			.then($scope.setFile, errMsg)
 			.then($scope.watchForChange, errMsg)
 			.then(showMsg);
 	};

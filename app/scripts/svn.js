@@ -2,40 +2,12 @@
 'use strict';
 
 angular.module('Clockdoc.Utils')
-.factory('Svn', ['$q', 'FileSystem', function($q, FileSystem) {
+.factory('Svn', ['$q', 'FileSystem', 'File', function($q, FileSystem, File) {
 
 	function Svn(root) {
 		this.nativeSvnApp = 'com.clockwork.svn';
 		this.root = root || 'svn+ssh://svn.pozitronic.com/svnroot';
 	}
-
-	function Location(fullPath) {
-		this.full = fullPath;
-		this.dir = fullPath && fullPath.substr(0, fullPath.lastIndexOf('/'));
-		this.file = fullPath && fullPath.split('/').reverse()[0];
-	}
-
-	function Result(response, svnLocation, localLocation) {
-		this.setResponse(response);
-		this.svnLocation = svnLocation;
-		this.localLocation = localLocation;
-	}
-
-	// Svn.Result inherits from the FileSystem.Result
-	Result.prototype = Object.create(FileSystem.Result.prototype, {
-		constructor: {value: FileSystem.Result}
-	});
-
-	Result.prototype.setResponse = function(response) {
-		this.result = response && angular.fromJson(response);
-		this.content = this.result && this.result.response;
-	};
-
-	// Holds helpful information about a location
-	Svn.Location = Location;
-
-	// Stores the result of an SVN request
-	Svn.Result = Result;
 
 	Svn.prototype.install = function() {
 		var deferred = $q.defer();
@@ -126,8 +98,22 @@ angular.module('Clockdoc.Utils')
 		var args = ['svn', 'cat', svnPath];
 		return self.exec(args)
 		.then(function(response) {
-			return new Svn.Result(response, new Svn.Location(svnPath));
+			var file = new File();
+			file.content = this.getContentFromResponse(response);
+			file.remote = new File.Location(svnPath);
+			return file;
 		});
+	};
+
+	Svn.prototype.getContentFromResponse = function(response) {
+		if (!response) {
+			return null;
+		}
+		var data = angular.fromJson(response);
+		if (!data) {
+			return null;
+		}
+		return data.response;
 	};
 
 	/* Updates a file from SVN */
@@ -145,7 +131,10 @@ angular.module('Clockdoc.Utils')
 			}
 			self.exec(catArgs)
 			.then(function(response) {
-				var result = new Svn.Result(response, svnResult.svnLocation, svnResult.localLocation);
+				var result = new File();
+				result.content = this.getContentFromResponse(response);
+				result.remote = svnResult.remote;
+				result.local = svnResult.local;
 				deferred.resolve(result);
 			});
 		});
@@ -157,7 +146,7 @@ angular.module('Clockdoc.Utils')
 	// receives the contents, path, file entry and svn info
 	Svn.prototype.checkout = function(svnPath) {
 		var self = this,
-			svnLocation = new Svn.Location(svnPath),
+			svnLocation = new File.Location(svnPath),
 			deferred = $q.defer();
 
 		FileSystem.openDirectory()
@@ -168,7 +157,7 @@ angular.module('Clockdoc.Utils')
 				deferred.reject();
 			}
 
-			var localLocation = new Svn.Location();
+			var localLocation = new File.Location();
 
 			var run = function(args) {
 				return function() {
@@ -187,7 +176,10 @@ angular.module('Clockdoc.Utils')
 				.then(run(['svn', 'up', localLocation.full]))
 				.then(run(['cat', localLocation.full]))
 				.then(function(response) {
-					var result = new Svn.Result(response, svnLocation, localLocation);
+					var result = new File();
+					result.content = self.getContentFromResponse(response);
+					result.remote = svnLocation;
+					result.local = localLocation;
 					console.log('trying to get file from svn result', result);
 
 					localDir.entry.getFile(localLocation.file, {create: false}, function(entry) {
@@ -201,7 +193,10 @@ angular.module('Clockdoc.Utils')
 			};
 
 			var update = function() {
-				var result = new Svn.Result(null, svnLocation, localLocation);
+				var result = new File();
+				result.remote = svnLocation;
+				result.local = localLocation;
+
 				self.update(result)
 				.then(function(result) {
 					deferred.resolve(result);
@@ -219,7 +214,7 @@ angular.module('Clockdoc.Utils')
 					displayPath = '.' + displayPath.substring(1);
 				}
 				displayPath += svnLocation.file;
-				localLocation = new Svn.Location(displayPath, localDir);
+				localLocation = new File.Location(displayPath);
 			})
 			// Then test the directory to see if it's already a checkout.
 			.then(self.info.bind(self, svnPath))

@@ -50,27 +50,27 @@ angular.module('Clockdoc.Controllers')
 		$scope.setWorking(false);
 	}
 
-	function svnRead(result) {
-		console.info('Read from SVN', result);
+	function svnRead(file) {
+		console.info('Read from SVN', file);
 
-		$scope.setResult(result);
-		Svn.info(result.svnLocation.full)
+		$scope.setFile(file);
+		Svn.info(file.remote.full)
 		.then(function(info) {
 			$scope.svn = info;
 			rememberUrl(info.url);
 		});
 		try {
-			$scope.loadDoc(angular.fromJson(result.content));
+			$scope.loadDoc(file.content);
 			$scope.unwarn();
 		}
 		catch (e) {
-			console.error('Error reading file', e, result);
+			console.error('Error reading file', e, file);
 			$scope.warn('File error', 'There was an error reading the SVN file. Check the console log for details');
 		}
 	}
 
-	function svnCommitted(result) {
-		$scope.setResult(result);
+	function svnCommitted(file) {
+		$scope.setFile(file);
 		$scope.warn('Committed', 'changes committed to SVN', 'success');
 	}
 
@@ -107,14 +107,14 @@ angular.module('Clockdoc.Controllers')
 
 	$scope.commit = function() {
 		$scope.setWorking(true);
-		$scope.result.content = angular.toJson($scope.rd, true);
-		Svn.commit($scope.result, $scope.svn.message)
+		$scope.file.content = angular.toJson($scope.rd, true);
+		Svn.commit($scope.file, $scope.svn.message)
 			.then(svnCommitted, svnError);
 	};
 
 	$scope.update = function() {
 		$scope.setWorking(true);
-		Svn.update($scope.result)
+		Svn.update($scope.file)
 			.then(svnRead, svnError);
 	};
 }]);
