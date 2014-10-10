@@ -99,7 +99,7 @@ angular.module('Clockdoc.Utils')
 		return self.exec(args)
 		.then(function(response) {
 			var file = new File();
-			file.content = this.getContentFromResponse(response);
+			file.content = self.getContentFromResponse(response);
 			file.remote = new File.Location(svnPath);
 			return file;
 		});
@@ -119,8 +119,8 @@ angular.module('Clockdoc.Utils')
 	/* Updates a file from SVN */
 	Svn.prototype.update = function(svnResult) {
 		var self = this;
-		var upArgs = ['svn', 'up', svnResult.localLocation.full];
-		var catArgs = ['cat', svnResult.localLocation.full];
+		var upArgs = ['svn', 'up', svnResult.local.full];
+		var catArgs = ['cat', svnResult.local.full];
 		var deferred = $q.defer();
 
 		self.exec(upArgs)
@@ -132,7 +132,7 @@ angular.module('Clockdoc.Utils')
 			self.exec(catArgs)
 			.then(function(response) {
 				var result = new File();
-				result.content = this.getContentFromResponse(response);
+				result.content = self.getContentFromResponse(response);
 				result.remote = svnResult.remote;
 				result.local = svnResult.local;
 				deferred.resolve(result);
@@ -204,7 +204,7 @@ angular.module('Clockdoc.Utils')
 			};
 
 			// Get the display path of the local directory
-			localDir.getDisplayPath()
+			FileSystem.getDisplayPath(localDir.entry)
 			.then(function(displayPath) {
 				// The display path typically has a "~" indication 
 				// for the home directory. We need to get the real home
@@ -245,7 +245,7 @@ angular.module('Clockdoc.Utils')
 			deferred.reject(new Error('Commits require a message'));
 		}
 
-		if (!svnResult.entry || !svnResult.localLocation) {
+		if (!svnResult.entry || !svnResult.local) {
 			valid = false;
 			deferred.reject(new Error('Local path not found'));
 		}
@@ -253,7 +253,7 @@ angular.module('Clockdoc.Utils')
 		if (valid) {
 			FileSystem.write(svnResult.entry, svnResult.content)
 			.then(function() {
-				self.exec(['svn', 'ci', svnResult.localLocation.full, '-m', message])
+				self.exec(['svn', 'ci', svnResult.local.full, '-m', message])
 				.then(function(svnResponse) {
 					console.log('committed!', svnResponse);
 					deferred.resolve(svnResult);

@@ -60,7 +60,8 @@ angular.module('Clockdoc.Controllers')
 			rememberUrl(info.url);
 		});
 		try {
-			$scope.loadDoc(file.content);
+			var data = angular.fromJson(file.content);
+			$scope.loadDoc(data);
 			$scope.unwarn();
 		}
 		catch (e) {
