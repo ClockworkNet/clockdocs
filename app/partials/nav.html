@@ -47,15 +47,15 @@
 						</li>
 					</ul>
 				</li>
-				<li ng-show="rd && file.remote && file.local"><a data-toggle="modal" data-target="#svn-update"><cw-icon type="cloud-upload"></cw-icon> Update</a></li>
+				<li ng-show="files.current && files.current.remote && files.current.entry"><a data-toggle="modal" data-target="#svn-update"><cw-icon type="cloud-upload"></cw-icon> Update</a></li>
 				<li class="dropdown" ng-show="rd">
 					<a class="dropdown-toggle" data-toggle="dropdown"><cw-icon ng-hide="rdChanged" type="floppy-disk"></cw-icon><cw-icon ng-show="rdChanged" type="floppy-save"></cw-icon> Save<span class="caret"></span></a>
 					<ul class="dropdown-menu">
-						<li ng-show="file.entry.name"><a ng-click="save()"><cw-icon type="save"></cw-icon> Save to <em>{{file.entry.name}}</em></a></li>
+						<li ng-show="files.current.entry.name"><a ng-click="save()"><cw-icon type="save"></cw-icon> Save to <em>{{files.current.entry.name}}</em></a></li>
 						<li ng-show="rd"><a ng-click="saveAs()"><cw-icon type="export"></cw-icon> Save As ...</a></li>
 						<li ng-show="rd" class="divider"></li>
 						<li ng-show="rd" class="dropdown-header">Export</li>
-						<li ng-show="file.remote && file.entry"><a data-toggle="modal" data-target="#svn-form-commit"><cw-icon type="cloud-upload"></cw-icon> Commit to SVN</a></li>
+						<li ng-show="files.current && files.current.remote && files.current.entry"><a data-toggle="modal" data-target="#svn-form-commit"><cw-icon type="cloud-upload"></cw-icon> Commit to SVN</a></li>
 						<li ng-show="rd"><a ng-click="export('word')"><cw-icon type="file"></cw-icon> Export As Word Document</a></li>
 					</ul>
 				</li>
