@@ -135,11 +135,13 @@ angular.module('Clockdoc.Utils')
 		var catArgs = ['cat', svnResult.local.full];
 		var deferred = $q.defer();
 
+		var err = deferred.reject.bind(this);
+
 		self.exec(upArgs)
 		.then(function(response) {
 			if (!response) {
 				console.error('No response after updating');
-				deferred.reject();
+				return err();
 			}
 			self.exec(catArgs)
 			.then(function(response) {
@@ -158,11 +160,11 @@ angular.module('Clockdoc.Utils')
 				svnResult.entry.getFile(svnResult.local.file, {create: false}, function(entry) {
 					result.entry = entry;
 					deferred.resolve(result);
-				}, function(e) {
-					deferred.reject(e);
-				});
-			});
-		});
+				}, err);
+			})
+			.catch(err);
+		})
+		.catch(err);
 
 		return deferred.promise;
 	};

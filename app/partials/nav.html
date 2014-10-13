@@ -63,12 +63,6 @@
 				<li><a data-toggle="modal" data-target="#help-modal"><cw-icon type="book"></cw-icon> Help</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li ng-show="alert.content">
-					<div class="alert alert-{{alert.type}} alert-dismissable">
-						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>	
-						<strong>{{alert.title}}</strong> {{alert.content}}
-					</div>
-				</li>
 				<li ng-show="rd" class="btn-group">
 					<a class="btn btn-link" ng-class="{active: readonly}" title="Switch to Read-Only Mode" ng-click="setReadonly(true)"><cw-icon type="lock"></cw-icon></a>
 					<a class="btn btn-link" ng-class="{active: !readonly}" title="Switch to Edit Mode" ng-click="setReadonly(false)"><cw-icon type="edit"></cw-icon></a>
@@ -77,4 +71,10 @@
 		</div> <!-- /.navbar-collapse -->
 	</div> <!-- /.container-fluid -->
 </nav>
+<div class="nav collapse in" ng-show="alert.content">
+	<div class="alert alert-{{alert.type}} alert-dismissable">
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>	
+		<strong>{{alert.title}}</strong> {{alert.content}}
+	</div>
+</div>
 </div> <!-- /#NavCtrl -->

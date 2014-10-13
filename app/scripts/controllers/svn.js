@@ -7,27 +7,31 @@ angular.module('Clockdoc.Controllers')
 	var RECENT_SVN_URLS = 'svn_recent_urls';
 	var RECENT_SVN_URL_MAX = 10;
 
-	$scope.svn = {
-		url: Svn.root
-	};
-
 	// Load up the saved urls
 	LocalStorage.get(RECENT_SVN_URLS)
 	.then(function(urls) {
 		$scope.recentSvnUrls = urls;
 	});
 
+	// Keeps track of the request url
+	$scope.svn = {
+		url: Svn.root
+	};
+
 	function rememberUrl() {
-		var url = $scope.svn && $scope.svn.url;
+		var url = $scope.svn.url;
+
 		if (!url) {
 			return;
 		}
 
 		var urls = $scope.recentSvnUrls || [];
 		urls.splice(0, 0, url);
+
 		urls = urls.filter(function(e, i, a) {
 			return a.lastIndexOf(e) === i;
 		});
+
 		urls = urls.slice(0, RECENT_SVN_URL_MAX);
 
 		LocalStorage.set(RECENT_SVN_URLS, urls)
@@ -46,17 +50,18 @@ angular.module('Clockdoc.Controllers')
 
 	function svnError(e) {
 		console.error('SVN error', e);
-		$scope.warn('A SVN error occurred.', 'Check the console log for details.');
+		$scope.warn('An SVN error occurred.', 'Check the console log for details.');
 		$scope.setWorking(false);
 	}
 
 	function svnRead(file) {
 		console.info('Read from SVN', file);
 
-		$scope.setFile(file);
 		Svn.info(file.remote.full)
 		.then(function(info) {
-			$scope.svn = info;
+			file.remote.revision = info.revision;
+			$scope.setFile(file);
+
 			rememberUrl(info.url);
 		});
 		try {
@@ -108,14 +113,14 @@ angular.module('Clockdoc.Controllers')
 
 	$scope.commit = function() {
 		$scope.setWorking(true);
-		$scope.file.content = angular.toJson($scope.rd, true);
-		Svn.commit($scope.file, $scope.svn.message)
+		$scope.files.current.content = angular.toJson($scope.rd, true);
+		Svn.commit($scope.files.current, $scope.svn.message)
 			.then(svnCommitted, svnError);
 	};
 
 	$scope.update = function() {
 		$scope.setWorking(true);
-		Svn.update($scope.file)
+		Svn.update($scope.files.current)
 			.then(svnRead, svnError);
 	};
 }]);
