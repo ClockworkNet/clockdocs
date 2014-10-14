@@ -128,11 +128,24 @@ angular.module('Clockdoc.Utils')
 		return data.response;
 	};
 
+	/* 
+	 * The display path typically has a "~" indication 
+	 * for the home directory. We need to get the real home
+	 * first and replace it
+	 */
+	Svn.prototype.fixPath = function(path) {
+		if (path[0] === '~') {
+			path = '.' + path.substring(1);
+		}
+		return path;
+	};
+
 	/* Updates a file from SVN */
 	Svn.prototype.update = function(svnResult) {
 		var self = this;
-		var upArgs = ['svn', 'up', svnResult.local.full];
-		var catArgs = ['cat', svnResult.local.full];
+		var path = this.fixPath(svnResult.local.full);
+		var upArgs = ['svn', 'up', path];
+		var catArgs = ['cat', path];
 		var deferred = $q.defer();
 
 		var err = deferred.reject.bind(this);
@@ -234,14 +247,8 @@ angular.module('Clockdoc.Utils')
 			// Get the display path of the local directory
 			FileSystem.getDisplayPath(localDir.entry)
 			.then(function(displayPath) {
-				// The display path typically has a "~" indication 
-				// for the home directory. We need to get the real home
-				// first and replace it
-				displayPath += '/';
-				if (displayPath[0] === '~') {
-					displayPath = '.' + displayPath.substring(1);
-				}
-				displayPath += svnLocation.file;
+				displayPath = self.fixPath(displayPath);
+				displayPath += '/' + svnLocation.file;
 				localLocation = new File.Location(displayPath);
 				return localLocation;
 			})
