@@ -7,9 +7,10 @@ angular.module('Clockdoc.Utils')
 	this.to = function(targetId, options) {
 		options = options || {};
 		var source   = options.cwScrollerSource   || options.source  || null;
-		var padding  = options.cwScrollerPadding  || options.padding || 120;
-		var speed    = options.cwScrollerSpeed    || options.speed   || 1;
+		var padding  = options.cwScrollerPadding  || options.padding || 150;
+		var speed    = options.cwScrollerSpeed    || options.speed   || 2;
 		var delay    = options.cwScrollerDelay    || options.delay   || 100; //ms
+		var easing   = options.cwScrollerEasing   || options.easing  || 'linear';
 
 		setTimeout(function() {
 			var targetEl = $('#' + targetId);
@@ -24,7 +25,7 @@ angular.module('Clockdoc.Utils')
 			var distance = source && source.offset ? Math.abs(source.offset().top - destination) : speed * padding;
 			var time = distance / speed;
 
-			$('body').animate({scrollTop: destination}, time, function() {
+			$('body').animate({scrollTop: destination}, time, easing, function() {
 				targetEl.focus();
 			});
 		}, delay);

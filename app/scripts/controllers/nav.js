@@ -1,8 +1,8 @@
-/*global $:false, angular:false, Mustache:false */
+/*global $:false, angular:false */
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('NavCtrl', ['$scope', '$filter', '$timeout', '$http', '$q', '$window', 'FileSystem', 'File', 'Ooxml', function($scope, $filter, $timeout, $http, $q, $window, FileSystem, File, Ooxml) {
+.controller('NavCtrl', ['$scope', '$timeout', '$q', '$window', 'FileSystem', 'File', 'Templates', function($scope, $timeout, $$q, $window, FileSystem, File, Templates) {
 
 	var EXTENSION = 'cw';
 
@@ -16,84 +16,6 @@ angular.module('Clockdoc.Controllers')
 		var file = new File(entry, id);
 		readFile(file);
 	});
-
-	function loadTemplate(key) {
-		var deferred = $q.defer();
-
-		if (TEMPLATES[key].ready) {
-			deferred.resolve(TEMPLATES[key].content);
-			return deferred.promise;
-		}
-
-		var source = TEMPLATES[key].source;
-
-		$http.get(source).then(function(rsp) {
-			if (rsp.status !== 200) {
-				return;
-			}
-			TEMPLATES[key].ready = true;
-			TEMPLATES[key].content = rsp.data;
-			deferred.resolve(rsp.data);
-		});
-
-		return deferred.promise;
-	}
-
-	function prepareForWord(src, doc) {
-		var prepared = flattenDoc(doc);
-		var ooxml = new Ooxml();
-
-		var format = function(a, callback) {
-			if (!a) {
-				return;
-			}
-			a.forEach(function(item, ix, self) {
-				self[ix].content = ooxml.add(item.content);
-				if (callback) {
-					callback(item);
-				}
-			});
-		};
-
-		var fixFlags = function(flags) {
-			if (!flags) {
-				return;
-			}
-			flags.forEach(function(flag, ix, self) {
-				var html = $('<div><b>' + flag.title + ': </b>' + flag.content + '</div>');
-				self[ix].content = ooxml.add(html);
-			});
-		};
-
-		format(prepared.sections, function(section) {
-			fixFlags(section.flags);
-			var prefix = section.title[0];
-			format(section.features, function(feature) {
-				feature.prefix = prefix;
-				fixFlags(feature.flags);
-			});
-		});
-
-		prepared.date = $filter('date')(new Date(), 'yyyy-MM-dd');
-		prepared.relationships = ooxml.relationships;
-
-		var output = Mustache.render(src, prepared);
-		output = output.replace(/[\n\r\t]/gm, ' ')
-			.replace(/>\s+</gm, '><');
-
-		return output;
-	}
-
-	var TEMPLATES = {
-		'word': {
-			'extension': 'docx',
-			'source': 'templates/word.xml',
-			'load': loadTemplate.bind(this, 'word'),
-			'transform': prepareForWord.bind(this),
-			'ready': false,
-			'content' : null
-		}
-	};
 
 	/*
 	 * Reads the FileSystemEntry file contents and sets it on the app
@@ -116,52 +38,6 @@ angular.module('Clockdoc.Controllers')
 			}
 		})
 		.catch($scope.forgetFile.bind(null, file));
-	}
-
-	function flattenDoc(doc) {
-		var flat = angular.copy(doc);
-		if (!flat.sections) {
-			return flat;
-		}
-		flat.sections.forEach(function(section) {
-			if (!section.features) {
-				return;
-			}
-			var flattened = flatten(section.features, 'features');
-			section.features = flattened;
-		});
-		return flat;
-	}
-
-	/**
-	 * Replaces a recursive array with a one-level
-	 * array and adds level information as a x.x.x numbering system
-	 * system to the title key. Very useful for rendering without
-	 * using recursion!
-	**/
-	function flatten(a, childKey, levels) {
-		var flattened = [];
-		levels = levels || [];
-
-		a.forEach(function(el, ix) {
-			// Calculate the current level of this node
-			var level = levels.slice(0);
-			level.push(ix + 1);
-			el.level = level.join('.');
-
-			// The depth is bumped up by 1 to account for sections
-			el.depth = level.length + 1;
-
-			// Add to the flattened array
-			flattened.push(el);
-
-			// Add any children to the flattened array
-			var children = el[childKey] ? el[childKey].slice(0) : [];
-			var flatKids = flatten(children, childKey, level);
-			flattened = flattened.concat(flatKids);
-		});
-
-		return flattened;
 	}
 
 	/// Filesystem Methods ///
@@ -257,19 +133,17 @@ angular.module('Clockdoc.Controllers')
 
 	$scope.export = function(format) {
 		var name = $scope.filename();
-		var template = TEMPLATES[format];
-		var path = name + '.' + template.extension;
+		var extension = Templates.formats[format].extension;
+		var path = name + '.' + extension;
 
 		var showMsg = $scope.warn.bind(this, 'Done!', path + ' has been exported', 'info');
 		var errMsg = $scope.warn.bind(this, 'Error!', path + ' could not be exported');
 
-		var render = function(full) {
-			var output = template.transform(full, $scope.rd);
-			FileSystem.saveAs(name, template.extension, output)
+		Templates.render(format, $scope.rd)
+		.then(function(output) {
+			FileSystem.saveAs(name, extension, output)
 				.then(showMsg, errMsg);
-		};
-
-		template.load().then(render);
+		});
 	};
 
 	$scope.print = function() {
