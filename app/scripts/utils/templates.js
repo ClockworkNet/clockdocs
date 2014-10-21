@@ -5,7 +5,7 @@ angular.module('Clockdoc.Utils')
 .factory('Templates', ['$q', '$http', '$filter', 'Ooxml', function($q, $http, $filter, Ooxml) {
 
 	function Templates () {
-		this.cache = {};
+		this.files = {};
 		this.formats = {
 			'word': {
 				'extension': 'docx',
@@ -36,19 +36,25 @@ angular.module('Clockdoc.Utils')
 
 	Templates.prototype.load = function(source) {
 		var deferred = $q.defer();
+		var self = this;
 
-		if (this.cache[source]) {
-			deferred.resolve(this.cache[source]);
+		if (this.files[source]) {
+			deferred.resolve(this.files[source]);
 			return deferred.promise;
 		}
 
-		$http.get(source).then(function(rsp) {
+		function remember(rsp) {
 			if (rsp.status !== 200) {
+				deferred.reject(rsp);
 				return;
 			}
-			this.cache[source] = rsp.data;
-			deferred.resolve(rsp.data);
-		});
+			self.files[source] = rsp.data;
+			return deferred.resolve(rsp.data);
+		}
+
+		$http.get(source)
+			.then(remember.bind(this))
+			.catch(deferred.reject.bind(this));
 
 		return deferred.promise;
 	};
