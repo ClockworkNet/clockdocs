@@ -5,7 +5,7 @@
 	<cw-hotkey key="F" ctrl="true" action="search.on = !search.on"></cw-hotkey>
 	<cw-hotkey key="F" meta="true" action="search.on = !search.on"></cw-hotkey>
 
-	<header class="row doc-header header-alt" ng-show="rd">
+	<header class="row doc-header header-alt" ng-if="rd">
 		<div class="col-md-11">
 			<div aria-hidden="true" class="cw_icon-cw_big logo"></div>
 			<h1><span ng-model="rd.title" cw-editable>{{rd.title}}</span> <span class="version-num">v.{{getRevision()}}</h1>
@@ -15,8 +15,8 @@
 				<div class="input-group">
 					<input ng-model="search.pending" class="form-control" id="search.pending" placeholder="Find" />
 					<div class="input-group-btn">
-						<button ng-show="search.pending && search.string != search.pending" ng-click="search.string = search.pending" class="btn btn-default"><cw-icon type="zoom-in"></cw-icon></button>
-						<button ng-show="search.string" ng-click="search = {}" class="btn"><cw-icon type="remove"></cw-icon></button>
+						<button ng-if="search.pending && search.string != search.pending" ng-click="search.string = search.pending" class="btn btn-default"><cw-icon type="zoom-in"></cw-icon></button>
+						<button ng-if="search.string" ng-click="search.string = ''; search.pending = '';" class="btn"><cw-icon type="remove"></cw-icon></button>
 					</div>
 				</div>
 			</div>
@@ -24,7 +24,7 @@
 	</header>
 
 
-	<div class="row doc-container" ng-show="rd">
+	<div class="row doc-container" ng-if="rd">
 		<div class="col-md-3 doc-toc">
 			<div class="box-emp">
 				<h2>Table of Contents <a class="btn" ng-hide="readonly" ng-class="{'cw-sorting': sorting}" ng-click="sorting = !sorting"><span class="glyphicon glyphicon-refresh"></span></a></h2>
@@ -76,15 +76,15 @@
 				</tfoot>
 			</table>
 
-			<section ng-repeat="section in rd.sections">
+			<section ng-repeat="section in rd.sections | filter:search.string">
 				<div ng-hide="readonly" class="dropdown pull-left tilter">
 					<a class="btn dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></a>
 					<ul class="dropdown-menu">
 						<li><a ng-click="insertFeature(section.features)"><cw-icon type="plus"></cw-icon> New Feature</a></li>
 
 						<li class="divider">
-						<li ng-show="!collapsed"><a ng-click="collapsed = true"><cw-icon type="collapse-up"></cw-icon> Collapse Section</a></li>
-						<li ng-show="collapsed"><a ng-click="collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Section</a></li>
+						<li ng-if="!collapsed"><a ng-click="collapsed = true"><cw-icon type="collapse-up"></cw-icon> Collapse Section</a></li>
+						<li ng-if="collapsed"><a ng-click="collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Section</a></li>
 
 						<li class="divider"></li>
 						<li ng-repeat="ft in flagTypes | filter:search.string"><a ng-click="insertFlag(section.flags, ft.type)"><cw-icon type="flag"></cw-icon> New {{ft.name}}</a></li>
@@ -102,7 +102,7 @@
 					<div class="feature level_0" ng-repeat="feature in section.features | filter:search.string" ng-include="'partials/feature.html'" ng-init="$level = 0"></div>
 				</div>
 
-				<div ng-show="collapsed" class="collapsed">
+				<div ng-if="collapsed" class="collapsed">
 					<div class="well slideout animated">
 						<a ng-click="collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Section</a>
 					</div>

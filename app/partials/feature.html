@@ -5,8 +5,8 @@
 			<li><a ng-click="insertFeature(feature.features)"><cw-icon type="plus"></cw-icon> New Child Feature</a></li>
 
 			<li class="divider">
-			<li ng-show="!collapsed"><a ng-click="collapsed = true"><cw-icon type="collapse-up"></cw-icon> Collapse Content</a></li>
-			<li ng-show="collapsed"><a ng-click="collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Content</a></li>
+			<li ng-if="!collapsed"><a ng-click="collapsed = true"><cw-icon type="collapse-up"></cw-icon> Collapse Content</a></li>
+			<li ng-if="collapsed"><a ng-click="collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Content</a></li>
 
 			<li class="divider"></li>
 			<li ng-repeat="ft in flagTypes"><a ng-click="insertFlag(feature.flags, ft.type)"><cw-icon type="flag"></cw-icon> New {{ft.name}}</a></li>
@@ -34,7 +34,7 @@
 <div ng-hide="collapsed || (readonly && !feature.content.length)" class="feature-content" id="{{feature.guid}}-content" ng-class="{'no-print':!feature.content.length}" text-angular ta-disabled="readonly" ng-model="feature.content"></div>
 <div ng-hide="collapsed" class="flags" id="{{feature.guid}}-flags" ng-include="'partials/flags.html'" ng-init="flags = feature.flags" />
 
-<div ng-show="collapsed" class="collapsed">
+<div ng-if="collapsed" class="collapsed">
 	<div class="well slideout animated">
 		<a ng-click="collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Content</a>
 	</div>
