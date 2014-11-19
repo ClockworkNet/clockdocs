@@ -2,9 +2,25 @@
 
 	<div ng-controller="NavCtrl" ng-include="'partials/nav.html'"></div>
 
+	<cw-hotkey key="F" ctrl="true" action="search.on = !search.on"></cw-hotkey>
+	<cw-hotkey key="F" meta="true" action="search.on = !search.on"></cw-hotkey>
+
 	<header class="row doc-header header-alt" ng-show="rd">
-		<div aria-hidden="true" class="cw_icon-cw_big logo"></div>
-		<h1><span ng-model="rd.title" cw-editable>{{rd.title}}</span> <span class="version-num">v.{{getRevision()}}</h1>
+		<div class="col-md-11">
+			<div aria-hidden="true" class="cw_icon-cw_big logo"></div>
+			<h1><span ng-model="rd.title" cw-editable>{{rd.title}}</span> <span class="version-num">v.{{getRevision()}}</h1>
+		</div>
+		<div class="col-md-1">
+			<div class="form-inline pull-right slide" ng-class="{'down': search.on || search.string, 'up': !search.on && !search.string}">
+				<div class="input-group">
+					<input ng-model="search.pending" class="form-control" id="search.pending" placeholder="Find" />
+					<div class="input-group-btn">
+						<button ng-show="search.pending && search.string != search.pending" ng-click="search.string = search.pending" class="btn btn-default"><cw-icon type="zoom-in"></cw-icon></button>
+						<button ng-show="search.string" ng-click="search = {}" class="btn"><cw-icon type="remove"></cw-icon></button>
+					</div>
+				</div>
+			</div>
+		</div>
 	</header>
 
 
@@ -23,7 +39,7 @@
 			</div> <!-- /.box-emp -->
 		</div> <!-- /.doc-toc -->
 		<div class="col-md-8 doc-content">
-			<table class="table revisions">
+			<table class="table revisions" ng-hide="search.string">
 				<tr>
 					<td class="header">Client:</td>
 					<td width="50%" ng-model="rd.client" cw-editable></td>
@@ -36,7 +52,7 @@
 					<td colspan="2"></td>
 				</tr>
 			</table>
-			<table class="table table-striped revisions">
+			<table class="table table-striped revisions" ng-hide="search.string">
 				<thead>
 					<th ng-hide="readonly"></th>
 					<th width="10%">Revision</th>
@@ -71,7 +87,7 @@
 						<li ng-show="collapsed"><a ng-click="collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Section</a></li>
 
 						<li class="divider"></li>
-						<li ng-repeat="ft in flagTypes"><a ng-click="insertFlag(section.flags, ft.type)"><cw-icon type="flag"></cw-icon> New {{ft.name}}</a></li>
+						<li ng-repeat="ft in flagTypes | filter:search.string"><a ng-click="insertFlag(section.flags, ft.type)"><cw-icon type="flag"></cw-icon> New {{ft.name}}</a></li>
 						<li class="divider"></li>
 						<li><a ng-click="insertSection($index)"><cw-icon type="arrow-up"></cw-icon> New Section Above</a></li>
 						<li><a ng-click="insertSection($index + 1)"><cw-icon type="arrow-down"></cw-icon> New Section Below</a></li>
@@ -83,7 +99,7 @@
 				<div ng-hide="collapsed || (readonly && !section.content.length)" class="section-content" text-angular ta-disabled="readonly" ng-class="{'no-print':!feature.content.length}" ng-model="section.content"></div>
 				<div ng-hide="collapsed" class="flags" ng-include="'partials/flags.html'" ng-init="flags = section.flags" />
 				<div ng-hide="collapsed" class="features cw-counted">
-					<div class="feature level_0" ng-repeat="feature in section.features" ng-include="'partials/feature.html'" ng-init="$level = 0"></div>
+					<div class="feature level_0" ng-repeat="feature in section.features | filter:search.string" ng-include="'partials/feature.html'" ng-init="$level = 0"></div>
 				</div>
 
 				<div ng-show="collapsed" class="collapsed">
