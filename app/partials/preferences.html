@@ -1,7 +1,7 @@
 <div ng-controller="PreferencesCtrl">
 
 <div class="modal" id="preferences-modal">
-	<div class="modal-dialog">
+	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -9,35 +9,52 @@
 			</div>
 			<div class="modal-body">
 				<form class="form-horizontal">
-					<div class="form-group">
-						<label for="useSvn" class="col-sm-8 control-label">Use SVN</label>
-						<div class="col-sm-4">
-							<cw-toggle class="btn-group" cw-model="preferences" cw-prop="useSvn"></cw-toggle>
+					<div class="panel">
+						<div class="panel-heading">Document Preferences</div>
+						<div class="panel-body">
+							<div class="form-group">
+								<label for="useSvn" class="col-sm-8 control-label">Use SVN</label>
+								<div class="col-sm-4">
+									<cw-toggle class="btn-group" cw-model="preferences" cw-prop="useSvn"></cw-toggle>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="readonly" class="col-sm-8 control-label">Open as read-only</label>
+								<div class="col-sm-4">
+									<cw-toggle class="btn-group" cw-model="preferences" cw-prop="readonly"></cw-toggle>
+								</div>
+							</div>
 						</div>
-					</div>
-					<div class="form-group">
-						<label for="readonly" class="col-sm-8 control-label">Open as read-only</label>
-						<div class="col-sm-4">
-							<cw-toggle class="btn-group" cw-model="preferences" cw-prop="readonly"></cw-toggle>
-						</div>
-						<span class="help-block">If enabled, a document will be set as read-only when first opened.</span>
 					</div>
 					<div class="panel">
-						<div class="panel-heading">Publication</div>
+						<div class="panel-heading">Access Tokens</div>
 						<div class="panel-body">
-							<div class="form-inline">
-								<div class="form-group">
+							<div class="row">
+								<div class="col-xs-3">
 									<input ng-model="endpoint.title" placeholder="Title" class="form-control">
+								</div>
+								<div class="col-xs-5">
 									<input ng-model="endpoint.url" placeholder="URL" class="form-control">
+								</div>
+								<div class="col-xs-3">
 									<input ng-model="endpoint.token" placeholder="Access Token" class="form-control">
+								</div>
+								<div class="col-xs-1">
 									<button class="btn btn-primary" ng-click="addEndpoint()"><cw-icon type="plus"></cw-icon></button>
 								</div>
 							</div>
-							<div class="form-inline" ng-repeat="endpoint in preferences.endpoints track by endpoint.url">
-								<div class="form-group">
+							<hr>
+							<div class="row" ng-repeat="endpoint in preferences.endpoints track by endpoint.url">
+								<div class="col-xs-3">
 									<input ng-model="endpoint.title" placeholder="Title" class="form-control">
+								</div>
+								<div class="col-xs-5">
 									<input ng-model="endpoint.url" placeholder="URL" class="form-control">
+								</div>
+								<div class="col-xs-3">
 									<input ng-model="endpoint.token" placeholder="Access Token" class="form-control">
+								</div>
+								<div class="col-xs-1">
 									<button class="btn btn-danger" ng-click="removeEndpoint($index)"><cw-icon type="remove"></cw-icon></button>
 								</div>
 							</div>
