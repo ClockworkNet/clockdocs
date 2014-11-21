@@ -53,6 +53,9 @@ angular.module('Clockdoc.Controllers')
 	};
 
 	$scope.open = function(file, skipCheck) {
+		if (Preferences.readonly) {
+			$scope.setReadonly(true);
+		}
 		if (!skipCheck && $scope.rdChanged) {
 			return $scope.speedBump($scope.open.bind(this, file, true));
 		}
