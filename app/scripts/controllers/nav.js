@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('NavCtrl', ['$scope', '$timeout', '$q', '$window', 'FileSystem', 'File', 'Templates', function($scope, $timeout, $$q, $window, FileSystem, File, Templates) {
+.controller('NavCtrl', ['$scope', '$timeout', '$q', '$window', 'FileSystem', 'File', 'Templates', 'Preferences', function($scope, $timeout, $$q, $window, FileSystem, File, Templates, Preferences) {
 
 	var EXTENSION = 'cw';
 
@@ -16,6 +16,8 @@ angular.module('Clockdoc.Controllers')
 		var file = new File(entry, id);
 		readFile(file);
 	});
+
+	$scope.preferences = Preferences;
 
 	/*
 	 * Reads the FileSystemEntry file contents and sets it on the app

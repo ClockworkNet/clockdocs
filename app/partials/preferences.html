@@ -1,0 +1,28 @@
+<div ng-controller="PreferencesCtrl">
+
+<div class="modal" id="preferences-modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title"><cw-icon type="cog"></cw-icon> Clockdoc Preferences</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label for="useSvn" class="col-sm-2 control-label">Use SVN</label>
+						<div class="col-sm-10">
+							<cw-toggle class="btn-group" cw-model="preferences" cw-prop="useSvn"></cw-toggle>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-primary btn-action" data-dismiss="modal" ng-click="save()"><cw-icon type="save"></cw-icon> Save Changes</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+</div> <!-- /#SvnCtrl -->

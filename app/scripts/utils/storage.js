@@ -8,12 +8,18 @@ angular.module('Clockdoc.Utils')
 .factory('Storage', ['$q', function($q) {
 	function Storage(type) {
 		this.storage = type || chrome.storage.local;
+		this.defaults = {};
 	}
+
+	Storage.prototype.setDefault = function(key, value) {
+		this.defaults[key] = value;
+	};
 
 	Storage.prototype.get = function(key) {
 		var deferred = $q.defer();
+		var otherwise = this.defaults[key];
 		var findOne = function(items) {
-			var item = items ? items[key] : null;
+			var item = items && items[key] ? items[key] : otherwise;
 			deferred.resolve(item);
 		};
 		this.getMany(key).then(findOne);
@@ -59,5 +65,9 @@ angular.module('Clockdoc.Utils')
 
 angular.module('Clockdoc.Utils')
 .factory('LocalStorage', ['Storage', function(Storage) {
-	return new Storage(chrome.storage.local);
+	var local = new Storage(chrome.storage.local);
+	local.defaults = {
+		'preferences': {}
+	};
+	return local;
 }]);

@@ -35,8 +35,8 @@
 					<a class="dropdown-toggle" data-toggle="dropdown"><cw-icon type="open"></cw-icon> Open<span class="caret"></span></a>
 					<ul class="dropdown-menu">
 						<li><a ng-click="open()"><cw-icon type="open"></cw-icon> Open File</a></li>
-						<li ng-hide="svnInstalled"><a data-toggle="modal" data-target="#svn-form-install"><cw-icon type="folder-close"></cw-icon> Install SVN Support</a></li>
-						<li ng-show="svnInstalled"><a data-toggle="modal" data-target="#svn-form"><cw-icon type="cloud-download"></cw-icon> Open from SVN</a></li>
+						<li ng-hide="!preferences.useSvn || svnInstalled"><a data-toggle="modal" data-target="#svn-form-install"><cw-icon type="folder-close"></cw-icon> Install SVN Support</a></li>
+						<li ng-show="preferences.useSvn && svnInstalled"><a data-toggle="modal" data-target="#svn-form"><cw-icon type="cloud-download"></cw-icon> Open from SVN</a></li>
 						<li ng-show="files.recent" class="divider"></li>
 						<li ng-show="files.recent" class="dropdown-header">Recent Files</li>
 						<li ng-show="files.recent" ng-repeat="rf in files.recent track by $index">
@@ -64,6 +64,7 @@
 				<li><a data-toggle="modal" data-target="#help-modal"><cw-icon type="book"></cw-icon> Help</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
+				<li><a class="btn btn-link" title="Preferences" data-toggle="modal" data-target="#preferences-modal"><cw-icon type="cog"></cw-icon></a></li>
 				<li ng-show="rd" class="btn-group">
 					<a class="btn btn-link" ng-class="{active: readonly}" title="Switch to Read-Only Mode" ng-click="setReadonly(true)"><cw-icon type="lock"></cw-icon></a>
 					<a class="btn btn-link" ng-class="{active: !readonly}" title="Switch to Edit Mode" ng-click="setReadonly(false)"><cw-icon type="edit"></cw-icon></a>
