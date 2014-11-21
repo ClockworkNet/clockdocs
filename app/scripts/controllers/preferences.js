@@ -14,10 +14,10 @@ angular.module('Clockdoc.Controllers')
 		}
 		var seen = {};
 		var dupeless = function(ep) {
-			if (!ep || !ep.url || seen[ep.url]) {
+			if (!ep || !ep.getUrl || seen[ep.getUrl]) {
 				return false;
 			}
-			seen[ep.url] = 1;
+			seen[ep.getUrl] = 1;
 			return true;
 		};
 		$scope.preferences.endpoints = $scope.preferences.endpoints.filter(dupeless);

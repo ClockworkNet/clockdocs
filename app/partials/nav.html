@@ -35,6 +35,13 @@
 					<a class="dropdown-toggle" data-toggle="dropdown"><cw-icon type="open"></cw-icon> Open<span class="caret"></span></a>
 					<ul class="dropdown-menu">
 						<li><a ng-click="open()"><cw-icon type="open"></cw-icon> Open File</a></li>
+
+						<li ng-if="preferences.endpoints" class="divider"></li>
+						<li ng-if="preferences.endpoints" class="dropdown-header">Open from URL</li>
+						<li ng-repeat="endpoint in preferences.endpoints track by endpoint.getUrl">
+							<a ng-click="openEndpoint(endpoint)" title="{{endpoint.getUrl}}"><cw-icon type="cloud"></cw-icon>{{endpoint.title}}</a>
+						</li>
+
 						<li ng-hide="!preferences.useSvn || svnInstalled"><a data-toggle="modal" data-target="#svn-form-install"><cw-icon type="folder-close"></cw-icon> Install SVN Support</a></li>
 						<li ng-show="preferences.useSvn && svnInstalled"><a data-toggle="modal" data-target="#svn-form"><cw-icon type="cloud-download"></cw-icon> Open from SVN</a></li>
 						<li ng-show="files.recent" class="divider"></li>
@@ -53,6 +60,13 @@
 					<ul class="dropdown-menu">
 						<li ng-show="files.current.entry.name"><a ng-click="save()"><cw-icon type="save"></cw-icon> Save to <em>{{files.current.entry.name}}</em></a></li>
 						<li ng-show="rd"><a ng-click="saveAs()"><cw-icon type="export"></cw-icon> Save As ...</a></li>
+
+						<li ng-if="preferences.endpoints" class="divider"></li>
+						<li ng-if="preferences.endpoints" class="dropdown-header">Save to URL</li>
+						<li ng-repeat="endpoint in preferences.endpoints track by endpoint.getUrl">
+							<a ng-click="saveToEndpoint(endpoint)" title="{{endpoint.setUrl}}"><cw-icon type="cloud"></cw-icon>{{endpoint.title}}</a>
+						</li>
+
 						<li ng-show="rd" class="divider"></li>
 						<li ng-show="rd" class="dropdown-header">Export</li>
 						<li ng-show="files.current && files.current.remote && files.current.entry"><a data-toggle="modal" data-target="#svn-form-commit"><cw-icon type="cloud-upload"></cw-icon> Commit to SVN</a></li>

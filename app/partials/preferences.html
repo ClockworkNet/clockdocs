@@ -34,7 +34,8 @@
 									<input ng-model="endpoint.title" placeholder="Title" class="form-control">
 								</div>
 								<div class="col-xs-5">
-									<input ng-model="endpoint.url" placeholder="URL" class="form-control">
+									<input ng-model="endpoint.setUrl" placeholder="Set URL" class="form-control"><br>
+									<input ng-model="endpoint.getUrl" placeholder="Get URL" class="form-control">
 								</div>
 								<div class="col-xs-3">
 									<input ng-model="endpoint.token" placeholder="Access Token" class="form-control">
@@ -44,12 +45,13 @@
 								</div>
 							</div>
 							<hr>
-							<div class="row" ng-repeat="endpoint in preferences.endpoints track by endpoint.url">
+							<div class="row" ng-repeat="endpoint in preferences.endpoints track by endpoint.getUrl">
 								<div class="col-xs-3">
 									<input ng-model="endpoint.title" placeholder="Title" class="form-control">
 								</div>
 								<div class="col-xs-5">
-									<input ng-model="endpoint.url" placeholder="URL" class="form-control">
+									<input ng-model="endpoint.setUrl" placeholder="Set URL" class="form-control"><br>
+									<input ng-model="endpoint.getUrl" placeholder="Get URL" class="form-control">
 								</div>
 								<div class="col-xs-3">
 									<input ng-model="endpoint.token" placeholder="Access Token" class="form-control">

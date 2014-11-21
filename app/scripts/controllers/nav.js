@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('NavCtrl', ['$scope', '$timeout', '$q', '$window', 'FileSystem', 'File', 'Templates', 'Preferences', function($scope, $timeout, $$q, $window, FileSystem, File, Templates, Preferences) {
+.controller('NavCtrl', ['$scope', '$timeout', '$q', '$window', '$http', 'FileSystem', 'File', 'Templates', 'Preferences', function($scope, $timeout,$q, $window, $http, FileSystem, File, Templates, Preferences) {
 
 	var EXTENSION = 'cw';
 
@@ -52,12 +52,67 @@ angular.module('Clockdoc.Controllers')
 		$scope.setFile({});
 	};
 
-	$scope.open = function(file, skipCheck) {
+	$scope.openEndpoint = function(endpoint, skipCheck) {
+		if (!skipCheck && $scope.rdChanged) {
+			return $scope.speedBump($scope.openEndpoint.bind(this, endpoint, true));
+		}
+
 		if (Preferences.readonly) {
 			$scope.setReadonly(true);
 		}
+
+		$scope.setWorking(true);
+
+		$http({
+			method: 'POST',
+			url: endpoint.getUrl,
+			data: $.param(endpoint),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		})
+		.success(function(json) {
+			var data = angular.fromJson(json);
+			var rd = data && data.json && angular.fromJson(data.json);
+			$scope.loadDoc(rd);
+			$scope.setFile({});
+			$scope.setWorking(false);
+		})
+		.error(function() {
+			$scope.warn('Error', 'Cannot access endpoint');
+			$scope.setWorking(false);
+		});
+	};
+
+	$scope.saveToEndpoint = function(endpoint) {
+		var rd = $scope.rd;
+		var json = angular.toJson(rd);
+
+		$scope.setWorking(true);
+		$http({
+			method: 'POST',
+			url: endpoint.setUrl,
+			data: $.param({
+				token: endpoint.token,
+				json: json
+			}),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		})
+		.success(function() {
+			$scope.warn('Success', 'Saved to site', 'info');
+			$scope.setWorking(false);
+		})
+		.error(function() {
+			$scope.warn('Error', 'Cannot access endpoint');
+			$scope.setWorking(false);
+		});
+	};
+
+	$scope.open = function(file, skipCheck) {
 		if (!skipCheck && $scope.rdChanged) {
 			return $scope.speedBump($scope.open.bind(this, file, true));
+		}
+
+		if (Preferences.readonly) {
+			$scope.setReadonly(true);
 		}
 
 		var entryId = file && file.entryId;
