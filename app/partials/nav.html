@@ -64,11 +64,11 @@
 				<li><a data-toggle="modal" data-target="#help-modal"><cw-icon type="book"></cw-icon> Help</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li><a class="btn btn-link" title="Preferences" data-toggle="modal" data-target="#preferences-modal"><cw-icon type="cog"></cw-icon></a></li>
 				<li ng-show="rd" class="btn-group">
 					<a class="btn btn-link" ng-class="{active: readonly}" title="Switch to Read-Only Mode" ng-click="setReadonly(true)"><cw-icon type="lock"></cw-icon></a>
 					<a class="btn btn-link" ng-class="{active: !readonly}" title="Switch to Edit Mode" ng-click="setReadonly(false)"><cw-icon type="edit"></cw-icon></a>
 				</li>
+				<li><a class="btn btn-link" title="Preferences" data-toggle="modal" data-target="#preferences-modal"><cw-icon type="cog"></cw-icon></a></li>
 			</ul>
 		</div> <!-- /.navbar-collapse -->
 	</div> <!-- /.container-fluid -->

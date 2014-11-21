@@ -12,15 +12,17 @@ angular.module('Clockdoc.Utils')
 	Preferences.prototype.load = function() {
 		var ctx = this;
 		LocalStorage.get(KEY)
-		.then(function(data) {
+		.then(function(json) {
+			var data = angular.fromJson(json);
 			angular.forEach(data, function(value, key) {
-				ctx[value] = key;
+				ctx[key] = value;
 			});
 		});
 	};
 
 	Preferences.prototype.save = function() {
-		LocalStorage.set('preferences', this);
+		var json = angular.toJson(this);
+		LocalStorage.set(KEY, json);
 	};
 
 	return new Preferences();
