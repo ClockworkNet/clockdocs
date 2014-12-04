@@ -1,18 +1,18 @@
-<div class="feature-header">
-	<div ng-hide="readonly" class="dropdown pull-left tilter">
+<div class="feature-header input-group">
+	<div ng-show="!readonly" class="dropdown tilter input-group-addon">
 		<a class="btn dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></a>
 		<ul class="dropdown-menu">
 			<li><a ng-click="insertFeature(feature.features)"><cw-icon type="plus"></cw-icon> New Child Feature</a></li>
 
 			<li class="divider">
-			<li ng-if="!collapsed"><a ng-click="collapsed = true"><cw-icon type="collapse-up"></cw-icon> Collapse Content</a></li>
-			<li ng-if="collapsed"><a ng-click="collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Content</a></li>
+			<li ng-show="!collapsed"><a ng-click="collapsed = true"><cw-icon type="collapse-up"></cw-icon> Collapse Content</a></li>
+			<li ng-show="collapsed"><a ng-click="collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Content</a></li>
 
 			<li class="divider"></li>
 			<li ng-repeat="ft in flagTypes"><a ng-click="insertFlag(feature.flags, ft.type)"><cw-icon type="flag"></cw-icon> New {{ft.name}}</a></li>
 
 			<li class="divider"></li>
-			<li ng-repeat="tag in availableTags" ng-hide="featureHasTag(feature, tag)">
+			<li ng-repeat="tag in availableTags" ng-if="!featureHasTag(feature, tag)">
 				<a ng-click="addTag(feature, tag)"><cw-icon type="tag"></cw-icon> Mark <strong>{{tag}}</strong></a>
 			</li>
 
@@ -21,9 +21,9 @@
 			<li modal modal-click="deleteFeature(section, feature)" modal-title="Delete '{{feature.title}}'?" modal-body="Are you sure you want to delete '{{feature.title}}'?"><cw-icon type="trash"></cw-icon> Delete Feature</li>
 		</ul>
 	</div>
-	<div class="feature-title cw-counted-item" cw-editable ng-model="feature.title" id="{{feature.guid}}"></div>
+	<div class="feature-title form-control cw-counted-item" cw-editable ng-model="feature.title" id="{{feature.guid}}"></div>
 </div>
-<div ng-hide="collapsed" class="feature-tags">
+<div ng-show="!collapsed" class="feature-tags">
 	<ul>
 		<li ng-repeat="tag in feature.tags | filter:search.string">
 			<button ng-click="removeTag(feature, tag)" type="button" class="close">&times;</button>
@@ -31,10 +31,11 @@
 		</li>
 	</ul>
 </div>
-<div ng-hide="collapsed || (readonly && !feature.content.length)" class="feature-content" id="{{feature.guid}}-content" ng-class="{'no-print':!feature.content.length}" text-angular ta-disabled="readonly" ng-model="feature.content"></div>
+<button ng-hide="collapsed || readonly" cw-rte="feature" cw-rte-toggle="#{{feature.guid}}-content" class="btn btn-link"><cw-icon type="edit"></cw-icon> Open in Rich Text Editor</button>
+<div ng-hide="collapsed" class="feature-content" id="{{feature.guid}}-content" ng-class="{'no-print':!feature.content.length}" ng-disabled="readonly" cw-editable ng-model="feature.content"></div>
 <div ng-hide="collapsed" class="flags" id="{{feature.guid}}-flags" ng-include="'partials/flags.html'" ng-init="flags = feature.flags" />
 
-<div ng-if="collapsed" class="collapsed">
+<div ng-show="collapsed" class="collapsed">
 	<div class="well slideout animated">
 		<a ng-click="collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Content</a>
 	</div>

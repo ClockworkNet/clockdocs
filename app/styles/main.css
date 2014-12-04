@@ -120,18 +120,18 @@ h3 {
 	cursor: hand;
 }
 
-[contenteditable=true], .ta-editor {
+[contenteditable=true], .ta-editor, cw-rte {
 	margin: 1px;
 	padding-left: 0;
 	padding-right: 0;
 }
 
-[contenteditable=true]:hover:not([disabled]), .ta-root:not(.disabled) .ta-editor:hover {
+[contenteditable=true]:hover:not([disabled]), .ta-root:not(.disabled) .ta-editor:hover, cw-rte:hover:not([disabled]) {
 	box-shadow: 0 0 10px #9ecaed;
 	cursor: text;
 }
 
-[contenteditable=true]:focus:not([disabled]), .ta-root:not(.disabled) .ta-editor:focus {
+[contenteditable=true]:focus:not([disabled]), .ta-root:not(.disabled) .ta-editor:focus, cw-rte:focus:not([disabled]) {
 	border: solid 1px #00c;
 }
 
@@ -144,14 +144,8 @@ h3 {
 	height: auto;
 	overflow: auto;
 }
-.ta-root .ta-toolbar {
+.ta-root.disabled {
 	display: none;
-}
-.ta-root.focussed:not(.disabled) .ta-toolbar {
-	display: block;
-}
-.ta-root.focussed .ta-editor {
-
 }
 .ta-toolbar button {
 	height: 30px;
@@ -175,6 +169,9 @@ h3 {
 	font-size: 0.8em;
 }
 
+.tilter {
+	background: transparent;
+}
 .tilter .dropdown-toggle {
 	font-size: 1em;
 	color: rgb(167, 185, 207);
@@ -310,12 +307,14 @@ section {
 	font-size: 3em;
 	margin-bottom: .25em;
 	padding: 0.5em;
+	display: inline-block;
 }
 
 .feature {
 	padding-top: 1em;
 }
 .feature-title {
+	display: inline-block;
 	padding: 0.5em;
 }
 .feature .feature-label {
