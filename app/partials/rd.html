@@ -78,8 +78,8 @@
 
 			<section ng-repeat="section in rd.sections | filter:search.string">
 				<div class="input-group">
-					<div ng-hide="readonly" class="input-group-addon dropdown tilter">
-						<a class="btn dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></a>
+					<div ng-hide="readonly" class="input-group-addon">
+						<button class="btn btn-link dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></button>
 						<ul class="dropdown-menu">
 							<li><a ng-click="insertFeature(section.features)"><cw-icon type="plus"></cw-icon> New Feature</a></li>
 
