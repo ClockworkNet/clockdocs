@@ -178,6 +178,10 @@ angular.module('Clockdoc.Utils')
 	 * Generates a OOXML run.
 	**/
 	Ooxml.prototype._run = function(p, inNodeChild) {
+		if (!p || !inNodeChild || inNodeChild.nodeName === '#comment') {
+			return;
+		}
+
 		var hyperlink = inNodeChild.nodeName === 'A';
 
 		// Wrap the run in a hyperlink element if needed.
@@ -197,7 +201,7 @@ angular.module('Clockdoc.Utils')
 		}
 
 		var style = this._node(r, 'rPr');
-		var tempStr = inNodeChild.outerHTML;
+		var tempStr = inNodeChild.outerHTML || '';
 
 		if (hyperlink) {
 			this._node(style, 'rStyle')
@@ -219,6 +223,7 @@ angular.module('Clockdoc.Utils')
 		}
 
 		var tempNode = inNodeChild.nodeName === 'SPAN' ? inNodeChild : inNodeChild.getElementsByTagName('SPAN')[0];
+
 		if (tempNode && tempNode.style) {
 			if (tempNode.style.fontSize) {
 				this._node(style, 'sz')
