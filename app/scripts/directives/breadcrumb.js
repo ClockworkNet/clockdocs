@@ -15,7 +15,7 @@ angular.module('Clockdoc.Directives')
 	};
 
 	Breadcrumb.prototype.pop = function() {
-
+		return this.stack.pop();
 	};
 
 	Breadcrumb.prototype.set = function(items) {
