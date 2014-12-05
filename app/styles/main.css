@@ -74,12 +74,19 @@ dd {
 	color:#FC0;
 }
 
-.doc-header h1 {
+.doc-header h1, .doc-header h1 input {
 	font-size: 16px;
 	margin-left: 105px;
 }
 
-h1 {
+.doc-header h1 input {
+	border: 0;
+	width: 90%;
+	position: relative;
+	margin-left: 10px;
+}
+
+h1, h1 input {
     font-size: 3.5em; /* 40px */
     line-height: 1.1em;
 }
@@ -115,6 +122,9 @@ h3 {
 /* =============================================================================
    Editors
    ========================================================================== */
+input[type=text] {
+	background: transparent;
+}
 
 .copyable {
 	cursor: hand;
@@ -289,6 +299,9 @@ ul.cw-sortable li a:active .draggable {
 /* =============================================================================
    Sections and Features
    ========================================================================== */
+input[disabled] {
+	
+}
 
 section {
 	padding-top: 2em;
@@ -438,9 +451,12 @@ section {
 }
 
 .doc-header .logo {
-    font-size: 35px; 
-    margin: 3px 10px 10px 10px; color: #707070; position: absolute; top: 8px; 
-    left: 20px;
+	font-size: 35px; 
+	margin: 3px 10px 10px 10px; 
+	color: #707070; 
+	position: absolute; 
+	top: 8px; 
+	left: 20px;
 }
 .doc-header [cw-editable] {
 	border: solid 1px rgba(0, 0, 0, 0);

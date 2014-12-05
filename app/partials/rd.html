@@ -8,7 +8,7 @@
 	<header class="row doc-header header-alt" ng-if="rd">
 		<div class="col-md-11">
 			<div aria-hidden="true" class="cw_icon-cw_big logo"></div>
-			<h1><span ng-model="rd.title" cw-editable>{{rd.title}}</span> <span class="version-num">v.{{getRevision()}}</h1>
+			<h1><span class="version-num">v.{{getRevision()}}</span> <input ng-disabled="readonly" ng-model="rd.title" type="text" /></h1>
 		</div>
 		<div class="col-md-1">
 			<div class="form-inline pull-right slide" ng-class="{'down': search.on || search.string, 'up': !search.on && !search.string}">
@@ -77,7 +77,7 @@
 			</table>
 
 			<section ng-repeat="section in rd.sections | filter:search.string">
-				<div class="input-group">
+				<div ng-class="{'input-group': !readonly}">
 					<div ng-hide="readonly" class="input-group-addon">
 						<button class="btn btn-link dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></button>
 						<ul class="dropdown-menu">
@@ -96,7 +96,7 @@
 							<li modal modal-click="deleteSection($index)" modal-title="Delete '{{section.title}}'?" modal-body="Are you sure you want to delete '{{section.title}}'?"><cw-icon type="trash"></cw-icon> Delete Section</li>
 						</ul>
 					</div>
-					<div class="section-title form-control" cw-editable id="{{section.guid}}-section" ng-model="section.title"></div>
+					<input class="section-title form-control" type="text" id="{{section.guid}}-section" ng-disabled="readonly" ng-model="section.title" />
 				</div>
 				<button ng-hide="collapsed || readonly" cw-rte="section" cw-rte-toggle="#{{section.guid}}" class="btn btn-link"><cw-icon type="edit"></cw-icon> Open in Rich Text Editor</button>
 				<div ng-hide="collapsed || (readonly && !section.content.length)" class="section-content" id="{{section.guid}}" cw-editable ng-class="{'no-print':!feature.content.length}" ng-model="section.content"></div>
