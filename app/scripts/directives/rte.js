@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('Clockdoc.Directives')
-.directive('cwRte', function() {
+.directive('cwRte', ['$timeout', function($timeout) {
 	return {
 		restrict: 'A',
 		scope: {
@@ -40,8 +40,10 @@ angular.module('Clockdoc.Directives')
 				editor.modal({keyboard: false, backdrop: 'static'});
 			};
 
-			var toggleButton = function(e, state) {
-				el.toggle(state);
+			var toggleButton = function(e, state, delay) {
+				$timeout(function() {
+					el.toggle(state);
+				}, delay);
 			};
 
 			el.on('click.cw.rte', openEditor);
@@ -49,10 +51,10 @@ angular.module('Clockdoc.Directives')
 			// Hide the trigger button if a toggler has been specified
 			if (scope.toggle) {
 				var body = $(document.body);
-				body.on('focus.cw.rte', scope.toggle, toggleButton.bind(true));
-				body.on('blur.cw.rte', scope.toggle, toggleButton.bind(false));
+				body.on('focus.cw.rte', scope.toggle, toggleButton.bind(true, 0));
+				body.on('blur.cw.rte', scope.toggle, toggleButton.bind(false, 2000));
 				el.hide();
 			}
 		}
 	};
-});
+}]);

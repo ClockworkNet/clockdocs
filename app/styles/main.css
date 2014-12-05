@@ -385,6 +385,10 @@ section {
    Dropdown animations
    ========================================================================== */
 
+.input-group-addon {
+	padding: 0;
+}
+
 .open > .dropdown-toggle .glyphicon {
 	-webkit-transform: rotate(90deg);
 }
@@ -527,3 +531,17 @@ section {
 	display: block;
 	width: 100%;
 }
+
+/* =============================================================================
+   Modals
+   ============================================================================= */
+#modal-rte {
+	z-index: 1041;
+}
+#doc-library {
+	z-index: 1042;
+}
+#prompt {
+	z-index: 1043;
+}
+
