@@ -1,4 +1,4 @@
-<div class="feature-header input-group">
+<div class="feature-header" ng-class="{'input-group': !readonly}">
 	<div ng-show="!readonly" class="input-group-addon">
 		<div class="dropdown tilter">
 			<button class="btn btn-link dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></button>
@@ -23,7 +23,7 @@
 			</ul>
 		</div>
 	</div>
-	<div class="feature-title form-control cw-counted-item" cw-editable ng-model="feature.title" id="{{feature.guid}}"></div>
+	<input class="feature-title form-control cw-counted-item" ng-disabled="readonly" type="text" ng-model="feature.title" id="{{feature.guid}}" />
 </div>
 <div ng-show="!collapsed" class="feature-tags">
 	<ul>
