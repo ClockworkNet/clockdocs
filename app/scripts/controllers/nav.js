@@ -44,7 +44,7 @@ angular.module('Clockdoc.Controllers')
 
 	/// Filesystem Methods ///
 	$scope.create = function(skipCheck) {
-		if (!skipCheck && $scope.rdChanged) {
+		if (!skipCheck && $scope.docRootChanged) {
 			return $scope.speedBump($scope.create.bind(this, true));
 		}
 		var doc = $scope.getSampleDoc('rd');
@@ -53,7 +53,7 @@ angular.module('Clockdoc.Controllers')
 	};
 
 	$scope.openEndpoint = function(endpoint, skipCheck) {
-		if (!skipCheck && $scope.rdChanged) {
+		if (!skipCheck && $scope.docRootChanged) {
 			return $scope.speedBump($scope.openEndpoint.bind(this, endpoint, true));
 		}
 
@@ -71,8 +71,8 @@ angular.module('Clockdoc.Controllers')
 		})
 		.success(function(json) {
 			var data = angular.fromJson(json);
-			var rd = data && data.json && angular.fromJson(data.json);
-			$scope.loadDoc(rd);
+			var root = data && data.json && angular.fromJson(data.json);
+			$scope.loadDoc(root);
 			$scope.setFile({});
 			$scope.setWorking(false);
 		})
@@ -83,8 +83,8 @@ angular.module('Clockdoc.Controllers')
 	};
 
 	$scope.saveToEndpoint = function(endpoint) {
-		var rd = $scope.rd;
-		var json = angular.toJson(rd);
+		var root = $scope.doc.root;
+		var json = angular.toJson(root);
 
 		$scope.setWorking(true);
 		$http({
@@ -107,7 +107,7 @@ angular.module('Clockdoc.Controllers')
 	};
 
 	$scope.open = function(file, skipCheck) {
-		if (!skipCheck && $scope.rdChanged) {
+		if (!skipCheck && $scope.docRootChanged) {
 			return $scope.speedBump($scope.open.bind(this, file, true));
 		}
 
@@ -148,8 +148,8 @@ angular.module('Clockdoc.Controllers')
 	};
 
 	$scope.title = function() {
-		if ($scope.rd && $scope.rd.title) {
-			return $scope.rd.title;
+		if ($scope.doc && $scope.doc.root && $scope.doc.root.title) {
+			return $scope.doc.root.title;
 		}
 		var file = $scope.files.current;
 		if (file && file.entry && file.entry.name) {
@@ -163,7 +163,7 @@ angular.module('Clockdoc.Controllers')
 			var name = $scope.files.current.entry.name;
 			return name.substring(0, name.lastIndexOf('.'));
 		}
-		return $scope.rd && $scope.rd.title;
+		return $scope.doc && $scope.doc.root && $scope.doc.root.title;
 	};
 
 	$scope.save = function() {
@@ -173,7 +173,7 @@ angular.module('Clockdoc.Controllers')
 		}
 		var showMsg = $scope.warn.bind(this, 'Saved!', $scope.files.current.entry.name, 'info');
 		var errMsg = $scope.warn.bind(this, 'Error!', $scope.files.current.entry.name + ' could not be saved');
-		var content = angular.toJson($scope.rd, true);
+		var content = angular.toJson($scope.doc.root, true);
 		FileSystem.save($scope.files.current.entryId, content)
 			.then($scope.rememberFile, errMsg)
 			.then($scope.watchForChange, errMsg)
@@ -181,11 +181,11 @@ angular.module('Clockdoc.Controllers')
 	};
 
 	$scope.saveAs = function() {
-		var rd = $scope.rd;
+		var root = $scope.doc.root;
 		var name = $scope.filename();
 		var showMsg = $scope.warn.bind(this, 'Saved!', name, 'info');
 		var errMsg = $scope.warn.bind(this, 'Error!', name + ' could not be saved');
-		FileSystem.saveAs(name, EXTENSION, angular.toJson(rd, true))
+		FileSystem.saveAs(name, EXTENSION, angular.toJson(root, true))
 			.then($scope.setFile, errMsg)
 			.then($scope.watchForChange, errMsg)
 			.then(showMsg);
@@ -199,7 +199,7 @@ angular.module('Clockdoc.Controllers')
 		var showMsg = $scope.warn.bind(this, 'Done!', path + ' has been exported', 'info');
 		var errMsg = $scope.warn.bind(this, 'Error!', path + ' could not be exported');
 
-		Templates.render(format, $scope.rd)
+		Templates.render(format, $scope.doc.root)
 		.then(function(output) {
 			FileSystem.saveAs(name, extension, output)
 				.then(showMsg, errMsg);

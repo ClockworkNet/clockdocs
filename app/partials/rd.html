@@ -5,10 +5,10 @@
 	<cw-hotkey key="F" ctrl="true" action="search.on = !search.on"></cw-hotkey>
 	<cw-hotkey key="F" meta="true" action="search.on = !search.on"></cw-hotkey>
 
-	<header class="row doc-header header-alt" ng-if="rd">
+	<header class="row doc-header header-alt" ng-if="doc.root">
 		<div class="col-md-11">
 			<div aria-hidden="true" class="cw_icon-cw_big logo"></div>
-			<h1><span class="version-num">v.{{getRevision()}}</span> <input ng-disabled="readonly" ng-model="rd.title" type="text" /></h1>
+			<h1><span class="version-num">v.{{getRevision()}}</span> <input ng-disabled="readonly" ng-model="doc.root.title" type="text" /></h1>
 		</div>
 		<div class="col-md-1">
 			<div class="form-inline pull-right slide" ng-class="{'down': search.on || search.string, 'up': !search.on && !search.string}">
@@ -24,12 +24,12 @@
 	</header>
 
 
-	<div class="row doc-container" ng-if="rd">
+	<div class="row doc-container" ng-if="doc.root">
 		<div class="col-md-3 doc-toc">
 			<div class="box-emp">
 				<h2>Table of Contents <a class="btn" ng-hide="readonly" ng-class="{'cw-sorting': sorting}" ng-click="sorting = !sorting"><span class="glyphicon glyphicon-refresh"></span></a></h2>
 				<ul class="nav toc cw-sortable" ng-class="{'cw-sorting': sorting}" cw-sort-on-updated="moveItem(parentGuid, guid, index)" cw-sort-nested="true" cw-sort-tolerance-element="> a">
-					<li class="cw-sorted cw-sorted-section" ng-repeat="section in rd.sections" data-guid="{{section.guid}}">
+					<li class="cw-sorted cw-sorted-section" ng-repeat="section in doc.root.sections" data-guid="{{section.guid}}">
 						<a class="toc-section" cw-scroller="section.guid" cw-scroller-disabled="sorting"><cw-icon type="move" class="draggable"></cw-icon> {{section.title}}</a>
 						<ol class="nav nav-stacked cw-counted">
 							<li class="cw-sorted cw-sorted-feature" ng-repeat="feature in section.features" ng-include="'partials/toc.html'" data-guid="{{feature.guid}}" ng-init="$label = ($index + 1) + '.'"></li>
@@ -42,13 +42,13 @@
 			<table class="table revisions" ng-hide="search.string">
 				<tr>
 					<td class="header">Client:</td>
-					<td width="50%" ng-model="rd.client" cw-editable></td>
+					<td width="50%" ng-model="doc.root.client" cw-editable></td>
 					<td class="header">Project Mgr:</td>
-					<td width="50%" ng-model="rd.pm" cw-editable></td>
+					<td width="50%" ng-model="doc.root.pm" cw-editable></td>
 				</tr>
 				<tr>
 					<td class="header">Project:</td>
-					<td ng-model="rd.project" cw-editable></td>
+					<td ng-model="doc.root.project" cw-editable></td>
 					<td colspan="2"></td>
 				</tr>
 			</table>
@@ -61,7 +61,7 @@
 					<th width="10%">Author</th>
 				</thead>
 				<tbody>
-					<tr ng-repeat="rev in rd.revisions track by $index">
+					<tr ng-repeat="rev in doc.root.revisions track by $index">
 						<td ng-hide="readonly" style="vertical-align: middle"><a ng-click="removeRevision($index)"><i class="glyphicon glyphicon-trash"></i></a></td>
 						<td ng-model="rev.revision" cw-editable></td>
 						<td ng-model="rev.date" cw-editable></td>
@@ -76,7 +76,7 @@
 				</tfoot>
 			</table>
 
-			<section ng-repeat="section in rd.sections | filter:search.string">
+			<section ng-repeat="section in doc.root.sections | filter:search.string">
 				<div ng-class="{'input-group': !readonly}">
 					<div ng-hide="readonly" class="input-group-addon">
 						<button class="btn btn-link dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></button>
@@ -114,7 +114,7 @@
 				<hr />
 			</section>
 			<div ng-hide="readonly" class="well slideout animated">
-				<a ng-click="insertSection(rd.sections.length)"><cw-icon type="th-large"></cw-icon> New Section</a>
+				<a ng-click="insertSection(doc.root.sections.length)"><cw-icon type="th-large"></cw-icon> New Section</a>
 			</div>
 		</div> <!-- /.doc-content -->
 		<div class="col-md-1 doc-gutter"></div>

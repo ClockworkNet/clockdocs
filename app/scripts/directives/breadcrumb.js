@@ -24,7 +24,7 @@ angular.module('Clockdoc.Directives')
 
 	return {
 		restrict: 'E',
-		link: function(scope, el, attrs) {
+		link: function() {
 		}
 	};
 }])
@@ -35,7 +35,7 @@ angular.module('Clockdoc.Directives')
 		scope: {
 			item: '=cwBreadcrumb'
 		},
-		link: function(scope, el, attrs) {
+		link: function() {
 		}
 	};
 }]);

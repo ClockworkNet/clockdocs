@@ -81,7 +81,7 @@ angular.module('Clockdoc.Controllers')
 	}
 
 	$scope.openSvn = function(skipCheck) {
-		if (!skipCheck && $scope.rdChanged) {
+		if (!skipCheck && $scope.docRootChanged) {
 			return $scope.speedBump($scope.openSvn.bind(this, true));
 		}
 		$scope.setWorking(true);
@@ -91,7 +91,7 @@ angular.module('Clockdoc.Controllers')
 	};
 
 	$scope.checkout = function(skipCheck) {
-		if (!skipCheck && $scope.rdChanged) {
+		if (!skipCheck && $scope.docRootChanged) {
 			return $scope.speedBump($scope.checkout.bind(this, true));
 		}
 		$scope.setWorking(true);

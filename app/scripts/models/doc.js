@@ -4,21 +4,13 @@
 angular.module('Clockdoc.Models')
 .factory('Doc', ['$filter', 'Random', function($filter, Random) {
 
-	function Doc() {
-		this.title = 'Untitled Requirements Document';
-		this.author = 'Anonymous';
-		this.created = new Date();
-		this.guid = Random.id();
-		this.revisions = [this.exampleRevision()];
-		this.sections = [
-			this.createFeature('Definitions and Conventions'),
-			this.createFeature('Features'),
-			this.createFeature('Production'),
-			this.createFeature('Technology'),
-			this.createFeature('Security')
-		];
-		this.flags = [];
-		this.files = [];
+	function Doc(root) {
+		if (root) {
+			this.root = root;
+		}
+		else {
+			this.init();
+		}
 	}
 
 	Doc.flagTypes = [
@@ -49,6 +41,19 @@ angular.module('Clockdoc.Models')
 		'Future Phase'
 	];
 
+	Doc.prototype.init = function() {
+		this.root = {
+			title: '',
+			author: '',
+			created: new Date(),
+			guid: Random.id(),
+			revisions: [],
+			sections: [],
+			flags: [],
+			files: []
+		};
+	};
+
 	Doc.prototype.createFeature = function(title) {
 		title = title || 'Untitled';
 		var feature = {
@@ -78,10 +83,27 @@ angular.module('Clockdoc.Models')
 		};
 	};
 
+	// Provides the prefixed id of the feature
+	Doc.prototype.id = function(feature) {
+		var item = this.findItem(feature.guid);
+		if (!item) {
+			return '';
+		}
+
+		var id = [item.index + 1];
+		while (item.parent) {
+			item = item.parent;
+			id.push(item.index + 1);
+		}
+
+		id.reverse();
+		return item.title[0] + id.join('.');
+	};
+
 	// Creates a cache lookup to be used for getting 
 	Doc.prototype.findItem = function(id, parent) {
 		if (!id) {return null;}
-		parent = parent || this;
+		parent = parent || this.root;
 
 		if (parent.guid === id) {
 			return {
@@ -114,7 +136,7 @@ angular.module('Clockdoc.Models')
 
 		for (var i=0; i<childTypes.length; i++) {
 			var ct = childTypes[i];
-			var item = checkChildren(parent[ct], ct);
+			var item = checkChildren.call(this, parent[ct], ct);
 			if (item) {return item;}
 		}
 
@@ -138,11 +160,12 @@ angular.module('Clockdoc.Models')
 
 	Doc.prototype.insertSection = function(sectionIndex) {
 		var section = this.createFeature('Untitled Section');
-		this.sections.splice(sectionIndex, 0, section);
+		this.root.sections.splice(sectionIndex, 0, section);
+		return section.guid;
 	};
 
 	Doc.prototype.deleteSection = function(index) {
-		this.sections.splice(index, 1);
+		this.root.sections.splice(index, 1);
 	};
 
 	/// Feature methods ///
@@ -164,6 +187,7 @@ angular.module('Clockdoc.Models')
 		var feature = this.createFeature();
 		featureIndex = featureIndex || features.length + 1;
 		features.splice(featureIndex, 0, feature);
+		return feature.guid;
 	};
 
 	/// Tag methods ///
@@ -200,6 +224,7 @@ angular.module('Clockdoc.Models')
 		}
 		var flag = this.createFlag(type);
 		flags.push(flag);
+		return flag.guid;
 	};
 
 	Doc.prototype.deleteFlag = function(flags, index) {
@@ -215,12 +240,12 @@ angular.module('Clockdoc.Models')
 		}
 
 		// Get the containing object where the item was dropped
-		var parent = this.findItem(parentGuid || this.guid);
+		var parent = this.findItem(parentGuid || this.root.guid);
 		if (!parent) {
 			console.error('Could not find drop parent in rd', parentGuid);
 			return;
 		}
-		var targetType = parent.item.guid === this.guid ? 'sections' : 'features';
+		var targetType = parent.item.guid === this.root.guid ? 'sections' : 'features';
 
 		// Out with the old
 		moved.parent.item[moved.parent.type].splice(moved.index, 1);
@@ -249,56 +274,56 @@ angular.module('Clockdoc.Models')
 	};
 
 	Doc.prototype.addFile = function(file) {
-		if (!this.files) {
-			this.files = {};
+		if (!this.root.files) {
+			this.root.files = {};
 		}
 		file.id = Random.id();
-		this.files[file.id] = file;
+		this.root.files[file.id] = file;
 	};
 
 	Doc.prototype.removeFile = function(id) {
-		if (!this.files) {return;}
-		delete this.files[id];
+		if (!this.root.files) {return;}
+		delete this.root.files[id];
 	};
 
 	Doc.prototype.getRevision = function() {
-		var revs = this.revisions;
+		var revs = this.root.revisions;
 		if (!revs) {
 			return 0.0;
 		}
 		return revs[revs.length - 1].revision;
 	};
 
-	Doc.protoype.formatDate = function(d) {
-		return $filter('date')(d, 'yyyy-MM-dd');
-	};
-
 	Doc.prototype.exampleRevision = function() {
 		var version = 1, revision = 0.1;
-		if (this.revisions) {
-			version = this.revisions.length + 1;
+		if (this.root.revisions) {
+			version = this.root.revisions.length + 1;
 			revision = version / 10;
 		}
 		return {
 			'id': Random.id(),
 			'version': version,
 			'revision': revision,
-			'date': this.formatDate(new Date()),
+			'date': Doc.formatDate(new Date()),
 			'notes': '',
 			'author': ''
 		};
 	};
 
 	Doc.prototype.addRevision = function() {
-		if (!this.revisions) {
-			this.revisions = [];
+		if (!this.root.revisions) {
+			this.root.revisions = [];
 		}
-		this.revisions.push(this.exampleRevision());
+		this.root.revisions.push(this.exampleRevision());
 	};
 
 	Doc.prototype.removeRevision = function(i) {
-		if (!this.revisions) {return;}
-		this.revisions.splice(i, 1);
+		if (!this.root.revisions) {return;}
+		this.root.revisions.splice(i, 1);
+	};
+
+	Doc.formatDate = function(d) {
+		return $filter('date')(d, 'yyyy-MM-dd');
 	};
 
 	return Doc;
