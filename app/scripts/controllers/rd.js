@@ -104,7 +104,7 @@ angular.module('Clockdoc.Controllers')
 		if (!file) {
 			return;
 		}
-		RecentFiles.remember(file, $scope.rd && $scope.rd.title)
+		RecentFiles.remember(file, $scope.doc && $scope.doc.root && $scope.doc.root.title)
 		.then($scope.setRecentFiles.bind(this));
 	};
 
@@ -147,6 +147,12 @@ angular.module('Clockdoc.Controllers')
 	};
 
 	/// Feature methods ///
+	$scope.getFeatureId = function(feature) {
+		var node = $scope.doc.findNode(feature.guid);
+		if (!node) {return '';}
+		return node.id();
+	};
+
 	$scope.deleteFeature = function(section, feature) {
 		$scope.doc.deleteFeature(section, feature);
 	};

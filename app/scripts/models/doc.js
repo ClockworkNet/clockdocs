@@ -4,13 +4,33 @@
 angular.module('Clockdoc.Models')
 .factory('Doc', ['$filter', 'Random', function($filter, Random) {
 
+	function Node(section, parent, item) {
+		this.section = section;
+		this.parent = parent;
+		this.item = item;
+
+		this.type = null;
+		this.index = null;
+		this.level = null;
+	}
+
+	Node.prototype.calculateId = function() {
+		var prefix = this.section ? this.section.title[0] : '';
+		var parts = [this.index + 1];
+		var parent = this.parent;
+		while (parent && parent.type !== 'section') {
+			parts.push(parent.index + 1);
+			parent = parent.parent;
+		}
+		parts.reverse();
+		return prefix + parts.join('.');
+	};
+
 	function Doc(root) {
-		if (root) {
-			this.root = root;
-		}
-		else {
-			this.init();
-		}
+		// Stores the data object for this document
+		this.root = root || this.createRoot();
+		this.nodes = {};
+		this.refresh();
 	}
 
 	Doc.flagTypes = [
@@ -41,8 +61,8 @@ angular.module('Clockdoc.Models')
 		'Future Phase'
 	];
 
-	Doc.prototype.init = function() {
-		this.root = {
+	Doc.prototype.createRoot = function() {
+		return {
 			title: '',
 			author: '',
 			created: new Date(),
@@ -83,64 +103,69 @@ angular.module('Clockdoc.Models')
 		};
 	};
 
-	// Provides the prefixed id of the feature
-	Doc.prototype.id = function(feature) {
-		var item = this.findItem(feature.guid);
-		if (!item) {
-			return '';
+	Doc.prototype.refresh = function() {
+		if (!this.nodes) {
+			this.nodes = {};
 		}
 
-		var id = [item.index + 1];
-		while (item.parent) {
-			item = item.parent;
-			id.push(item.index + 1);
-		}
+		// The recursive function for refreshing items
+		var refreshChildren = function(section, parent, nodes, level) {
+			var type, kids;
 
-		id.reverse();
-		return item.title[0] + id.join('.');
+			// We're at the root node
+			if (parent.item.sections) {
+				type = 'section';
+				kids = parent.item.sections;
+			}
+			// We're in a section or feature
+			else {
+				type = 'feature';
+				kids = parent.item.features;
+			}
+
+			if (!kids) {
+				return;
+			}
+
+			for (var i=0; i<kids.length; i++) {
+				var kid = kids[i];
+				var node = new Node(section, parent, kid);
+
+				node.index = i;
+				node.level = level;
+				node.type = type;
+
+				nodes[kid.guid] = node;
+
+				if (type === 'section') {
+					section = kid;
+					kid.id = kid.title[0];
+				}
+				else {
+					kid.id = parent.item.id;
+					if (parent.item.guid !== section.guid) {
+						kid.id += '.';
+					}
+					kid.id += (i + 1);
+				}
+
+				refreshChildren(section, node, nodes, level + 1);
+			}
+		};
+
+		var rootNode = new Node(null, null, this.root);
+		refreshChildren(null, rootNode, this.nodes, 0);
 	};
 
 	// Creates a cache lookup to be used for getting 
-	Doc.prototype.findItem = function(id, parent) {
-		if (!id) {return null;}
-		parent = parent || this.root;
+	Doc.prototype.findNode = function(guid) {
+		if (!guid) {return null;}
 
-		if (parent.guid === id) {
-			return {
-				index: 0,
-				item: parent
-			};
+		if (!this.nodes[guid]) {
+			this.refresh();
 		}
 
-		var checkChildren = function(a, type) {
-			if (!a) {return null;}
-			for (var i=0; i<a.length; i++) {
-				var o = a[i];
-				if (o.guid === id) {
-					return {
-						index: i,
-						item: o,
-						parent: {
-							item: parent,
-							type: type
-						}
-					};
-				}
-				var childItem = this.findItem(id, o);
-				if (childItem) {return childItem;}
-			}
-			return null;
-		};
-
-		var childTypes = ['features', 'sections'];
-
-		for (var i=0; i<childTypes.length; i++) {
-			var ct = childTypes[i];
-			var item = checkChildren.call(this, parent[ct], ct);
-			if (item) {return item;}
-		}
-
-		return null;
+		return this.nodes[guid];
 	};
 
 	// Recursively access each feature in a section;
@@ -161,6 +186,7 @@ angular.module('Clockdoc.Models')
 	Doc.prototype.insertSection = function(sectionIndex) {
 		var section = this.createFeature('Untitled Section');
 		this.root.sections.splice(sectionIndex, 0, section);
+		this.refresh();
 		return section.guid;
 	};
 
@@ -177,6 +203,7 @@ angular.module('Clockdoc.Models')
 			a.splice(i, 1);
 			return false;
 		});
+		this.refresh();
 	};
 
 	Doc.prototype.insertFeature = function(features, featureIndex) {
@@ -187,6 +214,7 @@ angular.module('Clockdoc.Models')
 		var feature = this.createFeature();
 		featureIndex = featureIndex || features.length + 1;
 		features.splice(featureIndex, 0, feature);
+		this.refresh();
 		return feature.guid;
 	};
 
@@ -233,25 +261,29 @@ angular.module('Clockdoc.Models')
 
 	Doc.prototype.moveItem = function(parentGuid, guid, newIndex) {
 		// Find the item being moved
-		var moved = this.findItem(guid);
+		var moved = this.findNode(guid);
 		if (!moved) {
 			console.error('Invalid moved item id', guid);
 			return;
 		}
 
 		// Get the containing object where the item was dropped
-		var parent = this.findItem(parentGuid || this.root.guid);
+		var parent = this.findNode(parentGuid || this.root.guid);
 		if (!parent) {
 			console.error('Could not find drop parent in rd', parentGuid);
 			return;
 		}
+
 		var targetType = parent.item.guid === this.root.guid ? 'sections' : 'features';
+		var originType = moved.parent.item.guid === this.root.guid ? 'sections' : 'features';
 
 		// Out with the old
-		moved.parent.item[moved.parent.type].splice(moved.index, 1);
+		moved.parent.item[originType].splice(moved.index, 1);
 
 		// In with the new
 		parent.item[targetType].splice(newIndex, 0, moved.item);
+
+		this.refresh();
 	};
 
 	Doc.prototype.moveFlag = function(flags, parentGuid, guid, newIndex) {

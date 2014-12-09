@@ -398,7 +398,7 @@ section {
    Dropdown animations
    ========================================================================== */
 
-.input-group-addon {
+.input-group-addon.tilter {
 	padding: 0;
 }
 

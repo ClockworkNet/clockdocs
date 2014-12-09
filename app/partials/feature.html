@@ -1,6 +1,6 @@
-<div class="feature-header" ng-class="{'input-group': !readonly}">
-	<div ng-show="!readonly" class="input-group-addon">
-		<div class="dropdown tilter">
+<div class="feature-header input-group">
+	<div ng-show="!readonly" class="input-group-addon tilter">
+		<div class="dropdown">
 			<button class="btn btn-link dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></button>
 			<ul class="dropdown-menu">
 				<li><a ng-click="insertFeature(feature.features)"><cw-icon type="plus"></cw-icon> New Child Feature</a></li>
@@ -23,6 +23,7 @@
 			</ul>
 		</div>
 	</div>
+	<div class="input-group-addon"><span class="feature-title">{{feature.id}}</span></div>
 	<input class="feature-title form-control cw-counted-item" ng-disabled="readonly" type="text" ng-model="feature.title" id="{{feature.guid}}" />
 </div>
 <div ng-show="!collapsed" class="feature-tags">

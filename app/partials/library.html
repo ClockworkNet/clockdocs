@@ -10,7 +10,7 @@
 					<div class="file-drop thumbnail" cw-file-drop="addFile(file)" cw-dragover-class="dragover" cw-uploading-class="uploading">
 						<cw-icon type="picture"></cw-icon> Add an Image
 					</div>
-					<div class="thumbnail" ng-repeat="file in rd.files">
+					<div class="thumbnail" ng-repeat="file in doc.root.files">
 						<div class="file-item {{file.id}}">
 							<div class="file-header">
 								<a ng-click="removeFile(file.id)" class="close">&times;</a>
