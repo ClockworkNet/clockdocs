@@ -103,6 +103,10 @@ angular.module('Clockdoc.Models')
 		};
 	};
 
+	/**
+	 * Called whenever the tree node structure changes. Refreshes
+	 * the GUID lookup and updates feature ids.
+	**/
 	Doc.prototype.refresh = function() {
 		if (!this.nodes) {
 			this.nodes = {};

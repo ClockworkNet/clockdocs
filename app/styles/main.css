@@ -216,6 +216,10 @@ input[type=text] {
 .toc li.cw-sorted-feature {
 	padding-left: 0.5em;
 }
+.toc .feature-id {
+	margin-right: 8px;
+	font-size: 0.9em;
+}
 .cw-sortable-placeholder {
 	border: 1px dotted red;
 	padding: 10px 20px 5px 20px;
@@ -322,6 +326,9 @@ section {
 	display: inline-block;
 	padding: 0.5em;
 }
+.feature-id {
+	color: rgb(165, 171, 125);
+}
 .feature .feature-label {
 	font-weight: 600;
 	font-size: 2em;
@@ -335,20 +342,20 @@ section {
 .feature.level_0 {
 	margin-top: 1em;
 }
-.feature.level_0 .feature-title {
+.feature.level_0 .feature-title, .feature.level_0 .feature-id {
 	font-size: 1.8em;
 	font-family: "ProximaNovaCondSemiBold",Helvetica,Arial,sans-serif;
 
 }
-.feature.level_1 .feature-title {
+.feature.level_1 .feature-title, .feature.level_1 .feature-id {
 	font-size: 1.5em;
 	font-family: "ProximaNovaCondRegular",Helvetica,Arial,sans-serif;
 }
-.feature.level_2 .feature-title {
+.feature.level_2 .feature-title, .feature.level_2 .feature-id {
 	font-size: 1.5em;
 	font-style: italic;
 }
-.feature.level_3 .feature-title {
+.feature.level_3 .feature-title, .feature.level_3 .feature-id {
 	font-size: 1.3em;
 	font-weight: 400;
 }

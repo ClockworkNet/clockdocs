@@ -23,8 +23,8 @@
 			</ul>
 		</div>
 	</div>
-	<div class="input-group-addon"><span class="feature-title">{{feature.id}}</span></div>
-	<input class="feature-title form-control cw-counted-item" ng-disabled="readonly" type="text" ng-model="feature.title" id="{{feature.guid}}" />
+	<div class="input-group-addon"><span class="feature-id">{{feature.id}}</span></div>
+	<input class="feature-title form-control" ng-disabled="readonly" type="text" ng-model="feature.title" id="{{feature.guid}}" />
 </div>
 <div ng-show="!collapsed" class="feature-tags">
 	<ul>
@@ -45,7 +45,7 @@
 </div>
 
 <!-- "{{feature.title}}" Child Features -->
-<div ng-hide="collapsed" class="cw-counted">
+<div ng-hide="collapsed">
 	<div class="feature level_{{$level}}" ng-repeat="feature in feature.features | filter:search.string" ng-include="'partials/feature.html'" ng-init="$level = $level + 1;"></div>
 </div>
 <!-- /"{{feature.title}}" Child Features -->
