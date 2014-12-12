@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('RdCtrl', ['$scope', '$timeout', 'Doc', 'Random', 'Scroll', 'Stylesheet', 'Monitor', 'Platform', 'RecentFiles', function($scope, $timeout, Doc, Random, Scroll, Stylesheet, Monitor, Platform, RecentFiles) {
+.controller('RdCtrl', ['$scope', '$timeout', 'Doc', 'Random', 'Scroll', 'Stylesheet', 'Monitor', 'Platform', 'RecentFiles', 'Preferences', function($scope, $timeout, Doc, Random, Scroll, Stylesheet, Monitor, Platform, RecentFiles, Preferences) {
 
 	// Load platform information
 	Platform.load($scope, 'platform');
@@ -15,6 +15,7 @@ angular.module('Clockdoc.Controllers')
 	$scope.activeItem = null;
 	$scope.activeGuids = {};
 	$scope.activeTree = [];
+	$scope.preferences = Preferences;
 
 	/* A reference to the file current and most recent sources (filesystem and/or svn) */
 	$scope.files = {
@@ -155,10 +156,14 @@ angular.module('Clockdoc.Controllers')
 		$timeout($scope.unwarn, ALERT_TIME);
 	};
 
+	$scope.scrollTo = function(id) {
+		Scroll.to(id);
+	};
+
 	/// Section methods ///
 	$scope.insertSection = function(sectionIndex) {
 		var section = $scope.doc.insertSection(sectionIndex);
-		Scroll.to(section.guid);
+		$scope.scrollTo(section.guid);
 	};
 
 	$scope.deleteSection = function(index) {
@@ -178,7 +183,7 @@ angular.module('Clockdoc.Controllers')
 
 	$scope.insertFeature = function(features, featureIndex) {
 		var feature = $scope.doc.insertFeature(features, featureIndex);
-		Scroll.to(feature.guid);
+		$scope.scrollTo(feature.guid);
 	};
 
 	/// Tag methods ///
@@ -201,7 +206,7 @@ angular.module('Clockdoc.Controllers')
 	/// Flag methods ///
 	$scope.insertFlag = function(flags, type) {
 		var flag = $scope.doc.insertFlag(flags, type);
-		Scroll.to(flag.guid);
+		$scope.scrollTo(flag.guid);
 	};
 
 	$scope.deleteFlag = function(flags, index) {

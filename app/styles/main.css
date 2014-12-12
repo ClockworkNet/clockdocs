@@ -482,6 +482,10 @@ section {
 	background: transparent;
 }
 
+.breadcrumb {
+	background: #F6FFDB;
+}
+
 
 /* =============================================================================
    Bootstrap overrides

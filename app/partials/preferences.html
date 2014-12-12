@@ -13,16 +13,22 @@
 						<div class="panel-heading">Document Preferences</div>
 						<div class="panel-body">
 							<div class="form-group">
-								<label for="useSvn" class="col-sm-8 control-label">Use SVN</label>
-								<div class="col-sm-4">
-									<cw-toggle class="btn-group" cw-model="preferences" cw-prop="useSvn"></cw-toggle>
-								</div>
+								<cw-toggle class="btn-group" cw-model="preferences" cw-prop="hideBreadcrumbs"></cw-toggle>
+								<label for="hideBreadcrumbs" class="control-label">
+									Hide breadcrumbs
+								</label>
 							</div>
 							<div class="form-group">
-								<label for="readonly" class="col-sm-8 control-label">Open as read-only</label>
-								<div class="col-sm-4">
-									<cw-toggle class="btn-group" cw-model="preferences" cw-prop="readonly"></cw-toggle>
-								</div>
+								<cw-toggle class="btn-group" cw-model="preferences" cw-prop="useSvn"></cw-toggle>
+								<label for="useSvn" class="control-label">
+									Use SVN
+								</label>
+							</div>
+							<div class="form-group">
+								<cw-toggle class="btn-group" cw-model="preferences" cw-prop="readonly"></cw-toggle>
+								<label for="readonly" class="control-label">
+									Open as read-only
+								</label>
 							</div>
 						</div>
 					</div>

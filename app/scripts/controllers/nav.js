@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('NavCtrl', ['$scope', '$timeout', '$q', '$window', '$http', 'FileSystem', 'File', 'Templates', 'Preferences', function($scope, $timeout,$q, $window, $http, FileSystem, File, Templates, Preferences) {
+.controller('NavCtrl', ['$scope', '$timeout', '$q', '$window', '$http', 'FileSystem', 'File', 'Templates', function($scope, $timeout,$q, $window, $http, FileSystem, File, Templates) {
 
 	var EXTENSION = 'cw';
 
@@ -16,8 +16,6 @@ angular.module('Clockdoc.Controllers')
 		var file = new File(entry, id);
 		readFile(file);
 	});
-
-	$scope.preferences = Preferences;
 
 	/*
 	 * Reads the FileSystemEntry file contents and sets it on the app
@@ -57,7 +55,7 @@ angular.module('Clockdoc.Controllers')
 			return $scope.speedBump($scope.openEndpoint.bind(this, endpoint, true));
 		}
 
-		if (Preferences.readonly) {
+		if ($scope.preferences.readonly) {
 			$scope.setReadonly(true);
 		}
 
@@ -111,7 +109,7 @@ angular.module('Clockdoc.Controllers')
 			return $scope.speedBump($scope.open.bind(this, file, true));
 		}
 
-		if (Preferences.readonly) {
+		if ($scope.preferences.readonly) {
 			$scope.setReadonly(true);
 		}
 
