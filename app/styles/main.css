@@ -483,7 +483,11 @@ section {
 }
 
 .breadcrumb {
-	background: #F6FFDB;
+	background: rgba(246, 255, 219, 0.95);
+}
+
+.breadcrumb .feature-title {
+	cursor: hand;
 }
 
 
