@@ -191,7 +191,7 @@ angular.module('Clockdoc.Models')
 		var section = this.createFeature('Untitled Section');
 		this.root.sections.splice(sectionIndex, 0, section);
 		this.refresh();
-		return section.guid;
+		return section;
 	};
 
 	Doc.prototype.deleteSection = function(index) {
@@ -219,7 +219,7 @@ angular.module('Clockdoc.Models')
 		featureIndex = featureIndex || features.length + 1;
 		features.splice(featureIndex, 0, feature);
 		this.refresh();
-		return feature.guid;
+		return feature;
 	};
 
 	/// Tag methods ///
@@ -256,7 +256,7 @@ angular.module('Clockdoc.Models')
 		}
 		var flag = this.createFlag(type);
 		flags.push(flag);
-		return flag.guid;
+		return flag;
 	};
 
 	Doc.prototype.deleteFlag = function(flags, index) {

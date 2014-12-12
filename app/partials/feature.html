@@ -1,4 +1,4 @@
-<div class="feature-header input-group" cw-waypoint="setActiveItem(feature)" ng-class="{'stuck': activeGuids[feature.guid]}">
+<div class="feature-header input-group" cw-waypoint="setActiveItem(feature)" ng-class="{'stuck': activeGuids[feature.guid]}" id="{{feature.guid}}">
 	<div ng-show="!readonly" class="input-group-addon tilter">
 		<div class="dropdown">
 			<button class="btn btn-link dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></button>
@@ -18,13 +18,13 @@
 				</li>
 
 				<li class="divider"></li>
-				<li><a exec="strikeThrough" exec-target="#{{feature.guid}}"><cw-icon type="remove"></cw-icon> Strike Feature</a></li>
+				<li><a exec="strikeThrough" exec-target="#{{feature.guid}}-title"><cw-icon type="remove"></cw-icon> Strike Feature</a></li>
 				<li modal modal-click="deleteFeature(section, feature)" modal-title="Delete '{{feature.title}}'?" modal-body="Are you sure you want to delete '{{feature.title}}'?"><cw-icon type="trash"></cw-icon> Delete Feature</li>
 			</ul>
 		</div>
 	</div>
 	<div class="input-group-addon"><span class="feature-id">{{feature.id}}</span></div>
-	<input class="feature-title form-control" ng-disabled="readonly" type="text" ng-model="feature.title" id="{{feature.guid}}" />
+	<input class="feature-title form-control" ng-disabled="readonly" type="text" ng-model="feature.title" id="{{feature.guid}}-title" />
 </div>
 <div ng-show="!collapsed" class="feature-tags">
 	<ul>
