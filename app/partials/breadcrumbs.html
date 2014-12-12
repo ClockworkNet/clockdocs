@@ -1,4 +1,4 @@
-<ul class="feature-breadcrumb-list breadcrumb" ng-show="activeTree">
+<ul class="feature-breadcrumb-list breadcrumb" ng-show="doc.root && activeTree && ! search.string">
 	<li ng-repeat="node in activeTree">
 		<span class="breadcrumb-toggle">
 			<span class="btn btn-link"  ng-if="readonly"><cw-icon type="chevron-right"></cw-icon></span>
