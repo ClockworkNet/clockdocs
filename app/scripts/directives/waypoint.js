@@ -10,7 +10,8 @@ angular.module('Clockdoc.Directives')
 		},
 		link: function(scope, el, attrs) {
 			var options = {
-				offset: 300,
+				continuous: false,
+				offset: 330,
 			};
 			var prefix  = 'cwWaypoint';
 			for (var key in attrs) {

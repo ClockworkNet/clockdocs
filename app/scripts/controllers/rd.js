@@ -66,17 +66,19 @@ angular.module('Clockdoc.Controllers')
 	};
 
 	$scope.setActiveItem = function(item) {
-		$scope.activeItem = item;
-		$scope.activeGuids = {};
-		$scope.activeTree = [];
+		$scope.$apply(function() {
+			$scope.activeItem = item;
+			$scope.activeGuids = {};
+			$scope.activeTree = [];
 
-		var node = $scope.doc.findNode(item.guid);
-		while (node && node.parent) {
-			$scope.activeGuids[node.item.guid] = true;
-			$scope.activeTree.push(node);
-			node = node.parent;
-		}
-		$scope.activeTree.reverse();
+			var node = $scope.doc.findNode(item.guid);
+			while (node && node.parent) {
+				$scope.activeGuids[node.item.guid] = true;
+				$scope.activeTree.push(node);
+				node = node.parent;
+			}
+			$scope.activeTree.reverse();
+		});
 	};
 
 	$scope.setWorking = function(value) {
