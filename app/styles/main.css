@@ -482,12 +482,26 @@ section {
 	background: transparent;
 }
 
-.breadcrumb {
-	background: rgba(246, 255, 219, 0.95);
+.breadcrumb, .breadcrumb .dropdown-menu {
+	background-color: rgba(246, 255, 219, 0.95);
 }
 
 .breadcrumb .feature-title {
 	cursor: hand;
+}
+
+.breadcrumb .dropdown-menu {
+	top: inherit;
+	left: inherit;
+}
+
+.breadcrumb-toggle .btn {
+	margin-bottom: 12px;
+}
+
+.feature-breadcrumb-list.breadcrumb > li + li:before {
+	padding: 0;
+	content: none;
 }
 
 

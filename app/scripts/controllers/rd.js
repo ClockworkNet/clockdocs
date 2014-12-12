@@ -167,7 +167,9 @@ angular.module('Clockdoc.Controllers')
 	};
 
 	$scope.deleteSection = function(index) {
-		$scope.doc.deleteSection(index);
+		$scope.$apply(function() {
+			$scope.doc.deleteSection(index);
+		});
 	};
 
 	/// Feature methods ///
@@ -178,7 +180,9 @@ angular.module('Clockdoc.Controllers')
 	};
 
 	$scope.deleteFeature = function(section, feature) {
-		$scope.doc.deleteFeature(section, feature);
+		$scope.$apply(function() {
+			$scope.doc.deleteFeature(section, feature);
+		});
 	};
 
 	$scope.insertFeature = function(features, featureIndex) {
@@ -210,7 +214,9 @@ angular.module('Clockdoc.Controllers')
 	};
 
 	$scope.deleteFlag = function(flags, index) {
-		$scope.doc.deleteFlag(flags, index);
+		$scope.$apply(function() {
+			$scope.doc.deleteFlag(flags, index);
+		});
 	};
 
 	$scope.moveItem = function(parentGuid, guid, newIndex) {

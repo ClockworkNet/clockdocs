@@ -27,14 +27,7 @@
 
 	<div class="row doc-breadcrumb" ng-if="!preferences.hideBreadcrumbs">
 		<div class="col-md-3"></div>
-		<div class="col-md-8">
-			<ul class="breadcrumb" ng-show="activeTree">
-				<li ng-repeat="node in activeTree" class="feature-breadcrumb level_{{node.level}}">
-					<span class="feature-id" ng-show="node.type === 'feature'">{{node.item.id}}</span>
-					<span class="feature-title" ng-click="scrollTo(node.item.guid)">{{node.item.title}}</span>
-				</li>
-			</ul>
-		</div>
+		<div class="col-md-8" ng-include="'partials/breadcrumbs.html'"></div>
 	</div>
 
 

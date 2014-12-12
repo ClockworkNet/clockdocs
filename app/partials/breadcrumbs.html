@@ -1,0 +1,16 @@
+<ul class="feature-breadcrumb-list breadcrumb" ng-show="activeTree">
+	<li ng-repeat="node in activeTree">
+		<span class="breadcrumb-toggle">
+			<a class="btn btn-link dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></a>
+			<ul class="dropdown-menu">
+				<li><a ng-click="insertFeature(node.item.features)"><cw-icon type="plus"></cw-icon> New <span ng-show="node.type === 'feature'">Sub-</span>Feature in {{node.item.title}}</a></li>
+				<li ng-if="node.type === 'section'"><a ng-click="insertSection(node.index)"><cw-icon type="arrow-up"></cw-icon> New Section Above {{node.item.title}}</a></li>
+				<li ng-if="node.type === 'section'"><a ng-click="insertSection(node.index + 1)"><cw-icon type="arrow-down"></cw-icon> New Section Below {{node.item.title}}</a></li>
+			</ul>
+		</span>
+		<span class="feature-breadcrumb level_{{node.level}}">
+			<span class="feature-id" ng-show="node.type === 'feature'">{{node.item.id}}</span>
+			<span class="feature-title" ng-click="scrollTo(node.item.guid)">{{node.item.title}}</span>
+		</span>
+	</li>
+</ul>
