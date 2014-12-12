@@ -1,7 +1,8 @@
 <ul class="feature-breadcrumb-list breadcrumb" ng-show="activeTree">
 	<li ng-repeat="node in activeTree">
 		<span class="breadcrumb-toggle">
-			<a class="btn btn-link dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></a>
+			<span class="btn btn-link"  ng-if="readonly"><cw-icon type="chevron-right"></cw-icon></span>
+			<a ng-if="!readonly" class="btn btn-link dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></a>
 			<ul class="dropdown-menu">
 				<li><a ng-click="insertFeature(node.item.features)"><cw-icon type="plus"></cw-icon> New <span ng-show="node.type === 'feature'">Sub-</span>Feature in {{node.item.title}}</a></li>
 				<li ng-if="node.type === 'section'"><a ng-click="insertSection(node.index)"><cw-icon type="arrow-up"></cw-icon> New Section Above {{node.item.title}}</a></li>
