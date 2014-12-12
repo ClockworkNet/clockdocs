@@ -5,23 +5,37 @@
 	<cw-hotkey key="F" ctrl="true" action="search.on = !search.on"></cw-hotkey>
 	<cw-hotkey key="F" meta="true" action="search.on = !search.on"></cw-hotkey>
 
-	<header class="row doc-header header-alt" ng-if="doc.root">
-		<div class="col-md-11">
-			<div aria-hidden="true" class="cw_icon-cw_big logo"></div>
-			<h1><span class="version-num">v.{{getRevision()}}</span> <input ng-disabled="readonly" ng-model="doc.root.title" type="text" /></h1>
-		</div>
-		<div class="col-md-1">
-			<div class="form-inline pull-right slide" ng-class="{'down': search.on || search.string, 'up': !search.on && !search.string}">
-				<div class="input-group">
-					<input ng-model="search.pending" class="form-control" id="search.pending" placeholder="Find" />
-					<div class="input-group-btn">
-						<button ng-if="search.pending && search.string != search.pending" ng-click="search.string = search.pending" class="btn btn-default"><cw-icon type="zoom-in"></cw-icon></button>
-						<button ng-if="search.string" ng-click="search.string = ''; search.pending = '';" class="btn"><cw-icon type="remove"></cw-icon></button>
+	<header class="doc-header header-alt" ng-if="doc.root">
+		<div class="row">
+			<div class="col-xs-8">
+				<div aria-hidden="true" class="cw_icon-cw_big logo"></div>
+				<h1><span class="version-num">v.{{getRevision()}}</span> <input ng-disabled="readonly" ng-model="doc.root.title" type="text" /></h1>
+			</div>
+			<div class="col-xs-4">
+				<div class="form-inline pull-right slide" ng-class="{'down': search.on || search.string, 'up': !search.on && !search.string}">
+					<div class="input-group">
+						<input ng-model="search.pending" class="form-control" id="search.pending" placeholder="Find" />
+						<div class="input-group-btn">
+							<button ng-if="search.pending && search.string != search.pending" ng-click="search.string = search.pending" class="btn btn-default"><cw-icon type="zoom-in"></cw-icon></button>
+							<button ng-if="search.string" ng-click="search.string = ''; search.pending = '';" class="btn"><cw-icon type="remove"></cw-icon></button>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</header>
+
+	<div class="row doc-breadcrumb">
+		<div class="col-md-3"></div>
+		<div class="col-md-9">
+			<ul class="breadcrumb" ng-show="activeTree">
+				<li ng-repeat="node in activeTree" class="feature-breadcrumb level_{{node.level}}">
+					<span class="feature-id" ng-show="node.type === 'feature'">{{node.item.id}}</span>
+					<span class="feature-title">{{node.item.title}}</span>
+				</li>
+			</ul>
+		</div>
+	</div>
 
 
 	<div class="row doc-container" ng-if="doc.root">
@@ -76,7 +90,7 @@
 				</tfoot>
 			</table>
 
-			<section ng-repeat="section in doc.root.sections | filter:search.string">
+			<section ng-repeat="section in doc.root.sections | filter:search.string" cw-waypoint="setActiveItem(section)">
 				<div ng-class="{'input-group': !readonly}">
 					<div ng-hide="readonly" class="input-group-addon">
 						<button class="btn btn-link dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></button>

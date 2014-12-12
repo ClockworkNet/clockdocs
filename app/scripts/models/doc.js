@@ -89,7 +89,7 @@ angular.module('Clockdoc.Models')
 
 	Doc.prototype.createFlag = function(type) {
 		var flag = {};
-		this.flagTypes.some(function(f) {
+		Doc.flagTypes.some(function(f) {
 			if (f.type === type) {
 				flag = f;
 				return true;

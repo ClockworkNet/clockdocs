@@ -1,4 +1,4 @@
-<div class="feature-header input-group">
+<div class="feature-header input-group" cw-waypoint="setActiveItem(feature)" ng-class="{'stuck': activeGuids[feature.guid]}">
 	<div ng-show="!readonly" class="input-group-addon tilter">
 		<div class="dropdown">
 			<button class="btn btn-link dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></button>

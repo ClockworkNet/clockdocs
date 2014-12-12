@@ -11,6 +11,11 @@ angular.module('Clockdoc.Controllers')
 	/* The in-memory file being manipulated */
 	$scope.doc = null;
 
+	/* Tracks the feature or section element currently in view */
+	$scope.activeItem = null;
+	$scope.activeGuids = {};
+	$scope.activeTree = [];
+
 	/* A reference to the file current and most recent sources (filesystem and/or svn) */
 	$scope.files = {
 		current: {},
@@ -57,6 +62,20 @@ angular.module('Clockdoc.Controllers')
 			revisions: [],
 			sections: []
 		};
+	};
+
+	$scope.setActiveItem = function(item) {
+		$scope.activeItem = item;
+		$scope.activeGuids = {};
+		$scope.activeTree = [];
+
+		var node = $scope.doc.findNode(item.guid);
+		while (node && node.parent) {
+			$scope.activeGuids[node.item.guid] = true;
+			$scope.activeTree.push(node);
+			node = node.parent;
+		}
+		$scope.activeTree.reverse();
 	};
 
 	$scope.setWorking = function(value) {
@@ -186,7 +205,7 @@ angular.module('Clockdoc.Controllers')
 	};
 
 	$scope.deleteFlag = function(flags, index) {
-		$scope.deleteFlag(flags, index);
+		$scope.doc.deleteFlag(flags, index);
 	};
 
 	$scope.moveItem = function(parentGuid, guid, newIndex) {

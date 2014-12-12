@@ -307,6 +307,11 @@ input[disabled] {
 	
 }
 
+.stuck {
+	background: white;
+	box-shadow: 0 0 10px yellow;
+}
+
 section {
 	padding-top: 2em;
 }
@@ -342,20 +347,20 @@ section {
 .feature.level_0 {
 	margin-top: 1em;
 }
-.feature.level_0 .feature-title, .feature.level_0 .feature-id {
+.feature.level_0 .feature-title, .feature.level_0 .feature-id, .feature-breadcrumb.level_0 {
 	font-size: 1.8em;
 	font-family: "ProximaNovaCondSemiBold",Helvetica,Arial,sans-serif;
 
 }
-.feature.level_1 .feature-title, .feature.level_1 .feature-id {
+.feature.level_1 .feature-title, .feature.level_1 .feature-id, .feature-breadcrumb.level_1 {
 	font-size: 1.5em;
 	font-family: "ProximaNovaCondRegular",Helvetica,Arial,sans-serif;
 }
-.feature.level_2 .feature-title, .feature.level_2 .feature-id {
+.feature.level_2 .feature-title, .feature.level_2 .feature-id, .feature-breadcrumb.level_2 {
 	font-size: 1.5em;
 	font-style: italic;
 }
-.feature.level_3 .feature-title, .feature.level_3 .feature-id {
+.feature.level_3 .feature-title, .feature.level_3 .feature-id, .feature-breadcrumb.level_3 {
 	font-size: 1.3em;
 	font-weight: 400;
 }
@@ -469,6 +474,13 @@ section {
 	border: solid 1px rgba(0, 0, 0, 0);
 }
 
+.doc-breadcrumb {
+	top: 110px;
+	position: fixed;
+	width: 100%;
+	z-index: 3;
+	background: transparent;
+}
 
 
 /* =============================================================================
