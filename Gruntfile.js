@@ -350,17 +350,13 @@ module.exports = function (grunt) {
                     src: ['**'],
                     dest: ''
                 }]
-            },
-            latest: {
-                options: {
-                    archive: 'package/clockdocs-latest.zip'
-                },
-                files: [{
-                    expand: true,
-                    cwd: 'dist/',
-                    src: ['**'],
-                    dest: ''
-                }]
+            }
+        },
+        crx: {
+            dist: {
+                src: 'dist/',
+                dest: 'package/clockdocs-latest.crx',
+                privateKey: '~/.ssh/chrome-apps.pem'
             }
         }
     });
@@ -412,7 +408,7 @@ module.exports = function (grunt) {
         'copy:dist',
         'usemin',
         'compress:dist',
-        'compress:latest'
+        'crx:dist'
     ]);
 
     grunt.registerTask('default', [

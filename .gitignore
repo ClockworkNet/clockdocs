@@ -1,6 +1,7 @@
 *.vim
 .DS_Store
 .svn
+.pem
 app/host/build
 app/host/*.json
 node_modules
