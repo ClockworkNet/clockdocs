@@ -354,7 +354,7 @@ module.exports = function (grunt) {
         },
         crx: {
             dist: {
-                src: 'dist/',
+                src: 'dist',
                 dest: 'package/clockdocs-latest.crx',
                 privateKey: '~/.ssh/chrome-apps.pem'
             }
