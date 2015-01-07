@@ -58,7 +58,8 @@ angular.module('Clockdoc.Models')
 
 	Doc.availableTags = [
 		'Out of Scope',
-		'Future Phase'
+		'Future Phase',
+		'Removed'
 	];
 
 	Doc.prototype.createRoot = function() {

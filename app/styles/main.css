@@ -283,11 +283,15 @@ ul.cw-sortable li a:active .draggable {
 .feature-tag  {
 	white-space: nowrap;
 }
-.feature-tag.future-phase {
+.future-phase {
 	color: green;
 }
-.feature-tag.out-of-scope {
+.out-of-scope {
 	color: red;
+}
+.removed {
+	color: gray;
+	text-decoration: line-through;
 }
 
 

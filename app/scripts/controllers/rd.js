@@ -193,6 +193,13 @@ angular.module('Clockdoc.Controllers')
 	};
 
 	/// Tag methods ///
+	$scope.tagAbbrs = function(feature) {
+		var abbrify = function(s) {
+			return s.replace(/[^a-zA-Z0-9]/gi, '-').toLowerCase();
+		};
+		return feature.tags.map(abbrify).join(' ');
+	};
+
 	$scope.featureHasTag = function(feature, tag) {
 		return $scope.doc.featureHasTag(feature, tag);
 	};
@@ -202,7 +209,7 @@ angular.module('Clockdoc.Controllers')
 	};
 
 	$scope.addTag = function(feature, tag) {
-		$scope.addTag(feature, tag);
+		$scope.doc.addTag(feature, tag);
 	};
 
 	$scope.removeTag = function(feature, tag) {

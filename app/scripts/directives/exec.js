@@ -12,7 +12,10 @@ angular.module('Clockdoc.Directives')
 			el.on('click', function() {
 				var cmds = attrs.exec.split(' ');
 				var target = $(attrs.execTarget);
-				if (target) {target.focus();}
+				if (target) {
+					target.focus();
+					target.select();
+				}
 				document.execCommand('selectAll', false, null);
 				cmds.forEach(function(cmd) {
 					document.execCommand(cmd, false, null);

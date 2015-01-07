@@ -429,17 +429,11 @@
 		</w:p>
 
 		{{#sections}}
-			<w:p>
-				<w:pPr><w:pStyle w:val="Heading1"/></w:pPr>
-				<w:r><w:t>{{title}}</w:t></w:r>
-			</w:p>
+			{{{heading}}}
 			{{{content}}}
 			{{#flags}}{{{content}}}{{/flags}}
 			{{#features}}
-				<w:p>
-					<w:pPr><w:pStyle w:val="Heading{{depth}}"/></w:pPr>
-					<w:r><w:t>{{prefix}}{{level}} {{title}}</w:t></w:r>
-				</w:p>
+				{{{heading}}}
 				{{{content}}}
 				{{#flags}}{{{content}}}{{/flags}}
 			{{/features}}

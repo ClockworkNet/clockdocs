@@ -50,14 +50,24 @@ angular.module('Clockdoc.Utils')
 		};
 	}
 
-	Ooxml.prototype.add = function(html) {
+	Ooxml.prototype.add = function(html, style) {
 		var input = $('<div/>').html(html).get(0);
 		var output = this._node(this.doc.getElementsByTagName('root')[0], 'body');
+		var format = null;
 
+		if (style) {
+			format = function(p, pr) {
+				this._node(pr, 'pStyle').setAttribute('val', style);
+			};
+		}
+
+		// Add the content to this document so that we can keep track
+		// of relationships
 		this._each(input.childNodes, function(inNode) {
-			this._paragraph(output, inNode);
+			this._paragraph(output, inNode, format);
 		});
 
+		// Collect all of the content and store the string version
 		var words = [];
 		this._each(output.childNodes, function(node) {
 			words.push(this._string(node));
