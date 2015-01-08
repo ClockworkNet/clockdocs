@@ -144,7 +144,7 @@ angular.module('Clockdoc.Utils')
 
 		format(prepared.sections, function(section) {
 			fixFlags(section.flags);
-			section.heading = ooxml.add(section.title, 'Heading1')
+			section.heading = ooxml.add(section.title, 'Heading1');
 			var prefix = section.title[0];
 			format(section.features, function(feature) {
 				var heading = prefix + feature.level + ' ' + feature.title;

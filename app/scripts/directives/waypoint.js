@@ -2,7 +2,12 @@
 'use strict';
 
 angular.module('Clockdoc.Directives')
-.directive('cwWaypoint', ['$timeout', function($timeout) {
+.directive('cwWaypoint', ['debounce', function(debounce) {
+	var action = function() {};
+	var callAction = debounce(function() {
+		action();
+	}, 100);
+
 	return {
 		restrict: 'A',
 		scope: {
@@ -25,10 +30,12 @@ angular.module('Clockdoc.Directives')
 				options[option] = attrs[key];
 			}
 
-			var action = function() {
-				$timeout(scope.action);
+			var setAction = function() {
+				action = scope.action;
+				callAction();
 			};
-			el.waypoint(action, options);
+
+			el.waypoint(setAction, options);
 		}
 	};
 }]);

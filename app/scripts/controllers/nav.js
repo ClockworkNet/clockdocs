@@ -23,7 +23,6 @@ angular.module('Clockdoc.Controllers')
 	function readFile(file) {
 		FileSystem.read(file)
 		.then(function(file) {
-			$scope.setWorking(false);
 			if (!file || !file.content) {
 				return;
 			}
@@ -37,7 +36,10 @@ angular.module('Clockdoc.Controllers')
 				$scope.warn('Error', 'There is a problem with your file.');
 			}
 		})
-		.catch($scope.forgetFile.bind(null, file));
+		.catch($scope.forgetFile.bind(null, file))
+		.finally(function() {
+			$scope.setWorking(false);
+		});
 	}
 
 	/// Filesystem Methods ///
