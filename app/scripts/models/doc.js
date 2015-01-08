@@ -325,7 +325,7 @@ angular.module('Clockdoc.Models')
 
 	Doc.prototype.getRevision = function() {
 		var revs = this.root.revisions;
-		if (!revs) {
+		if (!revs || revs.length === 0) {
 			return 0.0;
 		}
 		return revs[revs.length - 1].revision;

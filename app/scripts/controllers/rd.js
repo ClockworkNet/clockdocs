@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('Clockdoc.Controllers')
-.controller('RdCtrl', ['$scope', '$timeout', 'Doc', 'Random', 'Scroll', 'Stylesheet', 'Monitor', 'Platform', 'RecentFiles', 'Preferences', function($scope, $timeout, Doc, Random, Scroll, Stylesheet, Monitor, Platform, RecentFiles, Preferences) {
+.controller('RdCtrl', ['$scope', '$timeout', '$http', 'Doc', 'Random', 'Scroll', 'Stylesheet', 'Monitor', 'Platform', 'RecentFiles', 'Preferences', function($scope, $timeout, $http, Doc, Random, Scroll, Stylesheet, Monitor, Platform, RecentFiles, Preferences) {
 
 	// Load platform information
 	Platform.load($scope, 'platform');
@@ -82,7 +82,19 @@ angular.module('Clockdoc.Controllers')
 	};
 
 	$scope.setWorking = function(value) {
-		$scope.working = value;
+		if (!value) {
+			// Wait until we're truly not working
+			var wait = function() {
+				if ($http.pendingRequests.length > 0) {
+					return $timeout(wait);
+				}
+				$scope.working = false;
+			};
+			$timeout(wait);
+		}
+		else {
+			$scope.working = true;
+		}
 	};
 
 	$scope.watchForChange = function() {
