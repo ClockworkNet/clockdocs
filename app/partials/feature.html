@@ -34,7 +34,9 @@
 	</ul>
 </div>
 <button ng-hide="collapsed || readonly" cw-rte="feature" cw-rte-toggle="#{{feature.guid}}-content" class="btn btn-link"><cw-icon type="edit"></cw-icon> Open in Rich Text Editor</button>
-<div ng-hide="collapsed" class="feature-content" id="{{feature.guid}}-content" ng-class="{'no-print':!feature.content.length}" ng-disabled="readonly" cw-editable ng-model="feature.content"></div>
+
+<div ng-hide="collapsed" class="feature-content {{tagAbbrs(feature)}}" id="{{feature.guid}}-content" ng-class="{'no-print':!feature.content.length}" ng-disabled="readonly" cw-editable ng-model="feature.content"></div>
+
 <div ng-hide="collapsed" class="flags" id="{{feature.guid}}-flags" ng-include="'partials/flags.html'" ng-init="flags = feature.flags" />
 
 <div ng-show="collapsed" class="collapsed">

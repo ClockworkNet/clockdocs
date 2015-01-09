@@ -185,6 +185,7 @@ input[type=text] {
    ========================================================================== */
 .doc-toc {
 	margin-left: 0.5em;
+	padding-top: 3.5em;
 }
 .doc-toc .box-emp {
 	position: fixed;
