@@ -336,6 +336,11 @@ section {
 	display: inline-block;
 	padding: 0.5em;
 }
+
+.feature-cost {
+	margin-top: 12px;
+}
+
 .feature-id {
 	color: rgb(165, 171, 125);
 }
