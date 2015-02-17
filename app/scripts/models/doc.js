@@ -2,8 +2,10 @@
 'use strict';
 
 angular.module('Clockdoc.Models')
-.factory('Doc', ['$filter', 'Random', function($filter, Random) {
+.factory('Doc', ['$filter', 'Random', 'Feature', function($filter, Random, Feature) {
 
+	// Nodes are used to keep a flat record of the
+	// internal tree structure of a document.
 	function Node(section, parent, item) {
 		this.section = section;
 		this.parent = parent;
@@ -28,9 +30,7 @@ angular.module('Clockdoc.Models')
 
 	function Doc(root) {
 		// Stores the data object for this document
-		this.root = root || this.createRoot();
-		this.nodes = {};
-		this.refresh();
+		this.setRoot(root);
 	}
 
 	Doc.flagTypes = [
@@ -62,6 +62,25 @@ angular.module('Clockdoc.Models')
 		'Removed'
 	];
 
+	Doc.prototype.setRoot = function(root) {
+		root = root || this.createRoot();
+
+		this.root = root;
+
+		// Hydrate the Feature objects
+		if (this.root.sections) {
+			for (var i=0; i<this.root.sections.length; i++) {
+				this.root.sections[i] = new Feature(this.root.sections[i]);
+			}
+		}
+
+		// Stores a flat object as an id => node lookup
+		this.nodes = {};
+
+		// Updte the nodes
+		this.refresh();
+	};
+
 	Doc.prototype.createRoot = function() {
 		return {
 			title: '',
@@ -76,16 +95,7 @@ angular.module('Clockdoc.Models')
 	};
 
 	Doc.prototype.createFeature = function(title) {
-		title = title || 'Untitled';
-		var feature = {
-			'title': title,
-			'guid': Random.id(),
-			'content': '',
-			'features': [],
-			'flags': [],
-			'tags': []
-		};
-		return feature;
+		return new Feature({title: title});
 	};
 
 	Doc.prototype.createFlag = function(type) {
@@ -173,21 +183,6 @@ angular.module('Clockdoc.Models')
 		return this.nodes[guid];
 	};
 
-	// Recursively access each feature in a section;
-	// Until the callback returns false
-	Doc.prototype.eachItem = function(section, key, callback, level) {
-		if (!section[key] || !section[key].some) {return;}
-		level = level || 0;
-		var each = this.eachItem.bind(this);
-		section[key].some(function(f, i) {
-			var go = callback(f, i, section[key], level);
-			if (go === false) {
-				return true;
-			}
-			each(f, key, callback, level + 1);
-		});
-	};
-
 	Doc.prototype.insertSection = function(sectionIndex) {
 		var section = this.createFeature('Untitled Section');
 		this.root.sections.splice(sectionIndex, 0, section);
@@ -201,7 +196,7 @@ angular.module('Clockdoc.Models')
 
 	/// Feature methods ///
 	Doc.prototype.deleteFeature = function(section, feature) {
-		this.eachItem(section, 'features', function(f, i, a) {
+		section.eachFeature(function(f, i, a) {
 			if (f.guid !== feature.guid) {
 				return true;
 			}

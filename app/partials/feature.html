@@ -9,6 +9,9 @@
 				<li ng-show="!collapsed"><a ng-click="collapsed = true"><cw-icon type="collapse-up"></cw-icon> Collapse Content</a></li>
 				<li ng-show="collapsed"><a ng-click="collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Content</a></li>
 
+				<li ng-hide="feature.cost" class="divider"></li>
+				<li ng-hide="feature.cost"><a ng-click="feature.cost = 1"><cw-icon type="hourglass"></cw-icon> Add Time</a></li>
+
 				<li class="divider"></li>
 				<li ng-repeat="ft in flagTypes"><a ng-click="insertFlag(feature.flags, ft.type)"><cw-icon type="flag"></cw-icon> New {{ft.name}}</a></li>
 
@@ -25,6 +28,25 @@
 	<div class="input-group-addon"><span class="feature-id">{{feature.id}}</span></div>
 	<input class="feature-title form-control" ng-disabled="readonly" type="text" ng-model="feature.title" id="{{feature.guid}}-title" />
 </div>
+
+<div ng-show="!collapsed && (addCost || feature.cost)" class="feature-cost">
+	<div class="btn-group">
+		<button class="btn btn-default" ng-click="feature.cost = 0" ng-class="{active: feature.cost === 0}">0</button>
+		<button class="btn btn-default" ng-click="feature.cost = 1" ng-class="{active: feature.cost === 1}">1</button>
+		<button class="btn btn-default" ng-click="feature.cost = 2" ng-class="{active: feature.cost === 2}">2</button>
+		<button class="btn btn-default" ng-click="feature.cost = 3" ng-class="{active: feature.cost === 3}">3</button>
+		<button class="btn btn-default" ng-click="feature.cost = 5" ng-class="{active: feature.cost === 5}">5</button>
+		<button class="btn btn-default" ng-click="feature.cost = 8" ng-class="{active: feature.cost === 8}">8</button>
+		<button class="btn btn-default" ng-click="feature.cost = 13" ng-class="{active: feature.cost === 13}">13</button>
+		<button class="btn btn-default" ng-click="feature.cost = 20" ng-class="{active: feature.cost === 20}">20</button>
+		<button class="btn btn-default" ng-click="feature.cost = 40" ng-class="{active: feature.cost === 40}">40</button>
+		<button class="btn btn-default" ng-click="feature.cost = 60" ng-class="{active: feature.cost === 60}">60</button>
+		<button class="btn btn-default" ng-click="feature.cost = 100" ng-class="{active: feature.cost === 100}">100</button>
+		<button class="btn btn-default" ng-click="feature.cost = 200" ng-class="{active: feature.cost === 200}">200</button>
+		<button class="btn btn-default" ng-click="feature.cost = 400" ng-class="{active: feature.cost === 400}">LPS</button>
+	</div>
+</div>
+
 <div ng-show="!collapsed" class="feature-tags">
 	<ul>
 		<li ng-repeat="tag in feature.tags | filter:search.string">
