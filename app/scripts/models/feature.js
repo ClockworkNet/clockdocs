@@ -7,12 +7,22 @@ angular.module('Clockdoc.Models')
 	function Feature(data) {
 		this.title    = data.title    || 'Untitled';
 		this.guid     = data.guid     || Random.id();
-		this.cost     = data.cost     || 0;
+		this.cost     = data.cost     || {};
 		this.content  = data.content  || '';
 		this.flags    = data.flags    || [];
 		this.tags     = data.tags     || [];
+		this.costKeys = Feature.CostKeys;
 		this.setFeatures(data.features);
 	}
+
+	Feature.CostKeys = {
+		'all'         : 'Overall',
+		'design'      : 'Design',
+		'development' : 'Development',
+		'production'  : 'Production',
+		'testing'     : 'Testing',
+		'ux'          : 'User Experience'
+	};
 
 	// Recursively create child features.
 	Feature.prototype.setFeatures = function(features) {
@@ -40,11 +50,31 @@ angular.module('Clockdoc.Models')
 		}
 	};
 
+	Feature.prototype.newCost = function(key, value) {
+		key = key || 'all';
+		this.cost[key] = value || 0;
+	};
+
+	Feature.prototype.updateCostKey = function(oldKey, newKey) {
+		this.cost[newKey] = this.cost[oldKey];
+		delete this.cost[oldKey];
+	};
+
+	Feature.prototype.removeCost = function(key) {
+		delete this.cost[key];
+	};
+
 	Feature.prototype.totalCost = function() {
-		var total = this.cost || 0;
+		var total = 0;
+
+		for (var key in this.cost) {
+			total += this.cost[key];
+		}
+
 		for (var i=0; i<this.features.length; i++) {
 			total += this.features[i].totalCost();
 		}
+
 		return total;
 	};
 

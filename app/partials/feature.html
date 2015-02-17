@@ -9,8 +9,8 @@
 				<li ng-show="!collapsed"><a ng-click="collapsed = true"><cw-icon type="collapse-up"></cw-icon> Collapse Content</a></li>
 				<li ng-show="collapsed"><a ng-click="collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Content</a></li>
 
-				<li ng-hide="feature.cost" class="divider"></li>
-				<li ng-hide="feature.cost"><a ng-click="feature.cost = 1"><cw-icon type="hourglass"></cw-icon> Add Time</a></li>
+				<li class="divider"></li>
+				<li><a ng-click="feature.newCost()"><cw-icon type="hourglass"></cw-icon> Add Time</a></li>
 
 				<li class="divider"></li>
 				<li ng-repeat="ft in flagTypes"><a ng-click="insertFlag(feature.flags, ft.type)"><cw-icon type="flag"></cw-icon> New {{ft.name}}</a></li>
@@ -29,21 +29,36 @@
 	<input class="feature-title form-control" ng-disabled="readonly" type="text" ng-model="feature.title" id="{{feature.guid}}-title" />
 </div>
 
-<div ng-show="!collapsed && (addCost || feature.cost)" class="feature-cost">
-	<div class="btn-group">
-		<button class="btn btn-default" ng-click="feature.cost = 0" ng-class="{active: feature.cost === 0}">0</button>
-		<button class="btn btn-default" ng-click="feature.cost = 1" ng-class="{active: feature.cost === 1}">1</button>
-		<button class="btn btn-default" ng-click="feature.cost = 2" ng-class="{active: feature.cost === 2}">2</button>
-		<button class="btn btn-default" ng-click="feature.cost = 3" ng-class="{active: feature.cost === 3}">3</button>
-		<button class="btn btn-default" ng-click="feature.cost = 5" ng-class="{active: feature.cost === 5}">5</button>
-		<button class="btn btn-default" ng-click="feature.cost = 8" ng-class="{active: feature.cost === 8}">8</button>
-		<button class="btn btn-default" ng-click="feature.cost = 13" ng-class="{active: feature.cost === 13}">13</button>
-		<button class="btn btn-default" ng-click="feature.cost = 20" ng-class="{active: feature.cost === 20}">20</button>
-		<button class="btn btn-default" ng-click="feature.cost = 40" ng-class="{active: feature.cost === 40}">40</button>
-		<button class="btn btn-default" ng-click="feature.cost = 60" ng-class="{active: feature.cost === 60}">60</button>
-		<button class="btn btn-default" ng-click="feature.cost = 100" ng-class="{active: feature.cost === 100}">100</button>
-		<button class="btn btn-default" ng-click="feature.cost = 200" ng-class="{active: feature.cost === 200}">200</button>
-		<button class="btn btn-default" ng-click="feature.cost = 400" ng-class="{active: feature.cost === 400}">LPS</button>
+<div ng-show="!collapsed" class="feature-cost row">
+	<div ng-repeat="(key, value) in feature.cost">
+		<div class="col-xs-2 text-right">
+			<div class="btn-group btn-group-lg">
+				<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{feature.costKeys[key]}} <span class="caret"></span></button>
+				<ul class="dropdown-menu">
+					<li ng-repeat="(abbr, title) in feature.costKeys"><a ng-click="feature.updateCostKey(key, abbr)">
+						<span ng-show="key === abbr"><cw-icon type="check"></cw-icon></span>
+						{{title}}
+					</a></li>
+					<li class="divider"></li>
+					<li><a ng-click="feature.removeCost(key)"><cw-icon type="trash"></cw-icon> Remove</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-xs-10 btn-group btn-group-lg">
+		<button class="btn btn-default" ng-click="feature.cost[key] = 0"   ng-class="{active: value === 0}"  >0</button>
+		<button class="btn btn-default" ng-click="feature.cost[key] = 1"   ng-class="{active: value === 1}"  >1</button>
+		<button class="btn btn-default" ng-click="feature.cost[key] = 2"   ng-class="{active: value === 2}"  >2</button>
+		<button class="btn btn-default" ng-click="feature.cost[key] = 3"   ng-class="{active: value === 3}"  >3</button>
+		<button class="btn btn-default" ng-click="feature.cost[key] = 5"   ng-class="{active: value === 5}"  >5</button>
+		<button class="btn btn-default" ng-click="feature.cost[key] = 8"   ng-class="{active: value === 8}"  >8</button>
+		<button class="btn btn-default" ng-click="feature.cost[key] = 13"  ng-class="{active: value === 13}" >13</button>
+		<button class="btn btn-default" ng-click="feature.cost[key] = 20"  ng-class="{active: value === 20}" >20</button>
+		<button class="btn btn-default" ng-click="feature.cost[key] = 40"  ng-class="{active: value === 40}" >40</button>
+		<button class="btn btn-default" ng-click="feature.cost[key] = 60"  ng-class="{active: value === 60}" >60</button>
+		<button class="btn btn-default" ng-click="feature.cost[key] = 100" ng-class="{active: value === 100}">100</button>
+		<button class="btn btn-default" ng-click="feature.cost[key] = 200" ng-class="{active: value === 200}">200</button>
+		<button class="btn btn-default" ng-click="feature.cost[key] = 400" ng-class="{active: value === 400}">LPS</button>
+	</div>
 	</div>
 </div>
 
