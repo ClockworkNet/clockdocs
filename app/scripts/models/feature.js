@@ -56,7 +56,8 @@ angular.module('Clockdoc.Models')
 	};
 
 	Feature.prototype.updateCostKey = function(oldKey, newKey) {
-		this.cost[newKey] = this.cost[oldKey];
+		var value = this.cost[oldKey];
+		this.cost[newKey] = value;
 		delete this.cost[oldKey];
 	};
 
