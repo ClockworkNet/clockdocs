@@ -6,5 +6,6 @@ test/
 dist/
 node_modules/
 temp
+package/*.zip
 .tmp
 .sass-cache
