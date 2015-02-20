@@ -280,4 +280,11 @@ angular.module('Clockdoc.Controllers')
 	$scope.setReadonly = function(value) {
 		$scope.readonly = value;
 	};
+
+	$scope.collapseAll = function(value) {
+		$scope.allCollapsed = value;
+		$scope.doc.eachFeature(function(f) {
+			f.collapsed = $scope.allCollapsed;
+		});
+	};
 }]);

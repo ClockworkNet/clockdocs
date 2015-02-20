@@ -183,6 +183,12 @@ angular.module('Clockdoc.Models')
 		return this.nodes[guid];
 	};
 
+	Doc.prototype.eachFeature = function(callback) {
+		for (var i=0; i<this.root.sections.length; i++) {
+			this.root.sections[i].eachFeature(callback);
+		}
+	};
+
 	Doc.prototype.insertSection = function(sectionIndex) {
 		var section = this.createFeature('Untitled Section');
 		this.root.sections.splice(sectionIndex, 0, section);

@@ -74,13 +74,22 @@
 						<li ng-show="doc.root"><a ng-click="export('json')"><cw-icon type="file"></cw-icon> Export As JSON</a></li>
 					</ul>
 				</li>
+				<li class="dropdown" ng-show="doc.root">
+					<a class="dropdown-toggle" data-toggle="dropdown"><cw-icon type="eye-open"></cw-icon> View <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li ng-class="{disabled: readonly}"><a ng-click="setReadonly(true)"><cw-icon type="lock"></cw-icon> Read Only</a></li>
+						<li ng-class="{disabled: !readonly}"><a ng-click="setReadonly(false)"><cw-icon type="edit"></cw-icon> Edit</a></li>
+						<li class="divider"></li>
+						<li ng-class="{disabled: allCollapsed}"><a ng-click="collapseAll(true)"><cw-icon type="minus"></cw-icon> Collapse All</a></li>
+						<li ng-class="{disabled: !allCollapsed}"><a ng-click="collapseAll(false)"><cw-icon type="plus"></cw-icon> Expand All</a></li>
+					</ul>
+				</li>
 				<li ng-show="doc.root"><a ng-click="print()"><cw-icon type="print"></cw-icon> Print</a></li>
 				<li><a data-toggle="modal" data-target="#help-modal"><cw-icon type="book"></cw-icon> Help</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li ng-show="doc.root" class="btn-group">
-					<a class="btn btn-link" ng-class="{active: readonly}" title="Switch to Read-Only Mode" ng-click="setReadonly(true)"><cw-icon type="lock"></cw-icon></a>
-					<a class="btn btn-link" ng-class="{active: !readonly}" title="Switch to Edit Mode" ng-click="setReadonly(false)"><cw-icon type="edit"></cw-icon></a>
+				<li ng-show="doc.root && !readonly"><a class="btn btn-link" title="Switch to Read Only Mode" ng-click="setReadonly(true)"><cw-icon type="edit"></cw-icon></a></li>
+				<li ng-show="doc.root && readonly"><a class="btn btn-link" title="Switch to Edit Mode" ng-click="setReadonly(false)"><cw-icon type="lock"></cw-icon></a>
 				</li>
 				<li><a class="btn btn-link" title="Preferences" data-toggle="modal" data-target="#preferences-modal"><cw-icon type="cog"></cw-icon></a></li>
 			</ul>

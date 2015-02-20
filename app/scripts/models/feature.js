@@ -5,14 +5,21 @@ angular.module('Clockdoc.Models')
 .factory('Feature', ['Random', function(Random) {
 
 	function Feature(data) {
-		this.title    = data.title    || 'Untitled';
-		this.guid     = data.guid     || Random.id();
-		this.cost     = data.cost     || {};
-		this.content  = data.content  || '';
-		this.flags    = data.flags    || [];
-		this.tags     = data.tags     || [];
-		this.costKeys = Feature.CostKeys;
+		this.title     = data.title     || 'Untitled';
+		this.guid      = data.guid      || Random.id();
+		this.cost      = data.cost      || {};
+		this.content   = data.content   || '';
+		this.flags     = data.flags     || [];
+		this.tags      = data.tags      || [];
+		this.costKeys  = data.costKeys  || Feature.CostKeys;
+
 		this.setFeatures(data.features);
+
+		Object.defineProperty(this, 'collapsed', {
+			value      : false,
+			writable   : true,
+			enumerable : false
+		});
 	}
 
 	Feature.CostKeys = {

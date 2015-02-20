@@ -90,8 +90,8 @@
 							<li><a ng-click="insertFeature(section.features)"><cw-icon type="plus"></cw-icon> New Feature</a></li>
 
 							<li class="divider">
-							<li ng-show="!collapsed"><a ng-click="collapsed = true"><cw-icon type="collapse-up"></cw-icon> Collapse Section</a></li>
-							<li ng-show="collapsed"><a ng-click="collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Section</a></li>
+							<li ng-show="!section.collapsed"><a ng-click="section.collapsed = true"><cw-icon type="collapse-up"></cw-icon> Collapse Section</a></li>
+							<li ng-show="section.collapsed"><a ng-click="section.collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Section</a></li>
 
 							<li class="divider"></li>
 							<li ng-repeat="ft in flagTypes | filter:search.string"><a ng-click="insertFlag(section.flags, ft.type)"><cw-icon type="flag"></cw-icon> New {{ft.name}}</a></li>
@@ -104,16 +104,16 @@
 					</div>
 					<input class="section-title form-control" type="text" id="{{section.guid}}-section" ng-disabled="readonly" ng-model="section.title" />
 				</div>
-				<button ng-hide="collapsed || readonly" cw-rte="section" cw-rte-toggle="#{{section.guid}}-content" class="btn btn-link"><cw-icon type="edit"></cw-icon> Open in Rich Text Editor</button>
-				<div ng-hide="collapsed || (readonly && !section.content.length)" class="section-content" id="{{section.guid}}-content" cw-editable ng-class="{'no-print':!feature.content.length}" ng-model="section.content"></div>
-				<div ng-hide="collapsed" class="flags" ng-include="'partials/flags.html'" ng-init="flags = section.flags" />
-				<div ng-hide="collapsed" class="features cw-counted">
+				<button ng-hide="section.collapsed || readonly" cw-rte="section" cw-rte-toggle="#{{section.guid}}-content" class="btn btn-link"><cw-icon type="edit"></cw-icon> Open in Rich Text Editor</button>
+				<div ng-hide="section.collapsed || (readonly && !section.content.length)" class="section-content" id="{{section.guid}}-content" cw-editable ng-class="{'no-print':!feature.content.length}" ng-model="section.content"></div>
+				<div ng-hide="section.collapsed" class="flags" ng-include="'partials/flags.html'" ng-init="flags = section.flags" />
+				<div ng-hide="section.collapsed" class="features cw-counted">
 					<div class="feature level_0" ng-repeat="feature in section.features | filter:search.string" ng-include="'partials/feature.html'" ng-init="$level = 0"></div>
 				</div>
 
-				<div ng-show="collapsed" class="collapsed">
+				<div ng-show="section.collapsed" class="collapsed">
 					<div class="well slideout animated">
-						<a ng-click="collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Section</a>
+						<a ng-click="section.collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Section</a>
 					</div>
 				</div>
 

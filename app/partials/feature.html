@@ -6,8 +6,8 @@
 				<li><a ng-click="insertFeature(feature.features)"><cw-icon type="plus"></cw-icon> New Child Feature</a></li>
 
 				<li class="divider">
-				<li ng-show="!collapsed"><a ng-click="collapsed = true"><cw-icon type="collapse-up"></cw-icon> Collapse Content</a></li>
-				<li ng-show="collapsed"><a ng-click="collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Content</a></li>
+				<li ng-show="!feature.collapsed"><a ng-click="feature.collapsed = true"><cw-icon type="collapse-up"></cw-icon> Collapse Content</a></li>
+				<li ng-show="feature.collapsed"><a ng-click="feature.collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Content</a></li>
 
 				<li class="divider"></li>
 				<li><a ng-click="feature.newCost()"><cw-icon type="hourglass"></cw-icon> Add Time</a></li>
@@ -29,7 +29,7 @@
 	<input class="feature-title form-control" ng-disabled="readonly" type="text" ng-model="feature.title" id="{{feature.guid}}-title" />
 </div>
 
-<div ng-show="!collapsed" class="feature-cost row">
+<div ng-show="!feature.collapsed" class="feature-cost row">
 	<div ng-repeat="(key, value) in feature.cost">
 		<div class="col-xs-2 text-right">
 			<div class="btn-group btn-group-lg">
@@ -62,7 +62,7 @@
 	</div>
 </div>
 
-<div ng-show="!collapsed" class="feature-tags">
+<div ng-show="!feature.collapsed" class="feature-tags">
 	<ul>
 		<li ng-repeat="tag in feature.tags | filter:search.string">
 			<button ng-click="removeTag(feature, tag)" type="button" class="close">&times;</button>
@@ -70,20 +70,20 @@
 		</li>
 	</ul>
 </div>
-<button ng-hide="collapsed || readonly" cw-rte="feature" cw-rte-toggle="#{{feature.guid}}-content" class="btn btn-link"><cw-icon type="edit"></cw-icon> Open in Rich Text Editor</button>
+<button ng-hide="feature.collapsed || readonly" cw-rte="feature" cw-rte-toggle="#{{feature.guid}}-content" class="btn btn-link"><cw-icon type="edit"></cw-icon> Open in Rich Text Editor</button>
 
-<div ng-hide="collapsed" class="feature-content {{tagAbbrs(feature)}}" id="{{feature.guid}}-content" ng-class="{'no-print':!feature.content.length}" ng-disabled="readonly" cw-editable ng-model="feature.content"></div>
+<div ng-hide="feature.collapsed" class="feature-content {{tagAbbrs(feature)}}" id="{{feature.guid}}-content" ng-class="{'no-print':!feature.content.length}" ng-disabled="readonly" cw-editable ng-model="feature.content"></div>
 
-<div ng-hide="collapsed" class="flags" id="{{feature.guid}}-flags" ng-include="'partials/flags.html'" ng-init="flags = feature.flags" />
+<div ng-hide="feature.collapsed" class="flags" id="{{feature.guid}}-flags" ng-include="'partials/flags.html'" ng-init="flags = feature.flags" />
 
-<div ng-show="collapsed" class="collapsed">
+<div ng-show="feature.collapsed" class="collapsed">
 	<div class="well slideout animated">
-		<a ng-click="collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Content</a>
+		<a ng-click="feature.collapsed = false"><cw-icon type="collapse-down"></cw-icon> Expand Content</a>
 	</div>
 </div>
 
 <!-- "{{feature.title}}" Child Features -->
-<div ng-hide="collapsed">
+<div ng-hide="feature.collapsed">
 	<div class="feature level_{{$level}}" ng-repeat="feature in feature.features | filter:search.string" ng-include="'partials/feature.html'" ng-init="$level = $level + 1;"></div>
 </div>
 <!-- /"{{feature.title}}" Child Features -->
