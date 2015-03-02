@@ -27,6 +27,7 @@
 	</div>
 	<div class="input-group-addon"><span class="feature-id">{{feature.id}}</span></div>
 	<input class="feature-title form-control" ng-disabled="readonly" type="text" ng-model="feature.title" id="{{feature.guid}}-title" />
+	<div ng-show="feature.hasCost()" class="input-group-addon"><span class="feature-cost">{{feature.totalCost()}}</span></div>
 </div>
 
 <div ng-show="!feature.collapsed" class="feature-cost row">

@@ -198,6 +198,7 @@ angular.module('Clockdoc.Models')
 
 	Doc.prototype.deleteSection = function(index) {
 		this.root.sections.splice(index, 1);
+		this.refresh();
 	};
 
 	/// Feature methods ///

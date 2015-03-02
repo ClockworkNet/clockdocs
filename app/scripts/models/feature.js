@@ -87,6 +87,23 @@ angular.module('Clockdoc.Models')
 	};
 
 
+	Feature.prototype.hasCost = function() {
+		for (var key in this.cost) {
+			if (this.cost[key]) {
+				return true;
+			}
+		}
+
+		for (var i=0; i<this.features.length; i++) {
+			if (this.features[i].hasCost()) {
+				return true;
+			}
+		}
+
+		return false;
+	};
+
+
 	Feature.prototype.hasTag = function(tag) {
 		return this.tags && this.tags.indexOf(tag) >= 0;
 	};

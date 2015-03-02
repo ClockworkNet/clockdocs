@@ -71,14 +71,14 @@
 						<li ng-show="doc.root" class="dropdown-header">Export</li>
 						<li ng-show="files.current && files.current.remote && files.current.entry"><a data-toggle="modal" data-target="#svn-form-commit"><cw-icon type="cloud-upload"></cw-icon> Commit to SVN</a></li>
 						<li ng-show="doc.root"><a ng-click="export('word')"><cw-icon type="file"></cw-icon> Export As Word Document</a></li>
-						<li ng-show="doc.root"><a ng-click="export('json')"><cw-icon type="file"></cw-icon> Export As JSON</a></li>
+						<li ng-show="doc.root"><a ng-click="export('json')"><cw-icon type="console"></cw-icon> Export As JSON</a></li>
 					</ul>
 				</li>
 				<li class="dropdown" ng-show="doc.root">
 					<a class="dropdown-toggle" data-toggle="dropdown"><cw-icon type="eye-open"></cw-icon> View <span class="caret"></span></a>
 					<ul class="dropdown-menu">
-						<li ng-class="{disabled: readonly}"><a ng-click="setReadonly(true)"><cw-icon type="lock"></cw-icon> Read Only</a></li>
-						<li ng-class="{disabled: !readonly}"><a ng-click="setReadonly(false)"><cw-icon type="edit"></cw-icon> Edit</a></li>
+						<li ng-class="{disabled: readonly}"><a ng-click="setReadonly(true)"><cw-icon type="lock"></cw-icon> Read Only Mode</a></li>
+						<li ng-class="{disabled: !readonly}"><a ng-click="setReadonly(false)"><cw-icon type="edit"></cw-icon> Edit Mode</a></li>
 						<li class="divider"></li>
 						<li ng-class="{disabled: allCollapsed}"><a ng-click="collapseAll(true)"><cw-icon type="minus"></cw-icon> Collapse All</a></li>
 						<li ng-class="{disabled: !allCollapsed}"><a ng-click="collapseAll(false)"><cw-icon type="plus"></cw-icon> Expand All</a></li>
