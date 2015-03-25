@@ -491,6 +491,9 @@ section {
 	z-index: 3;
 	background: transparent;
 }
+.doc-breadcrumb + .doc-container .doc-content {
+    margin-top: 80px;
+}
 
 .breadcrumb, .breadcrumb .dropdown-menu {
 	background-color: rgba(246, 255, 219, 0.95);
