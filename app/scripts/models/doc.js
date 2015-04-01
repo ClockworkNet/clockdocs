@@ -203,6 +203,9 @@ angular.module('Clockdoc.Models')
 
 	/// Feature methods ///
 	Doc.prototype.deleteFeature = function(section, feature) {
+		if (!section.eachFeature) {
+			section = new Feature(section);
+		}
 		section.eachFeature(function(f, i, a) {
 			if (f.guid !== feature.guid) {
 				return true;
