@@ -3,7 +3,9 @@
 		<div class="dropdown">
 			<button class="btn btn-link dropdown-toggle" data-toggle="dropdown"><cw-icon type="chevron-right"></cw-icon></button>
 			<ul class="dropdown-menu">
+				<li><a ng-click="featureBefore(feature)"><cw-icon type="arrow-up"></cw-icon> New Feature Above</a></li>
 				<li><a ng-click="insertFeature(feature.features)"><cw-icon type="plus"></cw-icon> New Child Feature</a></li>
+				<li><a ng-click="featureAfter(feature)"><cw-icon type="arrow-down"></cw-icon> New Feature Below</a></li>
 
 				<li class="divider">
 				<li ng-show="!feature.collapsed"><a ng-click="feature.collapsed = true"><cw-icon type="collapse-up"></cw-icon> Collapse Content</a></li>

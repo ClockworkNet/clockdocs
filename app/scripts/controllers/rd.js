@@ -204,6 +204,16 @@ angular.module('Clockdoc.Controllers')
 		$scope.scrollTo(feature.guid);
 	};
 
+	$scope.featureBefore = function(feature) {
+		var newFeature = $scope.doc.featureBefore(feature);
+		$scope.scrollTo(newFeature.guid);
+	};
+
+	$scope.featureAfter = function(feature) {
+		var newFeature = $scope.doc.featureAfter(feature);
+		$scope.scrollTo(newFeature.guid);
+	};
+
 	/// Tag methods ///
 	$scope.tagAbbrs = function(feature) {
 		var abbrify = function(s) {

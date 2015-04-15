@@ -222,10 +222,34 @@ angular.module('Clockdoc.Models')
 			return;
 		}
 		var feature = this.createFeature();
-		featureIndex = featureIndex || features.length + 1;
+		if (typeof(featureIndex) !== 'number') {
+			featureIndex = features.length + 1;
+		}
 		features.splice(featureIndex, 0, feature);
 		this.refresh();
 		return feature;
+	};
+
+	Doc.prototype.insertSiblingFeature = function(feature, offset) {
+		var node = this.findNode(feature.guid);
+		if (!node || !node.parent) {
+			console.error('Invalid feature', feature, node);
+			return;
+		}
+		var parent = this.findNode(node.parent.item.guid);
+		if (!parent) {
+			console.error('Can\'t find parent', node);
+			return;
+		}
+		return this.insertFeature(parent.item.features, node.index + offset);
+	};
+
+	Doc.prototype.featureBefore = function(feature) {
+		return this.insertSiblingFeature(feature, 0);
+	};
+
+	Doc.prototype.featureAfter = function(feature) {
+		return this.insertSiblingFeature(feature, 1);
 	};
 
 	/// Tag methods ///
