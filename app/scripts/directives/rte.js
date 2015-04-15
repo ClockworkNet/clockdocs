@@ -40,10 +40,12 @@ angular.module('Clockdoc.Directives')
 				editor.modal({keyboard: false, backdrop: 'static'});
 			};
 
-			var toggleButton = function(e, state, delay) {
-				$timeout(function() {
-					el.toggle(state);
-				}, delay);
+			var toggleButton = function(state, delay) {
+				return function() {
+					$timeout(function() {
+						el.toggle(state, 'fast');
+					}, delay);
+				};
 			};
 
 			el.on('click.cw.rte', openEditor);
@@ -51,8 +53,8 @@ angular.module('Clockdoc.Directives')
 			// Hide the trigger button if a toggler has been specified
 			if (scope.toggle) {
 				var body = $(document.body);
-				body.on('focus.cw.rte', scope.toggle, toggleButton.bind(true, 0));
-				body.on('blur.cw.rte', scope.toggle, toggleButton.bind(false, 2000));
+				body.on('focus.cw.rte', scope.toggle, toggleButton(true, 0));
+				body.on('blur.cw.rte', scope.toggle, toggleButton(false, 200));
 				el.hide();
 			}
 		}

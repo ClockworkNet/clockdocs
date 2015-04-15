@@ -16,6 +16,7 @@ angular.module('Clockdoc.Utils')
 	};
 
 	this.wrapRangeWithMarkers = function(range) {
+		range = range || this.getRange();
 		var startId = this.insertMarker(range, true);
 		var endId = this.insertMarker(range, false);
 		return {

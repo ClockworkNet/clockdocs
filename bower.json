@@ -1,36 +1,36 @@
 {
-	"name": "Clockdocs",
-	"version": "0.0.1",
-	"authors": [
-		"Barrett Alexander <barrett@clockwork.net>"
-	],
-	"description": "Write all sorts of Clockwork Client documents",
-	"main": "dist/index.html",
-	"license": "MIT",
-	"homepage": "clockwork.net",
-	"private": true,
-	"ignore": [
-		"**/.*",
-		"test"
-	],
-	"dependencies": {
-		"jquery": "2.1.x",
-		"jquery-ui": "1.11.x",
-		"jquery-waypoints": "2.0.x",
-		"angular": "1.2.x",
-		"angular-route": "1.2.x",
-		"bootstrap": "3.3.x",
-		"fontawesome": "4.1.x",
-		"textAngular": "1.2.x",
-		"mustache": "0.8.2"
-	},
-	"overrides": {
-		"textAngular": {
-			"main": [
-				"src/textAngular-sanitize.js",
-				"src/textAngularSetup.js",
-				"src/textAngular.js"
-			]
-		}
-	}
+  "name": "Clockdocs",
+  "version": "0.0.1",
+  "authors": [
+    "Barrett Alexander <barrett@clockwork.net>"
+  ],
+  "description": "Write all sorts of Clockwork Client documents",
+  "main": "dist/index.html",
+  "license": "MIT",
+  "homepage": "clockwork.net",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "test"
+  ],
+  "dependencies": {
+    "jquery": "2.1.x",
+    "jquery-ui": "1.11.x",
+    "jquery-waypoints": "2.0.x",
+    "angular": "1.2.x",
+    "angular-route": "1.2.x",
+    "bootstrap": "3.3.x",
+    "fontawesome": "4.1.x",
+    "textAngular": "1.2.x",
+    "mustache": "0.8.2"
+  },
+  "overrides": {
+    "textAngular": {
+      "main": [
+        "src/textAngular-sanitize.js",
+        "src/textAngularSetup.js",
+        "src/textAngular.js"
+      ]
+    }
+  }
 }

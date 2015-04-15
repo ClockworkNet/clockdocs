@@ -3,7 +3,7 @@
 
 angular.module('Clockdoc.Directives')
 // Adds angular binding to contenteditable elements
-.directive('cwEditable', function() {
+.directive('cwEditable', ['$sanitize', '$window', '$timeout', function($sanitize, $window, $timeout) {
 	return {
 		restrict: 'A',
 		require: '?ngModel',
@@ -18,20 +18,46 @@ angular.module('Clockdoc.Directives')
 				el.attr('contenteditable', !$scope.readonly);
 			});
 
+			var blank = '<p>&nbsp;</p>';
+
+			var started = function() {
+				if (el.html() !== '') {
+					return;
+				}
+
+				$timeout(function() {
+					var node      = $(blank);
+					var range     = $window.document.createRange();
+					var selection = $window.getSelection();
+
+					el.append(node);
+
+					range.selectNodeContents(node.get(0));
+					selection.removeAllRanges();
+					selection.addRange(range);
+				}, 100);
+			};
+
+			// Done editing, set the new value
+			var finished = function() {
+				var formatted = $sanitize(el.html());
+				if (formatted === blank) {
+					formatted = '';
+					el.html('');
+				}
+				ngModel.$setViewValue(formatted);
+			};
+
+			// When the model changes, update the html
 			ngModel.$render = function() {
 				el.html(ngModel.$viewValue || '');
 			};
 
-			var update = function() {
-				$scope.$apply(function() {
-					ngModel.$setViewValue(el.html());
-				});
-			};
-
-			el.on('blur keyup change', update);
+			el.on('focus', started);
+			el.on('blur', finished);
 		}
 	};
-});
+}]);
 
 // Configure the text-angular directive
 angular.module('textAngular')
@@ -122,4 +148,3 @@ angular.module('textAngular')
 		return taTools;
 	}]);
 });
-
