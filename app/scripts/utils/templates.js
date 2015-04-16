@@ -63,63 +63,9 @@ angular.module('Clockdoc.Utils')
 		return deferred.promise;
 	};
 
-	/*
-	 * Flattens out the document into one level. @todo: move this to the 
-	 * RD model object
-	 */
-	Templates.prototype.flatten = function(doc) {
-		var flat = angular.copy(doc);
-
-		if (!flat.sections) {
-			return flat;
-		}
-
-		var flattenNode = this.flattenNode.bind(this);
-
-		flat.sections.forEach(function(section) {
-			if (!section.features) {
-				return;
-			}
-			var flattened = flattenNode(section.features, 'features');
-			section.features = flattened;
-		});
-		return flat;
-	};
-
-	/**
-	 * Replaces a recursive array with a one-level
-	 * array and adds level information as a x.x.x numbering system
-	 * system to the title key. Very useful for rendering without
-	 * using recursion!
-	**/
-	Templates.prototype.flattenNode = function(a, childKey, levels) {
-		var flattened = [];
-		var flatter = this.flattenNode.bind(this);
-		levels = levels || [];
-
-		a.forEach(function(el, ix) {
-			// Calculate the current level of this node
-			var level = levels.slice(0);
-			level.push(ix + 1);
-			el.level = level.join('.');
-
-			// The depth is bumped up by 1 to account for sections
-			el.depth = level.length + 1;
-
-			// Add to the flattened array
-			flattened.push(el);
-
-			// Add any children to the flattened array
-			var children = el[childKey] ? el[childKey].slice(0) : [];
-			var flatKids = flatter(children, childKey, level);
-			flattened = flattened.concat(flatKids);
-		});
-
-		return flattened;
-	};
 
 	Templates.prototype.toWord = function(doc, source) {
-		var prepared = this.flatten(doc);
+		var prepared = doc.flatten();
 		var ooxml = new Ooxml();
 		var deferred = $q.defer();
 		source = source || 'templates/word.xml';
@@ -177,14 +123,14 @@ angular.module('Clockdoc.Utils')
 
 	Templates.prototype.toJson = function(doc) {
 		var deferred = $q.defer();
-		var flat = this.flatten(doc);
+		var flat = doc.flatten();
 		deferred.resolve(angular.toJson(flat, true));
 		return deferred.promise;
 	};
 
 	Templates.prototype.toCsv = function(doc) {
 		var deferred = $q.defer();
-		var flat = this.flatten(doc);
+		var flat = doc.flatten();
 
 		var rows = [['Identifier', 'Title']];
 		for (var key in Feature.CostKeys) {

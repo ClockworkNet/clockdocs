@@ -81,6 +81,61 @@ angular.module('Clockdoc.Models')
 		this.refresh();
 	};
 
+	/*
+	 * Flattens out the document into one level
+	 */
+	Doc.prototype.flatten = function() {
+		var flat = new Doc(this.root);
+
+		if (!flat.sections) {
+			return flat;
+		}
+
+		var flattenNode = this.flattenNode.bind(this);
+
+		flat.sections.forEach(function(section) {
+			if (!section.features) {
+				return;
+			}
+			var flattened = flattenNode(section.features, 'features');
+			section.features = flattened;
+		});
+
+		return flat;
+	};
+
+	/**
+	 * Replaces a recursive array with a one-level
+	 * array and adds level information as a x.x.x numbering system
+	 * system to the title key. Very useful for rendering without
+	 * using recursion!
+	**/
+	Doc.prototype.flattenNode = function(a, childKey, levels) {
+		var flattened = [];
+		var flatter = this.flattenNode.bind(this);
+		levels = levels || [];
+
+		a.forEach(function(el, ix) {
+			// Calculate the current level of this node
+			var level = levels.slice(0);
+			level.push(ix + 1);
+			el.level = level.join('.');
+
+			// The depth is bumped up by 1 to account for sections
+			el.depth = level.length + 1;
+
+			// Add to the flattened array
+			flattened.push(el);
+
+			// Add any children to the flattened array
+			var children = el[childKey] ? el[childKey].slice(0) : [];
+			var flatKids = flatter(children, childKey, level);
+			flattened = flattened.concat(flatKids);
+		});
+
+		return flattened;
+	};
+
 	Doc.prototype.createRoot = function() {
 		return {
 			title: '',
