@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('Clockdoc.Utils')
-.factory('Templates', ['$q', '$http', '$filter', 'Ooxml', function($q, $http, $filter, Ooxml) {
+.factory('Templates', ['$q', '$http', '$filter', 'Ooxml', 'Feature', function($q, $http, $filter, Ooxml, Feature) {
 
 	function Templates () {
 		this.files = {};
@@ -14,6 +14,10 @@ angular.module('Clockdoc.Utils')
 			'json': {
 				'extension': 'json',
 				'method': 'toJson'
+			},
+			'csv': {
+				'extension': 'csv',
+				'method': 'toCsv'
 			}
 		};
 	}
@@ -174,7 +178,43 @@ angular.module('Clockdoc.Utils')
 	Templates.prototype.toJson = function(doc) {
 		var deferred = $q.defer();
 		var flat = this.flatten(doc);
-		deferred.resolve(angular.toJson(flat));
+		deferred.resolve(angular.toJson(flat, true));
+		return deferred.promise;
+	};
+
+	Templates.prototype.toCsv = function(doc) {
+		var deferred = $q.defer();
+		var flat = this.flatten(doc);
+
+		var rows = [['Identifier', 'Title']];
+		for (var key in Feature.CostKeys) {
+			rows[0].push(Feature.CostKeys[key]);
+		}
+
+		function toRow(id, title, cost) {
+			var row = [];
+			row.push('"' + id.replace('"', '\"') + '"');
+			row.push('"' + title.replace('"', '\"') + '"');
+			for (var key in Feature.CostKeys) {
+				row.push(cost[key] || '');
+			}
+			return row.join(',');
+		}
+
+		for (var s=0; s<flat.sections.length; s++) {
+			var section = flat.sections[s];
+			var prefix  = section.title[0];
+			rows.push(toRow('', section.title, []));
+
+			for (var f=0; f<section.features.length; f++) {
+				var feature = section.features[f];
+				var id      = prefix + feature.level;
+				rows.push(toRow(id, feature.title, feature.cost));
+			}
+		}
+
+		var text = rows.join('\r');
+		deferred.resolve(text);
 		return deferred.promise;
 	};
 

@@ -71,6 +71,7 @@
 						<li ng-show="doc.root" class="dropdown-header">Export</li>
 						<li ng-show="files.current && files.current.remote && files.current.entry"><a data-toggle="modal" data-target="#svn-form-commit"><cw-icon type="cloud-upload"></cw-icon> Commit to SVN</a></li>
 						<li ng-show="doc.root"><a ng-click="export('word')"><cw-icon type="file"></cw-icon> Export As Word Document</a></li>
+						<li ng-show="doc.root"><a ng-click="export('csv')"><cw-icon type="th"></cw-icon> Export As CSV</a></li>
 						<li ng-show="doc.root"><a ng-click="export('json')"><cw-icon type="console"></cw-icon> Export As JSON</a></li>
 					</ul>
 				</li>
