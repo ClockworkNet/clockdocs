@@ -21,7 +21,7 @@ angular.module('Clockdoc.Directives')
 			var blank = '<p>&nbsp;</p>';
 
 			var started = function() {
-				if (el.html() !== '') {
+				if (attr.cwEditable === 'plaintext' || el.html() !== '') {
 					return;
 				}
 
@@ -40,10 +40,16 @@ angular.module('Clockdoc.Directives')
 
 			// Done editing, set the new value
 			var finished = function() {
-				var formatted = $sanitize(el.html());
-				if (formatted === blank) {
-					formatted = '';
-					el.html('');
+				var formatted;
+				if (attrs.cwEditable === 'plaintext') {
+					formatted = el.text();
+				}
+				else {
+					formatted = $sanitize(el.html());
+					if (formatted === blank) {
+						formatted = '';
+						el.html('');
+					}
 				}
 				ngModel.$setViewValue(formatted);
 			};
