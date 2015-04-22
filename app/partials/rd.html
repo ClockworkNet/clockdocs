@@ -48,13 +48,13 @@
 			<table class="table revisions" ng-hide="search.string">
 				<tr>
 					<td class="header">Client:</td>
-					<td width="50%" ng-model="doc.root.client" cw-editable></td>
+					<td width="50%" ng-model="doc.root.client" cw-editable="plaintext"></td>
 					<td class="header">Project Mgr:</td>
-					<td width="50%" ng-model="doc.root.pm" cw-editable></td>
+					<td width="50%" ng-model="doc.root.pm" cw-editable="plaintext"></td>
 				</tr>
 				<tr>
 					<td class="header">Project:</td>
-					<td ng-model="doc.root.project" cw-editable></td>
+					<td ng-model="doc.root.project" cw-editable="plaintext"></td>
 					<td colspan="2"></td>
 				</tr>
 			</table>
@@ -69,10 +69,10 @@
 				<tbody>
 					<tr ng-repeat="rev in doc.root.revisions track by $index">
 						<td ng-hide="readonly" style="vertical-align: middle"><a ng-click="removeRevision($index)"><i class="glyphicon glyphicon-trash"></i></a></td>
-						<td ng-model="rev.revision" cw-editable></td>
-						<td ng-model="rev.date" cw-editable></td>
-						<td ng-model="rev.notes" cw-editable></td>
-						<td ng-model="rev.author" cw-editable></td>
+						<td ng-model="rev.revision" cw-editable="plaintext"></td>
+						<td ng-model="rev.date" cw-editable="plaintext"></td>
+						<td ng-model="rev.notes" cw-editable="plaintext"></td>
+						<td ng-model="rev.author" cw-editable="plaintext"></td>
 					</tr>
 				</tbody>
 				<tfoot ng-hide="readonly">
