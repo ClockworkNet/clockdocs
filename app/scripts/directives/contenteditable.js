@@ -21,7 +21,7 @@ angular.module('Clockdoc.Directives')
 			var blank = '<p>&nbsp;</p>';
 
 			var started = function() {
-				if (attr.cwEditable === 'plaintext' || el.html() !== '') {
+				if (attrs.cwEditable === 'plaintext' || el.html() !== '') {
 					return;
 				}
 
