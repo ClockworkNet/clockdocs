@@ -25,7 +25,8 @@
     "jshint-stylish": "~0.1.5",
     "grunt-chrome-manifest": "~0.2.0",
     "grunt-contrib-compress": "~0.9.1",
-    "grunt-crx": "^0.3.4"
+    "grunt-crx": "^0.3.4",
+    "grunt-html-build": "^0.4.3"
   },
   "engines": {
     "node": ">=0.8.0"

@@ -1,5 +1,7 @@
+<script type="text/ng-template" id="partials/toc.html">
 <a class="toc-feature {{tagAbbrs(feature)}}" cw-scroller="feature.guid" cw-scroller-disabled="sorting"><cw-icon type="move" class="draggable"></cw-icon><span class="feature-id">{{feature.id}}</span> {{feature.title}}</a>
 <ol class="nav nav-stacked">
 	<li class="cw-sorted cw-sorted-empty"><a></a></li>
 	<li class="cw-sorted cw-sorted-feature" ng-repeat="feature in feature.features" ng-include="'partials/toc.html'" data-guid="{{feature.guid}}"></li>
 </ol>
+</script>

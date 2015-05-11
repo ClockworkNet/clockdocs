@@ -1,3 +1,4 @@
+<script type="text/ng-template" id="partials/feature.html">
 <div class="feature-header input-group" cw-waypoint="setActiveItem(feature)" ng-class="{'stuck': activeGuids[feature.guid]}" id="{{feature.guid}}">
 	<div ng-show="!readonly" class="input-group-addon tilter">
 		<div class="dropdown">
@@ -90,3 +91,4 @@
 	<div class="feature level_{{$level}}" ng-repeat="feature in feature.features | filter:search.string" ng-include="'partials/feature.html'" ng-init="$level = $level + 1;"></div>
 </div>
 <!-- /"{{feature.title}}" Child Features -->
+</script>

@@ -1,3 +1,4 @@
+<script type="text/ng-template" id="partials/flags.html">
 <div class="flags cw-sortable" cw-sort-on-updated="moveFlag(flags, parentGuid, guid, index)" cw-sort-items="div.flag" cw-sort-handle=".handle">
 	<div ng-repeat="flag in flags" class="flag flag-{{flag.type}}" id="{{flag.guid}}" data-guid="{{flag.guid}}">
 		<div class="row">
@@ -17,3 +18,4 @@
 		</div>
 	</div>
 </div>
+</script>

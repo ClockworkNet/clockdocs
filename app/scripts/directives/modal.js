@@ -14,7 +14,7 @@ angular.module('Clockdoc.Directives')
 			click: '&modalClick'
 		},
 		transclude: true,
-		templateUrl: '/partials/modal.html',
+		templateUrl: 'partials/modal.html',
 		link: function(scope, el) {
 			var popup = el.find('.modal');
 			$('body').append(popup.remove());

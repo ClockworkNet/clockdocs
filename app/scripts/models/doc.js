@@ -31,6 +31,7 @@ angular.module('Clockdoc.Models')
 	function Doc(root) {
 		// Stores the data object for this document
 		this.setRoot(root);
+		this.onRefresh = null;
 	}
 
 	Doc.flagTypes = [
@@ -225,6 +226,10 @@ angular.module('Clockdoc.Models')
 
 		var rootNode = new Node(null, null, this.root);
 		refreshChildren(null, rootNode, this.nodes, 0);
+
+		if (this.onRefresh) {
+			this.onRefresh(this);
+		}
 	};
 
 	// Creates a cache lookup to be used for getting 

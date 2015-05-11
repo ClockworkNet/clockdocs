@@ -1,2 +1,4 @@
+<script type="text/ng-template" id="partials/toggle.html">
 <button type="button" class="btn btn-off" ng-click="setProp(false)" ng-class="{'btn-default': isOn(), 'btn-danger': !isOn()}"><cw-icon type="remove" ng-if="!offMsg"></cw-icon><span ng-if="offMsg">{{offMsg}}</span></button>
 <button type="button" class="btn btn-on" ng-click="setProp(true)" ng-class="{'btn-default': !isOn(), 'btn-success': isOn()}"><cw-icon type="ok" ng-if="!onMsg"></cw-icon><span ng-if="onMsg">{{onMsg}}</span></button>
+</script>

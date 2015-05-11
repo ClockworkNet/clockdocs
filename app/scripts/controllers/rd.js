@@ -10,6 +10,7 @@ angular.module('Clockdoc.Controllers')
 
 	/* The in-memory file being manipulated */
 	$scope.doc = null;
+	$scope.tree = null;
 
 	/* Tracks the feature or section element currently in view */
 	$scope.activeItem = null;

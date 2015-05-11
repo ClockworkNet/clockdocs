@@ -32,25 +32,25 @@ module.exports = function (grunt) {
         watch: {
             bower: {
                 files: ['bower.json'],
-                tasks: ['bowerInstall', 'copy:dev']
+                tasks: ['bowerInstall', 'copy:dev', 'htmlbuild']
             },
             js: {
                 files: ['<%= config.app %>/scripts/**/*.js'],
-                tasks: ['jshint', 'copy:dev'],
+                tasks: ['jshint', 'copy:dev', 'htmlbuild'],
                 options: {
                     livereload: true
                 }
             },
             html: {
                 files: ['<%= config.app %>/index.html', '<%= config.app %>/partials/*.html'],
-                tasks: ['copy:dev'],
+                tasks: ['copy:dev', 'htmlbuild'],
                 options: {
                     livereload: true
                 }
             },
             templates: {
                 files: ['<%= config.app %>/templates/*.*'],
-                tasks: ['copy:dev'],
+                tasks: ['copy:dev', 'htmlbuild'],
                 options: {
                     livereload: true
                 }
@@ -60,7 +60,7 @@ module.exports = function (grunt) {
             },
             styles: {
                 files: ['<%= config.app %>/styles/{,*/}*.css'],
-                tasks: ['copy:dev'],
+                tasks: ['copy:dev', 'htmlbuild'],
                 options: {
                     livereload: true
                 }
@@ -163,6 +163,21 @@ module.exports = function (grunt) {
             app: {
                 src: ['<%= config.app %>/index.html'],
                 ignorePath: '<%= config.app %>/'
+            }
+        },
+
+        htmlbuild: {
+            dist: {
+                src: '<%= config.dist %>/index.html',
+                dest: '<%= config.dist %>/index.html',
+                options: {
+                    relative: true,
+                    beautify: false,
+                    parseTag: 'include',
+                    sections: {
+                        partials: '<%= config.app %>/partials/*.html'
+                    }
+                }
             }
         },
 
@@ -269,6 +284,7 @@ module.exports = function (grunt) {
                         'templates/*.*',
                         'styles/fonts/**/*.*',
                         '_locales/{,*/}*.json',
+                        '!partials/*.html'
                     ]
                 },
                 // for fontawesome
@@ -288,7 +304,7 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: '<%= config.app %>',
                     dest: '<%= config.dist %>',
-                    src: '**'
+                    src: ['**', '!partials/*.html']
                 }]
             },
             styles: {
@@ -389,14 +405,19 @@ module.exports = function (grunt) {
         'mocha'
     ]);
 
-    grunt.registerTask('dev', [
+    grunt.registerTask('buildDev', [
         'clean:dist',
         'bowerInstall',
         'copy:dev',
+        'htmlbuild'
+    ]);
+
+    grunt.registerTask('dev', [
+        'buildDev',
         'watch'
     ]);
 
-    grunt.registerTask('build', [
+    grunt.registerTask('deploy', [
         'clean:dist',
         'bowerInstall',
         'chromeManifest:dist',
@@ -406,6 +427,7 @@ module.exports = function (grunt) {
         'cssmin',
         'uglify',
         'copy:dist',
+        'htmlbuild',
         'usemin',
         'compress:dist',
         'crx:dist'
@@ -414,6 +436,6 @@ module.exports = function (grunt) {
     grunt.registerTask('default', [
         'newer:jshint',
         'test',
-        'build'
+        'dev'
     ]);
 };
